@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Test: <%= test.test_name %></title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-header { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .timer { position: fixed; top: 20px; right: 20px; background: #dc3545; color: white; padding: 10px; border-radius: 5px; font-weight: bold; }
+        .question-container { margin-bottom: 30px; }
+        .question-number { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
+        .question-text { margin-bottom: 15px; }
+        .options label { display: block; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; }
+        .options label:hover { background: #f8f9fa; }
+        .options input[type="radio"] { margin-right: 10px; }
+        .text-answer { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .navigation { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 20px; border-top: 1px solid #ddd; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">Time Remaining: <span id="timeDisplay">60:00</span></div>
+    
+    <div class="test-header">
+        <h1><%= test.test_name %></h1>
+        <p>
+            <strong>Subject:</strong> <%= test.subject_name %> | 
+            <strong>Duration:</strong> <%= test.duration_minutes %> minutes |
+            <strong>Total Questions:</strong> <%= questions.length %> |
+            <strong>Total Marks:</strong> <%= test.total_marks %>
+        </p>
+        <% if (test.instructions) { %>
+            <div class="instructions">
+                <h3>Instructions:</h3>
+                <p><%= test.instructions %></p>
+            </div>
+        <% } %>
+    </div>
+    
+    <form id="testForm">
+        <input type="hidden" id="attemptId" value="<%= attempt.id %>">
+        
+        <% questions.forEach((question, index) => { %>
+            <div class="question-container" id="question-<%= question.id %>">
+                <div class="question-number">Question <%= index + 1 %> (<%= question.marks %> marks)</div>
+                <div class="question-text"><%= question.question_text %></div>
+                
+                <% if (question.question_type === 'multiple_choice') { %>
+                    <div class="options">
+                        <% if (question.option_a) { %>
+                            <label>
+                                <input type="radio" name="question_<%= question.id %>" value="A" 
+                                       <%= answersMap[question.id] && answersMap[question.id].student_answer === 'A' ? 'checked' : '' %>>
+                                A. <%= question.option_a %>
+                            </label>
+                        <% } %>
+                        <% if (question.option_b) { %>
+                            <label>
+                                <input type="radio" name="question_<%= question.id %>" value="B"
+                                       <%= answersMap[question.id] && answersMap[question.id].student_answer === 'B' ? 'checked' : '' %>>
+                                B. <%= question.option_b %>
+                            </label>
+                        <% } %>
+                        <% if (question.option_c) { %>
+                            <label>
+                                <input type="radio" name="question_<%= question.id %>" value="C"
+                                       <%= answersMap[question.id] && answersMap[question.id].student_answer === 'C' ? 'checked' : '' %>>
+                                C. <%= question.option_c %>
+                            </label>
+                        <% } %>
+                        <% if (question.option_d) { %>
+                            <label>
+                                <input type="radio" name="question_<%= question.id %>" value="D"
+                                       <%= answersMap[question.id] && answersMap[question.id].student_answer === 'D' ? 'checked' : '' %>>
+                                D. <%= question.option_d %>
+                            </label>
+                        <% } %>
+                        <% if (question.option_e) { %>
+                            <label>
+                                <input type="radio" name="question_<%= question.id %>" value="E"
+                                       <%= answersMap[question.id] && answersMap[question.id].student_answer === 'E' ? 'checked' : '' %>>
+                                E. <%= question.option_e %>
+                            </label>
+                        <% } %>
+                    </div>
+                <% } else if (question.question_type === 'true_false') { %>
+                    <div class="options">
+                        <label>
+                            <input type="radio" name="question_<%= question.id %>" value="True"
+                                   <%= answersMap[question.id] && answersMap[question.id].student_answer === 'True' ? 'checked' : '' %>>
+                            True
+                        </label>
+                        <label>
+                            <input type="radio" name="question_<%= question.id %>" value="False"
+                                   <%= answersMap[question.id] && answersMap[question.id].student_answer === 'False' ? 'checked' : '' %>>
+                            False
+                        </label>
+                    </div>
+                <% } else { %>
+                    <textarea class="text-answer" name="question_<%= question.id %>_text" rows="4"
+                              oninput="saveTextAnswer(<%= question.id %>, this.value)"><%= answersMap[question.id] && answersMap[question.id].text_answer || '' %></textarea>
+                <% } %>
+            </div>
+        <% }); %>
+    </form>
+    
+    <div class="navigation">
+        <button class="btn btn-primary" onclick="saveProgress()">Save Progress</button>
+        <button class="btn btn-success" onclick="submitTest()">Submit Test</button>
+        <button class="btn btn-danger" onclick="confirmSubmit()">Final Submit</button>
+    </div>
+    
+    <script>
+        let timeLeft = <%= remainingTime %>; // in seconds
+        let timerInterval;
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Time is up! Test will be submitted automatically.');
+                    submitTest();
+                    return;
+                }
+                
+                updateTimerDisplay();
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timeDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        async function saveAnswer(questionId, answer) {
+            const attemptId = document.getElementById('attemptId').value;
+            
+            try {
+                await fetch('/save-answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        attempt_id: attemptId,
+                        question_id: questionId,
+                        student_answer: answer
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving answer:', error);
+            }
+        }
+        
+        async function saveTextAnswer(questionId, answer) {
+            const attemptId = document.getElementById('attemptId').value;
+            
+            try {
+                await fetch('/save-answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        attempt_id: attemptId,
+                        question_id: questionId,
+                        text_answer: answer
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving answer:', error);
+            }
+        }
+        
+        function saveProgress() {
+            // Save all radio button answers
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                if (radio.checked) {
+                    const questionId = radio.name.replace('question_', '');
+                    saveAnswer(questionId, radio.value);
+                }
+            });
+            
+            alert('Progress saved successfully!');
+        }
+        
+        function submitTest() {
+            if (confirm('Are you sure you want to submit the test? You cannot change answers after submission.')) {
+                finalSubmit();
+            }
+        }
+        
+        function confirmSubmit() {
+            const unanswered = document.querySelectorAll('input[type="radio"]:not(:checked)').length;
+            const textareas = document.querySelectorAll('.text-answer');
+            const emptyTextareas = Array.from(textareas).filter(ta => !ta.value.trim()).length;
+            
+            if (unanswered > 0 || emptyTextareas > 0) {
+                if (!confirm(`You have ${unanswered} unanswered multiple choice questions and ${emptyTextareas} empty text answers. Are you sure you want to submit?`)) {
+                    return;
+                }
+            }
+            
+            submitTest();
+        }
+        
+        async function finalSubmit() {
+            const attemptId = document.getElementById('attemptId').value;
+            
+            try {
+                const response = await fetch('/submit-test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        attempt_id: attemptId
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    clearInterval(timerInterval);
+                    window.location.href = result.redirectUrl;
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error submitting test: ' + error.message);
+            }
+        }
+        
+        // Initialize
+        startTimer();
+        updateTimerDisplay();
+        
+        // Auto-save radio button changes
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const questionId = this.name.replace('question_', '');
+                saveAnswer(questionId, this.value);
+            });
+        });
+        
+        // Prevent accidental navigation
+        window.addEventListener('beforeunload', (e) => {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+    </script>
+</body>
+</html>

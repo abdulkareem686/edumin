@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List - Printable</title>
+    <style>
+        /* Printable styles */
+        @media print {
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                line-height: 1.4;
+                color: #000;
+                background: #fff;
+                margin: 0;
+                padding: 20px;
+            }
+            
+            .print-container {
+                width: 100%;
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+            
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid #333;
+            }
+            
+            .school-name {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            
+            .school-address {
+                font-size: 14px;
+                margin-bottom: 5px;
+            }
+            
+            .list-title {
+                font-size: 20px;
+                font-weight: bold;
+                margin: 20px 0;
+                text-align: center;
+                text-transform: uppercase;
+            }
+            
+            .filters-info {
+                margin-bottom: 20px;
+                padding: 10px;
+                background-color: #f9f9f9;
+                border-radius: 5px;
+            }
+            
+            .info-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .info-item {
+                display: flex;
+                margin-bottom: 5px;
+            }
+            
+            .info-label {
+                font-weight: bold;
+                min-width: 120px;
+            }
+            
+            .info-value {
+                flex: 1;
+            }
+            
+            .books-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                page-break-inside: avoid;
+            }
+            
+            .books-table th,
+            .books-table td {
+                border: 1px solid #000;
+                padding: 8px;
+                text-align: left;
+            }
+            
+            .books-table th {
+                background-color: #f5f5f5;
+                font-weight: bold;
+            }
+            
+            .books-table .text-right {
+                text-align: right;
+            }
+            
+            .books-table .text-center {
+                text-align: center;
+            }
+            
+            .required-book {
+                background-color: #f0f8ff;
+            }
+            
+            .optional-book {
+                background-color: #fffaf0;
+            }
+            
+            .total-row {
+                font-weight: bold;
+                background-color: #e9ecef;
+                border-top: 2px solid #333;
+            }
+            
+            .footer {
+                margin-top: 30px;
+                padding-top: 15px;
+                border-top: 1px solid #333;
+                text-align: center;
+                font-size: 11px;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+            
+            .no-print {
+                display: none;
+            }
+            
+            .required-badge {
+                display: inline-block;
+                padding: 2px 6px;
+                border-radius: 3px;
+                font-size: 10px;
+                font-weight: bold;
+            }
+            
+            .required {
+                background-color: #28a745;
+                color: white;
+            }
+            
+            .optional {
+                background-color: #ffc107;
+                color: #000;
+            }
+            
+            .filter-form {
+                display: none;
+            }
+        }
+        
+        /* Screen styles */
+        @media screen {
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f8f9fa;
+                padding: 20px;
+            }
+            
+            .print-container {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+            
+            .header {
+                text-align: center;
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+                border-bottom: 3px solid #007bff;
+            }
+            
+            .school-name {
+                font-size: 28px;
+                font-weight: bold;
+                color: #007bff;
+                margin-bottom: 10px;
+            }
+            
+            .school-address {
+                font-size: 16px;
+                color: #666;
+                margin-bottom: 10px;
+            }
+            
+            .list-title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin: 30px 0;
+                text-align: center;
+                text-transform: uppercase;
+                padding: 10px;
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                color: white;
+                border-radius: 5px;
+            }
+            
+            .filters-info {
+                margin-bottom: 30px;
+                padding: 20px;
+                background: #f8f9fa;
+                border-radius: 5px;
+                border-left: 4px solid #28a745;
+            }
+            
+            .info-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .info-item {
+                display: flex;
+                margin-bottom: 8px;
+                padding: 5px;
+            }
+            
+            .info-label {
+                font-weight: bold;
+                min-width: 140px;
+                color: #495057;
+            }
+            
+            .info-value {
+                flex: 1;
+                color: #212529;
+                font-weight: 500;
+            }
+            
+            .books-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 30px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .books-table th {
+                background: linear-gradient(135deg, #007bff, #0056b3);
+                color: white;
+                padding: 12px;
+                text-align: left;
+                font-weight: bold;
+            }
+            
+            .books-table td {
+                padding: 10px;
+                border-bottom: 1px solid #dee2e6;
+            }
+            
+            .books-table tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+            
+            .books-table tr:hover {
+                background-color: #e9ecef;
+            }
+            
+            .books-table .text-right {
+                text-align: right;
+                font-weight: 500;
+            }
+            
+            .books-table .text-center {
+                text-align: center;
+            }
+            
+            .required-book {
+                background-color: #f0f8ff;
+            }
+            
+            .optional-book {
+                background-color: #fffaf0;
+            }
+            
+            .total-row {
+                font-weight: bold;
+                background-color: #e9ecef;
+                border-top: 2px solid #007bff;
+            }
+            
+            .footer {
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 2px solid #007bff;
+                text-align: center;
+            }
+            
+            .print-button {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                background: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                z-index: 1000;
+                font-weight: bold;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                transition: all 0.3s ease;
+            }
+            
+            .print-button:hover {
+                background: #218838;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            }
+            
+            .back-button {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                padding: 12px 24px;
+                background: #6c757d;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                z-index: 1000;
+                font-weight: bold;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-block;
+            }
+            
+            .back-button:hover {
+                background: #5a6268;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                color: white;
+                text-decoration: none;
+            }
+            
+            .filter-form {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 5px;
+                margin-bottom: 20px;
+                border-left: 4px solid #007bff;
+            }
+            
+            .form-label {
+                font-weight: 600;
+                margin-bottom: 5px;
+                display: block;
+            }
+            
+            .form-select, .form-control {
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: 600;
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+            
+            .btn-primary {
+                background-color: #007bff;
+                color: white;
+            }
+            
+            .btn-primary:hover {
+                background-color: #0069d9;
+            }
+            
+            .btn-secondary {
+                background-color: #6c757d;
+                color: white;
+            }
+            
+            .btn-secondary:hover {
+                background-color: #5a6268;
+            }
+            
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                margin-right: -10px;
+                margin-left: -10px;
+            }
+            
+            .col-md-3 {
+                flex: 0 0 25%;
+                max-width: 25%;
+                padding-right: 10px;
+                padding-left: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .col-12 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+            
+            .g-3 {
+                margin-right: -10px;
+                margin-left: -10px;
+            }
+            
+            .g-3 > [class*="col-"] {
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+        }
+        
+        .currency {
+            font-family: monospace;
+        }
+        
+        .required-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .required {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .optional {
+            background-color: #ffc107;
+            color: #000;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .notes {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .notes h4 {
+            margin-top: 0;
+            color: #155724;
+        }
+        
+        .notes ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Print and Back buttons (hidden when printing) -->
+    <button class="print-button no-print" onclick="window.print()">🖨️ Print Book List</button>
+    <a href="javascript:history.back()" class="back-button no-print">← Back</a>
+
+    <div class="print-container">
+        <!-- Filter Form -->
+        <div class="filter-form no-print">
+            <h5>Filter Book List</h5>
+            <form method="GET" action="/books/print" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Academic Year</label>
+                    <select class="form-select" name="academicYear">
+                        <option value="all">All Years</option>
+                        <% academicYears.forEach(year => { %>
+                            <option value="<%= year.academic_year %>" <%= filters.academicYear == year.academic_year ? 'selected' : '' %>>
+                                <%= year.academic_year %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Class Level</label>
+                    <select class="form-select" name="classLevel">
+                        <option value="all">All Levels</option>
+                        <option value="KG" <%= filters.classLevel == 'KG' ? 'selected' : '' %>>KG</option>
+                        <option value="NURSERY" <%= filters.classLevel == 'NURSERY' ? 'selected' : '' %>>Nursery</option>
+                        <option value="PRIMARY" <%= filters.classLevel == 'PRIMARY' ? 'selected' : '' %>>Primary</option>
+                        <option value="JUNIOR SECONDARY" <%= filters.classLevel == 'JUNIOR SECONDARY' ? 'selected' : '' %>>Junior Secondary</option>
+                        <option value="SENIOR SECONDARY" <%= filters.classLevel == 'SENIOR SECONDARY' ? 'selected' : '' %>>Senior Secondary</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Department</label>
+                    <select class="form-select" name="department">
+                        <option value="all">All Departments</option>
+                        <option value="SCIENCE" <%= filters.department == 'SCIENCE' ? 'selected' : '' %>>Science</option>
+                        <option value="COMMERCIAL" <%= filters.department == 'COMMERCIAL' ? 'selected' : '' %>>Commercial</option>
+                        <option value="ART" <%= filters.department == 'ART' ? 'selected' : '' %>>Art</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Subject</label>
+                    <input type="text" class="form-control" name="subject" value="<%= filters.subject %>" placeholder="Enter subject">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="/books/print" class="btn btn-secondary">Clear Filters</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Header with School Information -->
+        <div class="header">
+            <div class="school-name"><%= school.name || 'Excel College' %></div>
+            <div class="school-address"><%= school.address || '12 Education Road, Lagos, Nigeria' %></div>
+            <div class="school-contact">
+                Tel: <%= school.phone || '+234 812 345 6789' %> | 
+                Email: <%= school.email || 'info@excelcollege.edu.ng' %> | 
+                Website: <%= school.website || 'www.excelcollege.edu.ng' %>
+            </div>
+        </div>
+
+        <!-- List Title -->
+        <div class="list-title">REQUIRED TEXTBOOKS LIST</div>
+
+        <!-- Filters Information -->
+        <div class="filters-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Academic Year:</span>
+                    <span class="info-value"><%= filters.academicYear %></span>
+                </div>
+                <% if (filters.classLevel && filters.classLevel !== 'all') { %>
+                <div class="info-item">
+                    <span class="info-label">Class Level:</span>
+                    <span class="info-value"><%= filters.classLevel %></span>
+                </div>
+                <% } %>
+                <% if (filters.department && filters.department !== 'all') { %>
+                <div class="info-item">
+                    <span class="info-label">Department:</span>
+                    <span class="info-value"><%= filters.department %></span>
+                </div>
+                <% } %>
+                <% if (filters.subject && filters.subject !== 'all') { %>
+                <div class="info-item">
+                    <span class="info-label">Subject:</span>
+                    <span class="info-value"><%= filters.subject %></span>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Books Table -->
+        <table class="books-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Subject</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>ISBN</th>
+                    <th class="text-center">Required</th>
+                    <th class="text-right">Price (₦)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let totalCost = 0; %>
+                <% if (books.length > 0) { %>
+                    <% books.forEach((book, index) => { %>
+                    <% totalCost += book.price || 0; %>
+                    <tr class="<%= book.is_required ? 'required-book' : 'optional-book' %>">
+                        <td><%= index + 1 %></td>
+                        <td><%= book.subject %></td>
+                        <td><strong><%= book.title %></strong></td>
+                        <td><%= book.author || 'N/A' %></td>
+                        <td><%= book.publisher || 'N/A' %></td>
+                        <td><%= book.isbn || 'N/A' %></td>
+                        <td class="text-center">
+                            <span class="required-badge <%= book.is_required ? 'required' : 'optional' %>">
+                                <%= book.is_required ? 'REQUIRED' : 'OPTIONAL' %>
+                            </span>
+                        </td>
+                        <td class="text-right currency">
+                            <% if (book.price) { %>
+                            ₦<%= book.price.toLocaleString('en-NG', {minimumFractionDigits: 2}) %>
+                            <% } else { %>
+                            N/A
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    
+                    <tr class="total-row">
+                        <td colspan="6"></td>
+                        <td class="text-right"><strong>Total Estimated Cost:</strong></td>
+                        <td class="text-right currency">
+                            <strong>₦<%= totalCost.toLocaleString('en-NG', {minimumFractionDigits: 2}) %></strong>
+                        </td>
+                    </tr>
+                <% } else { %>
+                    <tr>
+                        <td colspan="8" class="text-center">No books found for the selected criteria</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <!-- Additional Notes -->
+        <div class="notes">
+            <h4>Important Information:</h4>
+            <ul>
+                <li>All <span class="required-badge required">REQUIRED</span> books must be purchased before the start of the term</li>
+                <li><span class="required-badge optional">OPTIONAL</span> books are recommended but not mandatory</li>
+                <li>Books can be purchased from the school bookstore or authorized vendors</li>
+                <li>Second-hand books in good condition are acceptable</li>
+                <li>For financial assistance, please contact the Bursary office</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div style="margin-bottom: 15px;">
+                <strong>Generated on:</strong> <%= moment().format('MMMM D, YYYY [at] h:mm A') %>
+            </div>
+            <div>
+                For questions or concerns about the book list, please contact:<br>
+                <strong>School Librarian:</strong> <%= school.email || 'library@excelcollege.edu.ng' %> | 
+                <strong>Phone:</strong> <%= school.phone || '+234 812 345 6789' %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-print option (can be triggered with URL parameter ?print=true)
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('print') === 'true') {
+                window.print();
+            }
+            
+            // Add page break for printing
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @media print {
+                    .print-container {
+                        page-break-before: always;
+                        page-break-after: always;
+                    }
+                    .books-table {
+                        page-break-inside: avoid;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

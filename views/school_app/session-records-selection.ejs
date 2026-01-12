@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Records - School Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #4e54c8;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 0;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
+        }
+        
+        .page-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .page-subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: white;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-select {
+            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5809b5 0%, #1c64e0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .option-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .option-icon {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .info-box {
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .info-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-text {
+            color: #64748b;
+            margin-bottom: 0;
+        }
+        
+        .selection-card {
+            transition: all 0.3s ease;
+        }
+        
+        .selection-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .department-badge {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #6366f1 100%);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                padding: 1rem;
+            }
+        }
+        
+        .form-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="page-header text-center">
+                    <h1 class="page-title"><i class="fas fa-chart-line me-2"></i>Session Records</h1>
+                    <p class="page-subtitle">Select criteria to view session records</p>
+                </div>
+
+                <% if (error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong><i class="fas fa-exclamation-circle me-2"></i>Error:</strong> <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+
+                <!-- Selection Card -->
+                <div class="card selection-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Selection Criteria</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/session-records" method="GET">
+                            <div class="row">
+                                <div class="col-md-6 option-group">
+                                    <div class="option-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <label for="classId" class="form-label">Class</label>
+                                    <select class="form-select" name="classId" required id="class-select">
+                                        <option value="">Select a class</option>
+                                        <% classes.forEach(cls => { %>
+                                            <% if (cls.level === 'SENIOR SECONDARY' && cls.department) { %>
+                                                <option value="<%= cls.id %>" 
+                                                    <%= (typeof formData !== 'undefined' && formData.classId == cls.id) ? 'selected' : '' %>
+                                                    data-department="<%= cls.department %>">
+                                                    <%= cls.className %> (<%= cls.department %>)
+                                                </option>
+                                            <% } else { %>
+                                                <option value="<%= cls.id %>" 
+                                                    <%= (typeof formData !== 'undefined' && formData.classId == cls.id) ? 'selected' : '' %>>
+                                                    <%= cls.className %>
+                                                </option>
+                                            <% } %>
+                                        <% }); %>
+                                    </select>
+                                    <div class="form-text">Select student class</div>
+                                </div>
+                                
+                                <div class="col-md-6 option-group">
+                                    <div class="option-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <label for="academicYear" class="form-label">Academic Year</label>
+                                    <select class="form-select" id="academicYear" name="academicYear" required>
+                                        <option value="">Select Year</option>
+                                        <% academicYears.forEach(year => { %>
+                                            <option value="<%= year.year_name %>"
+                                                <%= (typeof formData !== 'undefined' && formData.academicYear == year.year_name) ? 'selected' : '' %>>
+                                                <%= year.year_name %>
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                    <div class="form-text">Select academic year</div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i> View Session Records
+                            </button>
+                        </form>
+                        
+                        <!-- Information Box -->
+                        <div class="info-box">
+                            <h6 class="info-title"><i class="fas fa-info-circle me-2"></i>Information</h6>
+                            <p class="info-text">
+                                Select a class and academic year to view session records. Session records show the performance
+                                of students across all three terms (First, Second, and Third) for the selected academic year.
+                                For Senior Secondary classes, the department is displayed in parentheses.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Add animation to form elements
+            $('.form-select').focus(function() {
+                $(this).parent().css('transform', 'translateY(-5px)');
+                $(this).parent().css('transition', 'all 0.3s ease');
+            });
+            
+            $('.form-select').blur(function() {
+                $(this).parent().css('transform', 'translateY(0)');
+            });
+            
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

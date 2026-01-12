@@ -1,0 +1,1156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Broadsheet - <%= selectedClass.name %> - <%= term === 'session' ? 'Session' : term.charAt(0).toUpperCase() + term.slice(1) + ' Term' %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A fully featured school management system" name="description" />
+    <meta content="ThemeSelection" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+    <!-- Bootstrap Css -->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        .session-table th {
+            background: linear-gradient(135deg, #3b5de7 0%, #4e54c8 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        .subject-header {
+            background-color: #e5e7eb;
+            font-weight: 600;
+        }
+        
+        .grade-A { background-color: #dcfce7; color: #166534; }
+        .grade-B { background-color: #dbeafe; color: #1e40af; }
+        .grade-C { background-color: #fef3c7; color: #92400e; }
+        .grade-D { background-color: #fee2e2; color: #991b1b; }
+        .grade-E { background-color: #f3f4f6; color: #374151; }
+        .grade-F { background-color: #fef2f2; color: #991b1b; }
+        
+        .promotion-status {
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-promote {
+            background: linear-gradient(135deg, #10b981 0%, #22c55e 100%);
+            border: none;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .btn-repeat {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            border: none;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .session-table {
+                font-size: 10px;
+            }
+            .action-column {
+                display: none !important;
+            }
+            .card {
+                border: 1px solid #dee2e6 !important;
+                box-shadow: none !important;
+            }
+        }
+        
+        .summary-row {
+            background-color: #f8f9fa;
+            font-weight: 700;
+        }
+        
+        .performance-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .table-responsive {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .fixed-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <div class="leftside-menu">
+            <!-- LOGO -->
+            <a href="/" class="logo text-center logo-light">
+                <span class="logo-lg">
+                    <h3 alt="" height="16"> edu admin</h3>
+                </span>
+                <span class="logo-sm">
+                    <h3 alt="" height="16"> edu admin</h3>
+                </span>
+            </a>
+
+            <!-- LOGO -->
+            <a href="/" class="logo text-center logo-dark">
+                <span class="logo-lg">
+                    <h3 alt="" height="16"> edu admin</h3>
+                </span>
+                <span class="logo-sm">
+                    <h3 alt="" height="16"> edu admin</h3>
+                </span>
+            </a>
+
+            <div class="h-100" id="leftside-menu-container" data-simplebar="">
+                <!--- Sidemenu -->
+                <ul class="side-nav">
+                    <li class="side-nav-title side-nav-item">Navigation</li>
+                    <li class="side-nav-item">
+                        <a href="/" class="side-nav-link">
+                            <i class="uil-home-alt"></i>
+                            <span> Dashboards </span>
+                        </a>
+                    </li>
+                    <li class="side-nav-title side-nav-item">Apps</li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false" aria-controls="sidebarMultiLevel" class="side-nav-link">
+                            <i class="uil-folder-plus"></i>
+                            <span> Records </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarMultiLevel">
+                            <ul class="side-nav-second-level">
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel">
+                                        <span> Academic Year </span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="sidebarSecondLevel">
+                                        <ul class="side-nav-third-level">
+                                            <li><a href="/academic-years">Academic Year</a></li>
+                                            <li><a href="/add-academic-year">Add Academic Year</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#attendance" aria-expanded="false" aria-controls="attendance">
+                                        <span> Attendance</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="attendance">
+                                        <ul class="side-nav-third-level">
+                                            <li><a href="/attendance">Attendance</a></li>
+                                            <li><a href="/attendance-reports">Attendance Reports</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#salary-management" aria-expanded="false" aria-controls="salary-management">
+                                        <span>Salary Management</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="salary-management">
+                                        <ul class="side-nav-third-level">
+                                            <li><a href="/salary-management">Salary Management</a></li>
+                                            <li><a href="/salary-structures">Salary Structures</a></li>
+                                            <li><a href="/process-salaries">Process Salaries</a></li>
+                                            <li><a href="/salary-payments">Payment History</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#financial-reports" aria-expanded="false" aria-controls="financial-reports">
+                                        <span>Financial Reports</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="financial-reports">
+                                        <ul class="side-nav-third-level">
+                                            <li><a href="/expenses">Expenses</a></li>
+                                            <li><a href="/financial-reports">Financial Reports</a></li>
+                                            <li><a href="/add-expense">Add Expense</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="side-nav-item">
+                                    <a data-bs-toggle="collapse" href="#sidebarThirdLevel" aria-expanded="false" aria-controls="sidebarThirdLevel">
+                                        <span> Results</span>
+                                        <span class="menu-arrow"></span>
+                                    </a>
+                                    <div class="collapse" id="sidebarThirdLevel">
+                                        <ul class="side-nav-third-level">
+            <li>
+                <a href="/student-records">Student Records</a>
+            </li>
+            <li>
+                <a href="/enter-scores">Enter Scores</a>
+            </li>
+            
+            <li>
+                <a href="/broadsheet">Broadsheet</a>
+            </li>
+            
+            <li>
+                <a href="/term-reports">Term Report</a>
+            </li>
+        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarLayouts" aria-expanded="false" aria-controls="sidebarLayouts" class="side-nav-link">
+                            <i class="uil-calender text-muted"></i>
+                            <span> Calendar </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarLayouts">
+                            <ul class="side-nav-second-level">
+                                <li><a href="/school-calendar">All Events</a></li>
+                                <li><a href="/add-event">Add Event</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                            <i class="mdi mdi-teach text-muted"></i>
+                            <span> Teachers </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarEcommerce">
+                            <ul class="side-nav-second-level">
+                                <li><a href="/all-teachers">All Teachers</a></li>
+                                <li><a href="/add-teacher">Add Teacher</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarEmail" aria-expanded="false" aria-controls="sidebarEmail" class="side-nav-link">
+                            <i class="bi bi-person-fill text-muted"></i>
+                            <span> Students </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarEmail">
+                            <ul class="side-nav-second-level">
+                                <li><a href="/all-students">All Students</a></li>
+                                <li><a href="/add-student">Add Students</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarIcons" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                            <i class="bi bi-person text-muted"></i>
+                            <span> Staff </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarIcons">
+                            <ul class="side-nav-second-level">
+                                <li><a href="/all-staff">All Staff</a></li>
+                                <li><a href="/add-staff">Add Staff</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false" aria-controls="sidebarProjects" class="side-nav-link">
+                            <i class="bi-arrow-down"></i>
+                            <span> Classes </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarProjects">
+                            <ul class="side-nav-second-level">
+                                <li><a href="/all-classes">All Classes</a></li>
+                                <li><a href="/add-class">Add Class</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarSubjects" aria-expanded="false" aria-controls="sidebarSubjects" class="side-nav-link">
+                            <i class="bi bi-book"></i>
+                            <span> Subjects </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarSubjects">
+                            <ul class="side-nav-second-level">
+                                <li><a href="/register-subjects">Add Subject</a></li>
+                                <li><a href="/view-subjects">Subjects</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarTasks" aria-expanded="false" aria-controls="sidebarTasks" class="side-nav-link">
+                            <i class="bi-book"></i>
+                            <span> Library </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarTasks">
+                            <ul class="side-nav-second-level">
+                                <li><a href="/all-library">All Library</a></li>
+                                <li><a href="/add-library">Add Library</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="side-nav-item">
+                        <a href="apps-file-manager.html" class="side-nav-link">
+                            <i class="uil-folder-plus"></i>
+                            <span> File Manager </span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
+                        <a data-bs-toggle="collapse" href="#sidebarTables" aria-expanded="false" aria-controls="sidebarTables" class="side-nav-link">
+                            <i class="bi-cash"></i>
+                            <span> Fees </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarTables">
+                            <ul class="side-nav-second-level">
+                                <li><a href="/fees-collection">Fees Collection</a></li>
+                                <li><a href="/add-fees">Add Fees</a></li>
+                                <li><a href="/class-bills">Class Bills</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <!-- End Sidebar -->
+                <div class="clearfix"></div>
+            </div>
+            <!-- Sidebar -left -->
+        </div>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar Start -->
+                <div class="navbar-custom">
+                    <ul class="list-unstyled topbar-menu float-end mb-0">
+                        <li class="dropdown notification-list d-lg-none">
+                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <i class="dripicons-search noti-icon"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                                <form class="p-3">
+                                    <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                                </form>
+                            </div>
+                        </li>
+                        <li class="dropdown notification-list topbar-dropdown">
+                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <img src="assets/images/flags/us.jpg" alt="user-image" class="me-0 me-sm-1" height="12"> 
+                                <span class="align-middle d-none d-sm-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <img src="assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
+                                </a>
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <img src="assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
+                                </a>
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <img src="assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
+                                </a>
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <img src="assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="dropdown notification-list">
+                            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <i class="dripicons-bell noti-icon"></i>
+                                <span class="noti-icon-badge"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+                                <div class="dropdown-item noti-title">
+                                    <h5 class="m-0">
+                                        <span class="float-end">
+                                            <a href="javascript: void(0);" class="text-dark">
+                                                <small>Clear All</small>
+                                            </a>
+                                        </span>Notification
+                                    </h5>
+                                </div>
+                                <div style="max-height: 230px;" data-simplebar="">
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <p class="notify-details">See all notifications</p>
+                                    </a>
+                                </div>
+                                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                    View All
+                                </a>
+                            </div>
+                        </li>
+                        <li class="notification-list">
+                            <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                <i class="dripicons-gear noti-icon"></i>
+                            </a>
+                        </li>
+                        <li class="dropdown notification-list">
+                            <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <span class="account-user-avatar"> 
+                                    <img src="assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                                </span>
+                                <span>
+                                    <span class="account-user-name">
+                                        <% if (typeof username !== 'undefined') { %>
+                                            <p class="text-muted"><%= username %></p>
+                                        <% } %>
+                                        <% if (typeof error !== 'undefined') { %>
+                                            <%= error %>
+                                        <% } %>
+                                    </span>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                <div class=" dropdown-header noti-title">
+                                    <h6 class="text-overflow m-0">Welcome !</h6>
+                                </div>
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="mdi mdi-account-circle me-1"></i>
+                                    <span>My Account</span>
+                                </a>
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="mdi mdi-account-edit me-1"></i>
+                                    <span>Settings</span>
+                                </a>
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="mdi mdi-lifebuoy me-1"></i>
+                                    <span>Support</span>
+                                </a>
+                                <a href="/lock-screen" class="dropdown-item notify-item">
+                                    <i class="mdi mdi-lock-outline me-1"></i>
+                                    <span>Lock Screen</span>
+                                </a>
+                                <a href="/login" class="dropdown-item notify-item">
+                                    <i class="mdi mdi-logout me-1"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    <button class="button-menu-mobile open-left">
+                        <i class="mdi mdi-menu"></i>
+                    </button>
+                    <div class="app-search dropdown d-none d-lg-block">
+                        <form>
+                            <div class="input-group">
+                                <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                <span class="mdi mdi-magnify search-icon"></span>
+                                <button class="input-group-text btn-primary" type="submit">Search</button>
+                            </div>
+                        </form>
+                        <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
+                            <div class="dropdown-header noti-title">
+                                <h5 class="text-overflow mb-2">Found <span class="text-danger">17</span> results</h5>
+                            </div>
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="uil-notes font-16 me-1"></i>
+                                <span>Analytics Report</span>
+                            </a>
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="uil-life-ring font-16 me-1"></i>
+                                <span>How can I help you?</span>
+                            </a>
+                            <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                <i class="uil-cog font-16 me-1"></i>
+                                <span>User profile settings</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- end Topbar -->
+
+                <!-- Start Content-->                
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Results</a></li>
+                                        <li class="breadcrumb-item"><a href="/broadsheet">Broadsheet</a></li>
+                                        <li class="breadcrumb-item active">
+                                            <%= selectedClass.name %>
+                                            <% if (selectedClass.department) { %> - <%= selectedClass.department %><% } %>
+                                            (<%= term === 'session' ? 'Session' : term.charAt(0).toUpperCase() + term.slice(1) + ' Term' %>)
+                                        </li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">
+                                    <i class="bi bi-file-earmark-text me-2"></i>
+                                    <%= selectedClass.name %>
+                                    <% if (selectedClass.department) { %> - <%= selectedClass.department %><% } %>
+                                    | <%= term === 'session' ? 'Session Broadsheet' : term.charAt(0).toUpperCase() + term.slice(1) + ' Term Broadsheet' %>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>     
+                    <!-- end page title -->
+
+                    <!-- Page Header -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="card-title mb-1">
+                                                <%= selectedClass.name %>
+                                                <% if (selectedClass.department) { %> - <%= selectedClass.department %><% } %>
+                                            </h5>
+                                            <p class="text-muted mb-0">
+                                                Academic Year: <strong><%= academicYear %></strong>
+                                                <% if (selectedClass.level) { %> | Level: <strong><%= selectedClass.level %></strong><% } %>
+                                                | Generated on: <strong><%= new Date().toLocaleDateString() %></strong>
+                                            </p>
+                                        </div>
+                                        <div class="no-print">
+                                            <a href="/broadsheet" class="btn btn-outline-secondary">
+                                                <i class="bi bi-arrow-left me-1"></i> Back
+                                            </a>
+                                            <button class="btn btn-success ms-2" onclick="window.print()">
+                                                <i class="bi bi-printer me-1"></i> Print
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <% if (term === 'session') { %>
+                        <!-- Session Broadsheet -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover session-table mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th rowspan="2" class="text-center align-middle fixed-header">Pos</th>
+                                                        <th rowspan="2" class="text-left align-middle fixed-header">Student Name</th>
+                                                        
+                                                        <% if (subjects && subjects.length > 0) { %>
+                                                            <% subjects.forEach(function(subject) { %>
+                                                                <th colspan="4" class="text-center subject-header fixed-header">
+                                                                    <%= subject.name %>
+                                                                </th>
+                                                            <% }); %>
+                                                        <% } %>
+                                                        
+                                                        <th rowspan="2" class="text-center align-middle fixed-header">Total</th>
+                                                        <th rowspan="2" class="text-center align-middle fixed-header">Avg</th>
+                                                        <th rowspan="2" class="text-center align-middle fixed-header">%</th>
+                                                        <th rowspan="2" class="text-center align-middle fixed-header">Grade</th>
+                                                        <th rowspan="2" class="text-center align-middle fixed-header">Status</th>
+                                                        <th rowspan="2" class="text-center align-middle fixed-header action-column no-print">Action</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <% if (subjects && subjects.length > 0) { %>
+                                                            <% subjects.forEach(function() { %>
+                                                                <th class="text-center fixed-header">1st</th>
+                                                                <th class="text-center fixed-header">2nd</th>
+                                                                <th class="text-center fixed-header">3rd</th>
+                                                                <th class="text-center fixed-header">Avg</th>
+                                                            <% }); %>
+                                                        <% } %>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% if (results && results.length > 0) { %>
+                                                        <% results.forEach(function(student) { %>
+                                                            <tr>
+                                                                <td class="text-center fw-bold"><%= student.position %></td>
+                                                                <td class="fw-bold">
+                                                                    <%= student.firstName %> <%= student.middleName || '' %> <%= student.lastName %>
+                                                                    <% if (student.department) { %>
+                                                                        <span class="badge bg-secondary ms-1"><%= student.department %></span>
+                                                                    <% } %>
+                                                                </td>
+                                                                
+                                                                <% let subjectTotal = 0; %>
+                                                                <% if (student.subjectAverages && student.subjectAverages.length > 0) { %>
+                                                                    <% student.subjectAverages.forEach(function(subject) { %>
+                                                                        <td class="text-center"><%= subject.firstTerm %></td>
+                                                                        <td class="text-center"><%= subject.secondTerm %></td>
+                                                                        <td class="text-center"><%= subject.thirdTerm %></td>
+                                                                        <td class="text-center fw-bold"><%= subject.average %></td>
+                                                                        <% subjectTotal += parseFloat(subject.average); %>
+                                                                    <% }); %>
+                                                                <% } else { %>
+                                                                    <% for (let i = 0; i < (subjects ? subjects.length : 0); i++) { %>
+                                                                        <td class="text-center">-</td>
+                                                                        <td class="text-center">-</td>
+                                                                        <td class="text-center">-</td>
+                                                                        <td class="text-center">-</td>
+                                                                    <% } %>
+                                                                <% } %>
+                                                                
+                                                                <td class="text-center fw-bold"><%= student.total.toFixed(2) %></td>
+                                                                <td class="text-center fw-bold"><%= student.overallAverage %></td>
+                                                                <td class="text-center fw-bold"><%= student.percentage %>%</td>
+                                                                <td class="text-center fw-bold grade-<%= student.grade %>"><%= student.grade %></td>
+                                                                
+                                                                <!-- Promotion Status -->
+                                                                <td class="text-center">
+                                                                    <span class="promotion-status bg-<%= student.promotionClass %>">
+                                                                        <%= student.promotionStatus %>
+                                                                    </span>
+                                                                </td>
+                                                                
+                                                                <!-- Action Buttons -->
+                                                                <td class="text-center action-column no-print">
+                                                                    <div class="action-buttons">
+                                                                        <% if (student.promotionStatus === 'Promote') { %>
+                                                                            <button class="btn btn-promote promote-btn" 
+                                                                                data-student-id="<%= student.id %>"
+                                                                                data-student-name="<%= student.firstName %> <%= student.middleName %> <%= student.lastName %>"
+                                                                                data-academic-year="<%= academicYear %>">
+                                                                                <i class="bi bi-mortarboard me-1"></i>Promote
+                                                                            </button>
+                                                                        <% } else { %>
+                                                                            <button class="btn btn-repeat repeat-btn" 
+                                                                                    data-student-id="<%= student.id %>"
+                                                                                    data-student-name="<%= student.firstName %> <%= student.middleName %> <%= student.lastName %>"
+                                                                                    data-academic-year="<%= academicYear %>">
+                                                                                <i class="bi bi-arrow-clockwise me-1"></i>Repeat
+                                                                            </button>
+                                                                        <% } %>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        <% }); %>
+                                                        
+                                                        <!-- Summary Row -->
+                                                        <tr class="summary-row">
+                                                            <td colspan="<%= (subjects ? subjects.length * 4 : 0) + 5 %>" class="text-end fw-bold">Class Average:</td>
+                                                            <td class="text-center fw-bold">
+                                                                <% 
+                                                                    const classAvg = results.reduce((sum, student) => sum + parseFloat(student.overallAverage), 0) / results.length;
+                                                                %>
+                                                                <%= classAvg.toFixed(2) %>
+                                                            </td>
+                                                            <td class="text-center fw-bold">
+                                                                <%= ((classAvg / 100) * 100).toFixed(2) %>%
+                                                            </td>
+                                                            <td colspan="3" class="text-center fw-bold">
+                                                                <% 
+                                                                    let classGrade = 'F';
+                                                                    if (classAvg >= 80) classGrade = 'A';
+                                                                    else if (classAvg >= 70) classGrade = 'B';
+                                                                    else if (classAvg >= 60) classGrade = 'C';
+                                                                    else if (classAvg >= 50) classGrade = 'D';
+                                                                    else if (classAvg >= 40) classGrade = 'E';
+                                                                %>
+                                                                <span class="grade-<%= classGrade %>"><%= classGrade %></span>
+                                                            </td>
+                                                        </tr>
+                                                        
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="<%= (subjects ? subjects.length * 4 : 0) + 8 %>" class="text-center text-muted py-4">
+                                                                No student data available
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Promotion Summary -->
+                        <div class="row mt-4 no-print">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">
+                                            <i class="bi bi-pie-chart me-2"></i>Promotion Summary
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                <div class="bg-success rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-2">
+                                                    <i class="bi bi-mortarboard text-white" style="font-size: 1.5rem;"></i>
+                                                </div>
+                                                <h4 class="text-success">
+                                                    <% 
+                                                        const promoteCount = results ? results.filter(s => s.promotionStatus === 'Promote').length : 0;
+                                                    %>
+                                                    <%= promoteCount %>
+                                                </h4>
+                                                <p class="text-muted">Students to Promote</p>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <div class="bg-warning rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-2">
+                                                    <i class="bi bi-arrow-clockwise text-white" style="font-size: 1.5rem;"></i>
+                                                </div>
+                                                <h4 class="text-warning">
+                                                    <% 
+                                                        const repeatCount = results ? results.filter(s => s.promotionStatus === 'Repeat').length : 0;
+                                                    %>
+                                                    <%= repeatCount %>
+                                                </h4>
+                                                <p class="text-muted">Students to Repeat</p>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <div class="bg-primary rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-2">
+                                                    <i class="bi bi-people text-white" style="font-size: 1.5rem;"></i>
+                                                </div>
+                                                <h4 class="text-primary">
+                                                    <%= results ? results.length : 0 %>
+                                                </h4>
+                                                <p class="text-muted">Total Students</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    <% } else { %>
+                        <!-- Term Broadsheet -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Position</th>
+                                                        <th>Student Name</th>
+                                                        <th>Roll No</th>
+                                                        <th>Subjects</th>
+                                                        <th>Total Score</th>
+                                                        <th>Average Score</th>
+                                                        <th>Percentage</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% if (results && results.length > 0) { %>
+                                                        <% results.forEach(student => { %>
+                                                            <tr>
+                                                                <td class="text-center fw-bold"><%= student.position %></td>
+                                                                <td class="fw-bold">
+                                                                    <%= student.first_name %> <%= student.last_name %>
+                                                                </td>
+                                                                <td class="text-center"><%= student.rollNo || 'N/A' %></td>
+                                                                <td class="text-center"><%= student.subject_count || 0 %></td>
+                                                                <td class="text-center fw-bold"><%= student.total_score || 0 %></td>
+                                                                <td class="text-center fw-bold"><%= student.average_score %></td>
+                                                                <td class="text-center fw-bold"><%= student.percentage %>%</td>
+                                                            </tr>
+                                                        <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="7" class="text-center text-muted py-4">
+                                                                No student data available
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Grading Key -->
+                    <div class="row mt-4 no-print">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-info-circle me-2"></i>Grading & Promotion System
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge grade-A p-2">A</span> 80% and above
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge grade-B p-2">B</span> 70% - 79%
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge grade-C p-2">C</span> 60% - 69%
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge grade-D p-2">D</span> 50% - 59%
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge grade-E p-2">E</span> 40% - 49%
+                                        </div>
+                                        <div class="col-md-3 mb-2">
+                                            <span class="badge grade-F p-2">F</span> Below 40%
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <span class="badge bg-success p-2">Promote</span> 45% and above
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <span class="badge bg-warning p-2">Repeat</span> Below 45%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- container -->
+            </div> <!-- content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+    </div>
+    <!-- END wrapper -->
+
+    <!-- Right Sidebar -->
+    <div class="end-bar">
+        <div class="rightbar-title">
+            <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                <i class="dripicons-cross noti-icon"></i>
+            </a>
+            <h5 class="m-0">Settings</h5>
+        </div>
+        <div class="rightbar-content h-100" data-simplebar="">
+            <div class="p-3">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                </div>
+                <!-- Settings content -->
+                <h5 class="mt-3">Color Scheme</h5>
+                <hr class="mt-1">
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                    <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                    <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                </div>
+                <!-- Width -->
+                <h5 class="mt-4">Width</h5>
+                <hr class="mt-1">
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                    <label class="form-check-label" for="fluid-check">Fluid</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                    <label class="form-check-label" for="boxed-check">Boxed</label>
+                </div>
+                <!-- Left Sidebar-->
+                <h5 class="mt-4">Left Sidebar</h5>
+                <hr class="mt-1">
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                    <label class="form-check-label" for="default-check">Default</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                    <label class="form-check-label" for="light-check">Light</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                    <label class="form-check-label" for="dark-check">Dark</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked="">
+                    <label class="form-check-label" for="fixed-check">Fixed</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                    <label class="form-check-label" for="condensed-check">Condensed</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+                    <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                    <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm" class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rightbar-overlay"></div>
+    <!-- /End-bar -->
+
+    <!-- Promotion Modal -->
+    <div class="modal fade" id="promotionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="promotionModalTitle">Promote Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="promotionModalBody">
+                        <!-- Content will be loaded dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmPromotion">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- bundle -->
+    <script src="assets/js/vendor.min.js"></script>
+    <script src="assets/js/app.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            const promotionModal = new bootstrap.Modal(document.getElementById('promotionModal'));
+            let currentStudentId = null;
+            let currentAcademicYear = null;
+            
+            // Promote student
+            $(document).on('click', '.promote-btn', function() {
+                const studentId = $(this).data('student-id');
+                const studentName = $(this).data('student-name');
+                const academicYear = $(this).data('academic-year');
+                
+                currentStudentId = studentId;
+                currentAcademicYear = academicYear;
+                
+                // Load ALL classes from database
+                loadAllClasses(function(allClasses) {
+                    $('#promotionModalTitle').html(`Promote ${studentName}`);
+                    
+                    if (allClasses.length === 0) {
+                        $('#promotionModalBody').html(`
+                            <div class="text-center">
+                                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                                <p class="mt-3">No classes found in the database!</p>
+                                <p class="text-muted">Please add classes before promoting students.</p>
+                            </div>
+                        `);
+                        $('#confirmPromotion').hide();
+                    } else {
+                        $('#promotionModalBody').html(`
+                            <div class="text-center">
+                                <i class="bi bi-mortarboard text-success" style="font-size: 3rem;"></i>
+                                <p class="mt-3">Promote <strong>${studentName}</strong> to:</p>
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Select destination class:</label>
+                                    <select class="form-select" id="nextClassSelect">
+                                        <option value="">-- Select a class --</option>
+                                        ${allClasses.map(cls => 
+                                            `<option value="${cls.id}">${cls.className} (${cls.level}${cls.department ? ' - ' + cls.department : ''})</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                                <p class="text-muted">This action will move the student to the selected class.</p>
+                            </div>
+                        `);
+                        $('#confirmPromotion').show();
+                    }
+                    
+                    promotionModal.show();
+                });
+            });
+            
+            // Repeat student
+            $(document).on('click', '.repeat-btn', function() {
+                const studentId = $(this).data('student-id');
+                const studentName = $(this).data('student-name');
+                const academicYear = $(this).data('academic-year');
+                
+                currentStudentId = studentId;
+                currentAcademicYear = academicYear;
+                
+                $('#promotionModalTitle').html(`Repeat Student`);
+                $('#promotionModalBody').html(`
+                    <div class="text-center">
+                        <i class="bi bi-arrow-clockwise text-warning" style="font-size: 3rem;"></i>
+                        <p class="mt-3">Are you sure you want <strong>${studentName}</strong> to repeat this class?</p>
+                        <p class="text-muted">The student will remain in the current class for the next academic year.</p>
+                    </div>
+                `);
+                
+                $('#confirmPromotion').off('click').on('click', function() {
+                    $.post(`/repeat-student/${currentStudentId}`, {
+                        academicYear: currentAcademicYear
+                    }, function(response) {
+                        if (response.success) {
+                            showNotification(`Student marked to repeat`, 'success');
+                            promotionModal.hide();
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            showNotification(response.error, 'error');
+                        }
+                    }).fail(function() {
+                        showNotification('Error marking student to repeat', 'error');
+                    });
+                });
+                
+                promotionModal.show();
+            });
+            
+            // Confirm promotion with class selection
+            $('#confirmPromotion').on('click', function() {
+                const nextClassId = $('#nextClassSelect').val();
+                
+                if (!nextClassId) {
+                    showNotification('Please select a class to promote this student to', 'error');
+                    return;
+                }
+                
+                // Get the selected class name for the confirmation message
+                const selectedClassName = $('#nextClassSelect option:selected').text();
+                
+                // Confirm before promoting
+                if (confirm(`Are you sure you want to promote this student to ${selectedClassName}?`)) {
+                    $.post(`/promote-student/${currentStudentId}`, {
+                        academicYear: currentAcademicYear,
+                        nextClassId: nextClassId
+                    }, function(response) {
+                        if (response.success) {
+                            showNotification(response.message, 'success');
+                            promotionModal.hide();
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            showNotification(response.error, 'error');
+                        }
+                    }).fail(function(error) {
+                        console.error('Promotion error:', error);
+                        showNotification('Error promoting student: ' + (error.responseJSON?.error || 'Unknown error'), 'error');
+                    });
+                }
+            });
+            
+            // Load ALL classes from database
+            function loadAllClasses(callback) {
+                $.get(`/api/all-classes`, function(response) {
+                    if (response.success) {
+                        callback(response.classes || []);
+                    } else {
+                        showNotification('Error loading classes: ' + response.error, 'error');
+                        callback([]);
+                    }
+                }).fail(function() {
+                    showNotification('Failed to load classes', 'error');
+                    callback([]);
+                });
+            }
+            
+            function showNotification(message, type = 'info') {
+                // Remove any existing notifications
+                $('.alert-notification').remove();
+                
+                const alertClass = type === 'error' ? 'alert-danger' : 
+                                  type === 'warning' ? 'alert-warning' : 
+                                  type === 'success' ? 'alert-success' : 'alert-info';
+                
+                const iconClass = type === 'success' ? 'bi-check-circle' : 
+                                 type === 'error' ? 'bi-exclamation-circle' : 
+                                 type === 'warning' ? 'bi-exclamation-triangle' : 'bi-info-circle';
+                
+                const notification = $(`
+                    <div class="alert ${alertClass} alert-notification alert-dismissible fade show" role="alert" 
+                         style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                        <i class="bi ${iconClass} me-2"></i>
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+                
+                $('body').append(notification);
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    notification.alert('close');
+                }, 5000);
+            }
+            
+            // Close modal when clicking outside
+            $('#promotionModal').on('click', function(e) {
+                if (e.target === this) {
+                    promotionModal.hide();
+                }
+            });
+            
+            // Reset modal when hidden
+            $('#promotionModal').on('hidden.bs.modal', function() {
+                currentStudentId = null;
+                currentAcademicYear = null;
+                $('#nextClassSelect').val('');
+            });
+        });
+    </script>
+</body>
+</html>

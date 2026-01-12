@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mark Attendance - edu admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .attendance-badge { font-size: 0.85rem; padding: 0.35em 0.65em; }
+        .day-selector .nav-link { padding: 0.5rem 1rem; }
+        .day-selector .nav-link.active { background-color: #0d6efd; color: white; }
+        .session-selector .btn { min-width: 100px; }
+        .student-attendance-row { transition: background-color 0.2s; }
+        .student-attendance-row:hover { background-color: #f8f9fa; }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="leftside-menu">
+                <!-- LOGO -->
+                <a href="/teacher-dashboard" class="logo text-center logo-light">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+
+                <div class="h-100" id="leftside-menu-container" data-simplebar="">
+                    <ul class="side-nav">
+                        <li class="side-nav-title side-nav-item">Navigation</li>
+
+                        <li class="side-nav-item">
+                            <a href="/teacher-dashboard" class="side-nav-link">
+                                <i class="uil-home-alt"></i>
+                                <span> Dashboard </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="/enter-scores" class="side-nav-link">
+                                <i class="bi bi-pencil"></i>
+                                <span> Enter Scores </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="/mark-attendance" class="side-nav-link">
+                                <i class="uil-clipboard-notes"></i>
+                                <span>Mark Attendance </span>
+                            </a>
+                        </li>
+
+                        
+
+                        
+
+                        <li class="side-nav-item">
+                            <a href="/school-calendar" class="side-nav-link">
+                                <i class="uil-calender"></i>
+                                <span> Calendar </span>
+                            </a>
+                        </li>
+
+                        
+                    </ul>
+                </div>
+            </div>
+            <!-- Left Sidebar End -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar Start -->
+                    <!-- Topbar Start -->
+                    <div class="navbar-custom">
+                        <ul class="list-unstyled topbar-menu float-end mb-0">
+                            <li class="dropdown notification-list d-lg-none">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-search noti-icon"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                                    <form class="p-3">
+                                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="dropdown notification-list topbar-dropdown">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <img src="/assets/images/flags/us.jpg" alt="user-image" class="me-0 me-sm-1" height="12"> 
+                                    <span class="align-middle d-none d-sm-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
+                                    </a>
+                
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
+                                    </a>
+
+                                </div>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-bell noti-icon"></i>
+                                    <span class="noti-icon-badge"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+
+                                    <!-- item-->
+                                    <div class="dropdown-item noti-title">
+                                        <h5 class="m-0">
+                                            <span class="float-end">
+                                                <a href="javascript: void(0);" class="text-dark">
+                                                    <small>Clear All</small>
+                                                </a>
+                                            </span>Notification
+                                        </h5>
+                                    </div>
+
+                                    <div style="max-height: 230px;" data-simplebar="">
+                                        <!-- item-->
+                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                            <!-- Notifications icon will be added here -->
+                                            <p class="notify-details">See all notifications
+                                                
+                                            </p>
+                                        </a>
+
+                                        
+                                    <!-- All-->
+                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                        View All
+                                    </a>
+
+                                </div>
+                            </li>
+
+                           
+
+                            <li class="notification-list">
+                                <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                    <i class="dripicons-gear noti-icon"></i>
+                                </a>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                                        <span class="account-user-avatar"> 
+                                        <img src="assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                                    </span>
+                                    <span>
+                                        <span class="account-user-name">  </span>
+                                        <span class="account-position">   </span>
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <!-- item-->
+                                    <div class=" dropdown-header noti-title">
+                                        <h6 class="text-overflow m-0">Welcome !</h6>
+                                    </div>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-circle me-1"></i>
+                                        <span>My Account</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-edit me-1"></i>
+                                        <span>Settings</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lifebuoy me-1"></i>
+                                        <span>Support</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="#" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lock-outline me-1"></i>
+                                        <span>Lock Screen</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/login" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-logout me-1"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+                        <button class="button-menu-mobile open-left">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                        <div class="app-search dropdown d-none d-lg-block">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                    <span class="mdi mdi-magnify search-icon"></span>
+                                    <button class="input-group-text btn-primary" type="submit">Search</button>
+                                </div>
+                            </form>
+
+                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
+                                <!-- item-->
+                                <div class="dropdown-header noti-title">
+                                    <h5 class="text-overflow mb-2">Found <span class="text-danger">17</span> results</h5>
+                                </div>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-notes font-16 me-1"></i>
+                                    <span>Analytics Report</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-life-ring font-16 me-1"></i>
+                                    <span>How can I help you?</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-cog font-16 me-1"></i>
+                                    <span>User profile settings</span>
+                                </a>
+
+                               
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Attendance</a></li>
+                                        <li class="breadcrumb-item active">Mark Attendance</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Mark Attendance</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <!-- Selection Form -->
+                                    <form id="attendanceSelection" class="row g-3 mb-4">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Academic Year</label>
+                                            <select class="form-select" name="academicYear" required>
+                                                <option value="">Select Academic Year</option>
+                                                <% academicYears.forEach(year => { %>
+                                                    <option value="<%= year.year_name %>" <%= selectedAcademicYear == year.year_name ? 'selected' : '' %>>
+                                                        <%= year.year_name %>
+                                                    </option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">Term</label>
+                                            <select class="form-select" name="term" required>
+                                                <option value="">Select Term</option>
+                                                <% terms.forEach(term => { %>
+                                                    <option value="<%= term.term_name %>" <%= selectedTerm == term.term_name ? 'selected' : '' %>>
+                                                        <%= term.term_name %>
+                                                    </option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">Week</label>
+                                            <select class="form-select" name="week" <%= !selectedAcademicYear || !selectedTerm ? 'disabled' : '' %>>
+                                                <option value="">Select Week</option>
+                                                <% weeks.forEach(weekNum => { %>
+                                                    <option value="<%= weekNum %>" <%= selectedWeek == weekNum ? 'selected' : '' %>>
+                                                        Week <%= weekNum %>
+                                                    </option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">Class</label>
+                                            <select class="form-select" name="classId" required>
+                                                <option value="">Select Class</option>
+                                                <% classes.forEach(cls => { %>
+                                                    <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>>
+                                                        <%= cls.className %> 
+                                                        <% if (cls.department) { %>(<%= cls.department %>)<% } %>
+                                                    </option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                <i class="uil uil-search me-1"></i> Load
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <!-- Day and Session Selector -->
+                                    <% if (selectedAcademicYear && selectedTerm && selectedWeek && selectedClassId) { %>
+                                    <div class="row mb-4">
+                                        <div class="col-md-8">
+                                            <label class="form-label">Select Day:</label>
+                                            <div class="nav nav-pills day-selector">
+                                                <% weekDays.forEach((day, index) => { %>
+                                                <a class="nav-link <%= selectedDay == (index + 1) ? 'active' : '' %>" 
+                                                   href="/mark-attendance?academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>&week=<%= selectedWeek %>&day=<%= index + 1 %>&classId=<%= selectedClassId %>&session=<%= selectedSession %>">
+                                                    <%= day.formatted %>
+                                                </a>
+                                                <% }); %>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <label class="form-label">Select Session:</label>
+                                            <div class="btn-group w-100 session-selector" role="group">
+                                                <a class="btn <%= selectedSession == 'morning' ? 'btn-primary' : 'btn-outline-primary' %>"
+                                                   href="/mark-attendance?academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>&week=<%= selectedWeek %>&day=<%= selectedDay %>&classId=<%= selectedClassId %>&session=morning">
+                                                    Morning
+                                                </a>
+                                                <a class="btn <%= selectedSession == 'afternoon' ? 'btn-primary' : 'btn-outline-primary' %>"
+                                                   href="/mark-attendance?academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>&week=<%= selectedWeek %>&day=<%= selectedDay %>&classId=<%= selectedClassId %>&session=afternoon">
+                                                    Afternoon
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+
+                                    <!-- Attendance Form -->
+                                    <% if (selectedDate && students.length > 0) { %>
+                                    <form id="attendanceForm">
+                                        <input type="hidden" name="classId" value="<%= selectedClassId %>">
+                                        <input type="hidden" name="date" value="<%= selectedDate %>">
+                                        <input type="hidden" name="academicYear" value="<%= selectedAcademicYear %>">
+                                        <input type="hidden" name="term" value="<%= selectedTerm %>">
+                                        <input type="hidden" name="session" value="<%= selectedSession %>">
+                                        
+                                        <div class="alert alert-info">
+                                            <strong>Marking attendance for:</strong><br>
+                                            Date: <%= moment(selectedDate).format('dddd, MMMM D, YYYY') %><br>
+                                            Session: <%= selectedSession.charAt(0).toUpperCase() + selectedSession.slice(1) %><br>
+                                            Academic Year: <%= selectedAcademicYear %>, Term: <%= selectedTerm %>, Week: <%= selectedWeek %>
+                                        </div>
+                                        
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Admission No</th>
+                                                        <th>Student Name</th>
+                                                        <th>Status</th>
+                                                        <th>Notes</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% students.forEach(student => { %>
+                                                    <tr class="student-attendance-row">
+                                                        <td><%= student.admissionNumber || 'N/A' %></td>
+                                                        <td>
+                                                            <%= student.firstName %> 
+                                                            <%= student.middleName || '' %> 
+                                                            <%= student.lastName %>
+                                                        </td>
+                                                        <td>
+                                                            <div class="btn-group btn-group-sm" role="group">
+                                                                <input type="radio" class="btn-check" name="attendance[<%= student.studentId %>][status]" 
+                                                                    id="present_<%= student.studentId %>" value="present" 
+                                                                    <%= selectedSession === 'morning' ? 
+                                                                        (student.morningStatus === 'present' ? 'checked' : '') : 
+                                                                        (student.afternoonStatus === 'present' ? 'checked' : '') %>>
+                                                                <label class="btn btn-outline-success" for="present_<%= student.studentId %>">
+                                                                    Present
+                                                                </label>
+
+                                                                <input type="radio" class="btn-check" name="attendance[<%= student.studentId %>][status]" 
+                                                                    id="absent_<%= student.studentId %>" value="absent" 
+                                                                    <%= selectedSession === 'morning' ? 
+                                                                        (student.morningStatus === 'absent' ? 'checked' : '') : 
+                                                                        (student.afternoonStatus === 'absent' ? 'checked' : '') %>>
+                                                                <label class="btn btn-outline-danger" for="absent_<%= student.studentId %>">
+                                                                    Absent
+                                                                </label>
+
+                                                                <input type="radio" class="btn-check" name="attendance[<%= student.studentId %>][status]" 
+                                                                    id="late_<%= student.studentId %>" value="late" 
+                                                                    <%= selectedSession === 'morning' ? 
+                                                                        (student.morningStatus === 'late' ? 'checked' : '') : 
+                                                                        (student.afternoonStatus === 'late' ? 'checked' : '') %>>
+                                                                <label class="btn btn-outline-warning" for="late_<%= student.studentId %>">
+                                                                    Late
+                                                                </label>
+
+                                                                <input type="radio" class="btn-check" name="attendance[<%= student.studentId %>][status]" 
+                                                                    id="excused_<%= student.studentId %>" value="excused" 
+                                                                    <%= selectedSession === 'morning' ? 
+                                                                        (student.morningStatus === 'excused' ? 'checked' : '') : 
+                                                                        (student.afternoonStatus === 'excused' ? 'checked' : '') %>>
+                                                                <label class="btn btn-outline-info" for="excused_<%= student.studentId %>">
+                                                                    Excused
+                                                                </label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control form-control-sm" 
+                                                                name="attendance[<%= student.studentId %>][notes]" 
+                                                                value="<%= student.notes || '' %>" 
+                                                                placeholder="Optional notes">
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div class="d-grid gap-2 mt-3">
+                                            <button type="submit" class="btn btn-success btn-lg">
+                                                <i class="uil uil-save me-2"></i> Save <%= selectedSession %> Attendance
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <% } %>
+
+                                    <% if (selectedAcademicYear && selectedTerm && selectedWeek && selectedClassId && (!selectedDate || students.length === 0)) { %>
+                                    <div class="text-center py-5">
+                                        <i class="uil uil-calendar-alt display-1 text-muted"></i>
+                                        <h5 class="mt-3 text-muted">Select a day to mark attendance</h5>
+                                        <p class="text-muted">Choose a day from the options above to mark attendance for the selected class</p>
+                                    </div>
+                                    <% } %>
+
+                                    <% if (!selectedAcademicYear || !selectedTerm || !selectedClassId) { %>
+                                    <div class="text-center py-5">
+                                        <i class="uil uil-setting display-1 text-muted"></i>
+                                        <h5 class="mt-3 text-muted">Select academic year, term, and class</h5>
+                                        <p class="text-muted">Choose the academic year, term, week, and class to begin marking attendance</p>
+                                    </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selection form submission
+            document.getElementById('attendanceSelection').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const params = new URLSearchParams();
+                
+                for (const [key, value] of formData.entries()) {
+                    if (value) {
+                        params.append(key, value);
+                    }
+                }
+                
+                window.location.href = '/mark-attendance?' + params.toString();
+            });
+
+            // Enable week dropdown when academic year and term are selected
+            const academicYearSelect = document.querySelector('select[name="academicYear"]');
+            const termSelect = document.querySelector('select[name="term"]');
+            const weekSelect = document.querySelector('select[name="week"]');
+            
+            function updateWeekDropdown() {
+                if (academicYearSelect.value && termSelect.value) {
+                    weekSelect.disabled = false;
+                    // Trigger form submission to load weeks
+                    document.getElementById('attendanceSelection').submit();
+                } else {
+                    weekSelect.disabled = true;
+                }
+            }
+            
+            academicYearSelect.addEventListener('change', updateWeekDropdown);
+            termSelect.addEventListener('change', updateWeekDropdown);
+
+            // Attendance form submission
+            const attendanceForm = document.getElementById('attendanceForm');
+            if (attendanceForm) {
+                attendanceForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    
+                    try {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Saving...';
+                        
+                        const formData = new FormData(this);
+                        const response = await fetch('/record-attendance', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            alert(result.message);
+                            // Refresh the page to show updated attendance
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + result.error);
+                        }
+                    } catch (error) {
+                        alert('Failed to save attendance. Please try again.');
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

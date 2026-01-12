@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Login | School Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style" />
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .login-hint {
+            background: #f8f9fa;
+            border-left: 4px solid #3b5de7;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+        .login-hint h6 {
+            margin-top: 0;
+            color: #3b5de7;
+            font-size: 14px;
+        }
+        .login-hint ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+        .login-hint li {
+            margin-bottom: 3px;
+        }
+        .role-indicator {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .student-indicator {
+            background: #28a745;
+            color: white;
+        }
+        .teacher-indicator {
+            background: #007bff;
+            color: white;
+        }
+        .admin-indicator {
+            background: #6f42c1;
+            color: white;
+        }
+        .credential-info {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #6c757d;
+        }
+        .eye-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+        }
+        .input-group {
+            position: relative;
+        }
+    </style>
+</head>
+
+<body class="authentication-bg pb-0" data-layout-config='{"darkMode":false}'>
+
+    <div class="auth-fluid">
+        <!--Auth fluid left content -->
+        <div class="auth-fluid-form-box">
+            <div class="align-items-center d-flex h-100">
+                <div class="card-body">
+
+                    <!-- Logo -->
+                    <div class="auth-brand text-center text-lg-start">
+                        <a href="" class="logo-dark">
+                            <span><img src="" alt="" height="18"></span>
+                        </a>
+                        <a href="" class="logo-light">
+                            <span><img src="assets/images/logo.png" alt="" height="18"></span>
+                        </a>
+                    </div>
+
+                    <!-- title-->
+                    <h4 class="mt-0">Sign In</h4>
+                    <p class="text-muted mb-4">Enter your credentials to access your account.</p>
+
+                    <% if (error) { %>
+                        <div class="alert alert-danger">
+                            <%= error %>
+                        </div>
+                    <% } %>
+
+                    <!-- form -->
+                    <form action="/login" method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <input class="form-control" type="email" id="email" name="email" 
+                                   placeholder="Enter your registered email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="credential" class="form-label">Credential <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input class="form-control" type="password" id="credential" name="credential" 
+                                       placeholder="Enter password or first name" required>
+                                <span class="eye-toggle" id="togglePassword">
+                                    <i class="bi bi-eye"></i>
+                                </span>
+                            </div>
+                            <div class="credential-info">
+                                <i class="bi bi-info-circle"></i> 
+                                Teachers/Admins: Enter your password. Students: Enter your first name.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid mb-0 text-center">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="mdi mdi-login me-1"></i> Sign In
+                            </button>
+                        </div>
+                    </form>
+                    <!-- end form-->
+
+                    <!-- Footer-->
+                    <footer class="footer footer-alt">
+                       <!-- <p class="text-muted">Don't have an account? <a href="/register" class="text-muted ms-1"><b>Sign Up</b></a></p>-->
+                    </footer>
+
+                </div> <!-- end .card-body -->
+            </div> <!-- end .align-items-center.d-flex.h-100-->
+        </div>
+        <!-- end auth-fluid-form-box-->
+
+        <!-- Auth fluid right content -->
+        <div class="auth-fluid-right text-center">
+            <div class="auth-user-testimonial">
+                <h2 class="mb-3">School Management System</h2>
+                <p class="lead"><i class="mdi mdi-format-quote-open"></i> A complete solution for managing students, teachers, and administrative tasks. <i class="mdi mdi-format-quote-close"></i>
+                </p>
+                <p>
+                    - School Administration
+                </p>
+            </div> <!-- end auth-user-testimonial-->
+        </div>
+        <!-- end Auth fluid right content -->
+    </div>
+    <!-- end auth-fluid-->
+
+    <!-- bundle -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility
+            const togglePassword = document.getElementById('togglePassword');
+            const credentialInput = document.getElementById('credential');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = credentialInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                credentialInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
+            });
+            
+            // Form validation
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const email = document.getElementById('email').value.trim();
+                const credential = credentialInput.value.trim();
+                
+                // Basic validation
+                if (!email) {
+                    e.preventDefault();
+                    alert('Email address is required');
+                    document.getElementById('email').focus();
+                    return;
+                }
+                
+                if (!credential) {
+                    e.preventDefault();
+                    alert('Please enter your password or first name');
+                    credentialInput.focus();
+                    return;
+                }
+                
+                // Email format validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    e.preventDefault();
+                    alert('Please enter a valid email address');
+                    document.getElementById('email').focus();
+                    return;
+                }
+            });
+            
+            // Auto-focus on email field
+            document.getElementById('email').focus();
+        });
+    </script>
+</body>
+</html>

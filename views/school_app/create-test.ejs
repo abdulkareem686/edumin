@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Test</title>
+    <style>
+        .form-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { font-weight: bold; margin-bottom: 5px; }
+        .form-control { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .btn-submit { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .error-message { color: red; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Create New Test</h1>
+        
+        <% if (error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        
+        <form id="createTestForm">
+            <div class="form-group">
+                <label class="form-label">Test Name *</label>
+                <input type="text" name="test_name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Test Type *</label>
+                <select name="test_type" class="form-control" required>
+                    <option value="test">Test</option>
+                    <option value="exam">Exam</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Subject *</label>
+                <select name="subject_id" class="form-control" required>
+                    <option value="">Select Subject</option>
+                    <% subjects.forEach(subject => { %>
+                        <option value="<%= subject.id %>"><%= subject.name %> (<%= subject.subject_code %>)</option>
+                    <% }); %>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Class *</label>
+                <select name="class_id" class="form-control" required>
+                    <option value="">Select Class</option>
+                    <% teacherClasses.forEach(cls => { %>
+                        <option value="<%= cls.id %>">
+                            <%= cls.className %> (<%= cls.level %> <%= cls.department ? '- ' + cls.department : '' %>)
+                        </option>
+                    <% }); %>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Academic Year</label>
+                <input type="text" name="academic_year" class="form-control" value="<%= currentAcademicYear %>">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Term</label>
+                <input type="text" name="term" class="form-control" value="<%= currentTerm %>">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Duration (minutes)</label>
+                <input type="number" name="duration_minutes" class="form-control" value="60">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Total Marks</label>
+                <input type="number" name="total_marks" class="form-control" value="100">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Passing Marks</label>
+                <input type="number" name="passing_marks" class="form-control" value="40">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Instructions</label>
+                <textarea name="instructions" class="form-control" rows="4"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Start Date & Time</label>
+                <input type="datetime-local" name="start_date" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">End Date & Time</label>
+                <input type="datetime-local" name="end_date" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <input type="checkbox" name="is_published" value="true">
+                    Publish Test Immediately
+                </label>
+            </div>
+            
+            <button type="submit" class="btn-submit">Create Test</button>
+            <a href="/cbt-dashboard" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+    
+    <script>
+       // In create-test.ejs, update the form submission script
+document.getElementById('createTestForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Creating...';
+    submitBtn.disabled = true;
+    
+    // Get form data
+    const formData = new FormData(e.target);
+    const data = {};
+    formData.forEach((value, key) => {
+        // Handle checkboxes
+        if (key === 'is_published') {
+            data[key] = value === 'true';
+        } else {
+            data[key] = value;
+        }
+    });
+    
+    try {
+        const response = await fetch('/create-test', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        // Check if response is JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            // Handle HTML error response
+            const text = await response.text();
+            console.error('Non-JSON response:', text.substring(0, 200));
+            throw new Error('Server returned HTML instead of JSON. Check server logs.');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Test created successfully!');
+            window.location.href = `/test/${result.testId}/questions`;
+        } else {
+            alert('Error: ' + result.error);
+            // Re-enable button
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    } catch (error) {
+        console.error('Error creating test:', error);
+        alert('Error creating test: ' + error.message);
+        // Re-enable button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+});
+    </script>
+</body>
+</html>

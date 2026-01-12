@@ -1,0 +1,584 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Fee Receipt - <%= receipt.receiptNumber %></title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .receipt-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .receipt-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007bff, #28a745, #dc3545);
+        }
+        
+        .watermark {
+            position: absolute;
+            opacity: 0.03;
+            font-size: 120px;
+            font-weight: bold;
+            color: #000;
+            transform: rotate(-45deg);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .watermark-1 {
+            top: 30%;
+            left: -50px;
+        }
+        
+        .watermark-2 {
+            bottom: 20%;
+            right: -50px;
+        }
+        
+        .header {
+            text-align: center;
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .school-name {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .school-address {
+            color: #6c757d;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .school-contact {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .receipt-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #28a745;
+            margin: 25px 0;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        
+        .receipt-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: #28a745;
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        
+        .receipt-number {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .receipt-number strong {
+            color: #007bff;
+            font-size: 18px;
+        }
+        
+        .receipt-details {
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 16px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .amount-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 1px solid #dee2e6;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .amount-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .amount-row:last-child {
+            border-bottom: none;
+        }
+        
+        .amount-total {
+            font-size: 22px;
+            font-weight: 700;
+            color: #28a745;
+            padding-top: 15px;
+            border-top: 2px solid #28a745;
+        }
+        
+        .amount-words {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #28a745;
+            font-style: italic;
+            color: #495057;
+        }
+        
+        .amount-words strong {
+            color: #2c3e50;
+            font-style: normal;
+        }
+        
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-partial {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-overpaid {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .payment-status-section {
+            background: linear-gradient(135deg, 
+                <% if (receipt.isPartial) { %>#fff3cd 0%, #ffeaa7 100%<% } %>
+                <% if (receipt.isOverpaid) { %>#d1ecf1 0%, #bee5eb 100%<% } %>
+                <% if (!receipt.isPartial && !receipt.isOverpaid) { %>#d4edda 0%, #c3e6cb 100%<% } %>);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid 
+                <% if (receipt.isPartial) { %>#ffc107<% } %>
+                <% if (receipt.isOverpaid) { %>#17a2b8<% } %>
+                <% if (!receipt.isPartial && !receipt.isOverpaid) { %>#28a745<% } %>;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .payment-status-header {
+            font-size: 20px;
+            font-weight: 700;
+            color: 
+                <% if (receipt.isPartial) { %>#856404<% } %>
+                <% if (receipt.isOverpaid) { %>#0c5460<% } %>
+                <% if (!receipt.isPartial && !receipt.isOverpaid) { %>#155724<% } %>;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .payment-status-message {
+            font-size: 16px;
+            color: 
+                <% if (receipt.isPartial) { %>#856404<% } %>
+                <% if (receipt.isOverpaid) { %>#0c5460<% } %>
+                <% if (!receipt.isPartial && !receipt.isOverpaid) { %>#155724<% } %>;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .notes-section {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 2px solid #e9ecef;
+            text-align: center;
+            color: #6c757d;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .signature-area {
+            margin: 30px 0;
+            text-align: right;
+        }
+        
+        .signature-line {
+            border-top: 2px solid #2c3e50;
+            width: 250px;
+            margin-left: auto;
+            margin-top: 60px;
+        }
+        
+        .signature-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+        }
+        
+        .security-features {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #6c757d;
+        }
+        
+        .print-btn {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        }
+        
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            
+            .receipt-container {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 20px !important;
+                border-radius: 0 !important;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .print-btn {
+                display: none !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .receipt-container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .school-name {
+                font-size: 24px;
+            }
+            
+            .receipt-title {
+                font-size: 22px;
+            }
+            
+            .security-features {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <!-- Watermark -->
+        <div class="watermark watermark-1">OFFICIAL RECEIPT</div>
+        <div class="watermark watermark-2">PAID</div>
+        
+        <!-- Header -->
+        <div class="header">
+            <div class="school-name"><%= school.name %></div>
+            <div class="school-address"><%= school.address %></div>
+            <div class="school-contact">
+                Tel: <%= school.phone %> | Email: <%= school.email %>
+                <% if (school.website) { %>| Website: <%= school.website %><% } %>
+            </div>
+        </div>
+
+        <!-- Receipt Title -->
+        <div class="receipt-title">OFFICIAL FEE RECEIPT</div>
+        
+        <!-- Receipt Number -->
+        <div class="receipt-number">
+            <strong>RECEIPT NUMBER:</strong> <%= receipt.receiptNumber %>
+        </div>
+
+        <!-- Receipt Details -->
+        <div class="receipt-details">
+            <div class="detail-grid">
+                <div class="detail-card">
+                    <div class="detail-label">Student Name</div>
+                    <div class="detail-value"><strong><%= receipt.studentName %></strong></div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-label">Payment Date</div>
+                    <div class="detail-value"><%= moment(receipt.paymentDate).format('MMMM D, YYYY') %></div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-label">Class & Department</div>
+                    <div class="detail-value">
+                        <%= receipt.className || 'N/A' %>
+                        <% if (receipt.department) { %> - <%= receipt.department %><% } %>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-label">Academic Period</div>
+                    <div class="detail-value">
+                        <%= receipt.academicYear %> - <%= receipt.term %>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-label">Fee Type</div>
+                    <div class="detail-value"><%= receipt.feeType %></div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-label">Payment Method</div>
+                    <div class="detail-value"><%= receipt.paymentType %></div>
+                </div>
+                
+                <% if (receipt.email) { %>
+                <div class="detail-card">
+                    <div class="detail-label">Student Email</div>
+                    <div class="detail-value"><%= receipt.email %></div>
+                </div>
+                <% } %>
+                
+                <div class="detail-card">
+                    <div class="detail-label">Payment Status</div>
+                    <div class="detail-value">
+                        <span class="status-badge status-<%= receipt.status %>">
+                            <%= receipt.paymentStatus || receipt.status.toUpperCase() %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Status Section -->
+        <div class="payment-status-section">
+            <div class="payment-status-header">
+                <i class="fas fa-<%= receipt.isPartial ? 'exclamation-triangle' : receipt.isOverpaid ? 'info-circle' : 'check-circle' %> me-2"></i>
+                <%= receipt.paymentStatus %>
+            </div>
+            <div class="payment-status-message">
+                <%= receipt.balanceMessage %>
+            </div>
+        </div>
+
+        <!-- Amount Section -->
+        <div class="amount-section">
+            <% if (receipt.hasBill) { %>
+            <div class="amount-row">
+                <div>Original Bill Amount:</div>
+                <div><strong><%= formatNaira(receipt.billAmount) %></strong></div>
+            </div>
+            <% } %>
+            
+            <div class="amount-row">
+                <div>Amount Paid:</div>
+                <div><strong><%= formatNaira(receipt.actualAmountPaid) %></strong></div>
+            </div>
+            
+            <% if (receipt.hasBill) { %>
+                <% if (receipt.isPartial) { %>
+                <div class="amount-row">
+                    <div>Balance Due:</div>
+                    <div style="color: #dc3545; font-weight: bold;">
+                        <strong><%= formatNaira(receipt.balanceAmount) %></strong>
+                    </div>
+                </div>
+                <% } else if (receipt.isOverpaid) { %>
+                <div class="amount-row">
+                    <div>Overpayment Credit:</div>
+                    <div style="color: #17a2b8; font-weight: bold;">
+                        <strong><%= formatNaira(-receipt.balanceAmount) %></strong>
+                    </div>
+                </div>
+                <% } %>
+            <% } %>
+            
+            <div class="amount-row amount-total">
+                <div>NET AMOUNT RECEIVED:</div>
+                <div><strong><%= formatNaira(receipt.actualAmountPaid) %></strong></div>
+            </div>
+            
+            <div class="amount-words">
+                <strong>Amount in Words:</strong><br>
+                <%= receipt.amountInWords %>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <% if (receipt.notes) { %>
+        <div class="notes-section">
+            <div class="detail-label">Additional Notes:</div>
+            <div class="detail-value"><%= receipt.notes %></div>
+        </div>
+        <% } %>
+
+        <!-- Security Features -->
+        <div class="security-features">
+            <div>Receipt ID: <%= receipt.id %></div>
+            <div>Generated: <%= moment().format('YYYY-MM-DD HH:mm:ss') %></div>
+            <div>Valid Official Receipt</div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div style="margin-bottom: 20px;">
+                <strong>Payment Terms & Conditions:</strong><br>
+                <%= school.terms || 'All payments are in Nigerian Naira (₦). This is an official receipt. Payment once made is non-refundable. Please keep this receipt for your records.' %>
+            </div>
+            
+            <div class="signature-area">
+                <div class="signature-line"></div>
+                <div class="signature-label">Authorized Signature & School Stamp</div>
+                <div class="signature-label">School Accountant</div>
+            </div>
+
+            <div style="margin-top: 30px; font-size: 12px; color: #999;">
+                <%= school.name %> | <%= school.address %> | <%= school.phone %>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin: 20px;" class="no-print">
+        <button onclick="window.print()" class="print-btn">
+            🖨️ Print Receipt
+        </button>
+    </div>
+
+    <script>
+        // Add subtle animation when printing
+        document.querySelector('.print-btn').addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+        
+        // Add confirmation message after print
+        window.addEventListener('afterprint', function() {
+            alert('Receipt printed successfully! Please keep a copy for your records.');
+        });
+        
+        // Add Font Awesome for icons
+        document.head.innerHTML += '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">';
+    </script>
+</body>
+</html>

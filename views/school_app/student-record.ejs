@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Record - School Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #4e54c8;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 0;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
+        }
+        
+        .page-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .page-subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: white;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-select {
+            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5809b5 0%, #1c64e0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .option-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-box {
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .info-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-text {
+            color: #64748b;
+            margin-bottom: 0;
+        }
+        
+        .academic-icon {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                padding: 1rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="page-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="page-title"><i class="fas fa-user-graduate me-2"></i>Student Academic Record</h1>
+                        <p class="page-subtitle mb-0">Detailed academic performance and results</p>
+                    </div>
+                    <div>
+                        <a href="/student-records" class="btn btn-secondary me-2">
+                            <i class="fas fa-arrow-left me-1"></i> Back to List
+                        </a>
+                        <button class="btn print-btn">
+                            <i class="fas fa-print me-1"></i> Print Record
+                        </button>
+                    </div>
+                </div>
+
+                <% if (success) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong><i class="fas fa-check-circle me-2"></i>Success:</strong> <%= success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                <% if (error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong><i class="fas fa-exclamation-circle me-2"></i>Error:</strong> <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+
+                <!-- Student Information -->
+                <div class="card student-info-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0"><i class="fas fa-user me-2"></i>Student Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <span class="info-label">Name:</span>
+                                    <span class="info-value"><%= student.firstName %> <%= student.lastName %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Class:</span>
+                                    <span class="info-value"><%= student.className %></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <span class="info-label">Level:</span>
+                                    <span class="info-value"><span class="badge-level"><%= student.level %></span></span>
+                                </div>
+                                <% if (student.department) { %>
+                                    <div class="info-item">
+                                        <span class="info-label">Department:</span>
+                                        <span class="info-value"><span class="badge-department"><%= student.department %></span></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Term Selection -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0"><i class="fas fa-filter me-2"></i>Select Different Term/Year</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/student-records/<%= student.id %>" method="GET">
+                            <div class="row g-3">
+                                <div class="col-md-5">
+                                    <label class="form-label">Academic Year</label>
+                                    <select class="form-select" name="academicYear" required>
+                                        <option value="">Select Academic Year</option>
+                                        <% academicYears.forEach(year => { %>
+                                            <option value="<%= year.year_name %>" <%= selectedYear === year.year_name ? 'selected' : '' %>>
+                                                <%= year.year_name %>
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label">Term</label>
+                                    <select class="form-select" name="term" required>
+                                        <option value="">Select Term</option>
+                                        <% terms.forEach(term => { %>
+                                            <option value="<%= term.term_name %>" <%= selectedTerm === term.term_name ? 'selected' : '' %>>
+                                                <%= term.term_name %>
+                                            </option>
+                                        <% }); %>
+                                        <option value="session" <%= selectedTerm === 'session' ? 'selected' : '' %>>Session Summary</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-eye me-1"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <% if (selectedTerm === 'session') { %>
+                    <!-- Session Summary -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2"></i>Session Summary - <%= selectedYear %></h5>
+                            <span class="badge bg-light text-dark">Overall Average: <%= totalAverage %></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive session-table">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>First Term</th>
+                                            <th>Second Term</th>
+                                            <th>Third Term</th>
+                                            <th>Average</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% sessionRecord.forEach(subject => { %>
+                                            <tr>
+                                                <td class="fw-bold"><%= subject.subject_name %></td>
+                                                <td class="score-cell"><%= subject.firstTerm %></td>
+                                                <td class="score-cell"><%= subject.secondTerm %></td>
+                                                <td class="score-cell"><%= subject.thirdTerm %></td>
+                                                <td class="score-cell fw-bold"><%= subject.average %></td>
+                                                <td>
+                                                    <% 
+                                                        let grade = 'F';
+                                                        let gradeClass = 'low-score';
+                                                        if (subject.average >= 80) {
+                                                            grade = 'A';
+                                                            gradeClass = 'high-score';
+                                                        } else if (subject.average >= 70) {
+                                                            grade = 'B';
+                                                            gradeClass = 'high-score';
+                                                        } else if (subject.average >= 60) {
+                                                            grade = 'C';
+                                                            gradeClass = 'medium-score';
+                                                        } else if (subject.average >= 50) {
+                                                            grade = 'D';
+                                                            gradeClass = 'medium-score';
+                                                        } else if (subject.average >= 40) {
+                                                            grade = 'E';
+                                                            gradeClass = 'low-score';
+                                                        }
+                                                    %>
+                                                    <span class="fw-bold <%= gradeClass %>"><%= grade %></span>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="summary-row">
+                                            <td colspan="4" class="text-end fw-bold">Overall Average:</td>
+                                            <td class="fw-bold high-score"><%= totalAverage %></td>
+                                            <td>
+                                                <% 
+                                                    let overallGrade = 'F';
+                                                    let overallGradeClass = 'low-score';
+                                                    if (totalAverage >= 80) {
+                                                        overallGrade = 'A';
+                                                        overallGradeClass = 'high-score';
+                                                    } else if (totalAverage >= 70) {
+                                                        overallGrade = 'B';
+                                                        overallGradeClass = 'high-score';
+                                                    } else if (totalAverage >= 60) {
+                                                        overallGrade = 'C';
+                                                        overallGradeClass = 'medium-score';
+                                                    } else if (totalAverage >= 50) {
+                                                        overallGrade = 'D';
+                                                        overallGradeClass = 'medium-score';
+                                                    } else if (totalAverage >= 40) {
+                                                        overallGrade = 'E';
+                                                        overallGradeClass = 'low-score';
+                                                    }
+                                                %>
+                                                <span class="fw-bold <%= overallGradeClass %>"><%= overallGrade %></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="summary-row">
+                                            <td colspan="4" class="text-end fw-bold">Percentage:</td>
+                                            <td colspan="2" class="fw-bold"><%= percentage %>%</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <!-- Term Scores -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0"><i class="fas fa-book me-2"></i><%= selectedTerm %> Scores - <%= selectedYear %></h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Test Score (40%)</th>
+                                            <th>Exam Score (60%)</th>
+                                            <th>Total Score (100%)</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% scores.forEach(score => { 
+                                            const totalScore = score.total_score || 0;
+                                            let grade = 'F';
+                                            let gradeClass = 'low-score';
+                                            if (totalScore >= 80) {
+                                                grade = 'A';
+                                                gradeClass = 'high-score';
+                                            } else if (totalScore >= 70) {
+                                                grade = 'B';
+                                                gradeClass = 'high-score';
+                                            } else if (totalScore >= 60) {
+                                                grade = 'C';
+                                                gradeClass = 'medium-score';
+                                            } else if (totalScore >= 50) {
+                                                grade = 'D';
+                                                gradeClass = 'medium-score';
+                                            } else if (totalScore >= 40) {
+                                                grade = 'E';
+                                                gradeClass = 'low-score';
+                                            }
+                                        %>
+                                            <tr>
+                                                <td class="fw-bold"><%= score.subject_name %></td>
+                                                <td><%= score.test_score || 0 %></td>
+                                                <td><%= score.exam_score || 0 %></td>
+                                                <td class="score-cell fw-bold"><%= totalScore %></td>
+                                                <td class="fw-bold <%= gradeClass %>"><%= grade %></td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Print functionality
+            $('.print-btn').click(function() {
+                window.print();
+            });
+            
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 5000);
+            
+            // Add color to scores based on value
+            $('.score-cell').each(function() {
+                const score = parseFloat($(this).text());
+                if (score >= 80) {
+                    $(this).addClass('high-score');
+                } else if (score >= 60) {
+                    $(this).addClass('medium-score');
+                } else if (score < 60) {
+                    $(this).addClass('low-score');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

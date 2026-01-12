@@ -1,0 +1,1033 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>edu admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="/vendor/bootstrap-select/dist/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css">
+        
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        
+        <style>
+            .required-field::after {
+                content: " *";
+                color: red;
+            }
+            .form-section {
+                margin-bottom: 2rem;
+                padding: 1.5rem;
+                border: 1px solid #e9ecef;
+                border-radius: 0.5rem;
+                background-color: #f8f9fa;
+            }
+            .form-section-title {
+                color: #3b5de7;
+                border-bottom: 2px solid #3b5de7;
+                padding-bottom: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .state-lga-container {
+                margin-top: 1.5rem;
+                padding: 1rem;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+                background-color: #fff;
+            }
+            .state-lga-title {
+                font-weight: 600;
+                color: #495057;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid #dee2e6;
+            }
+        </style>
+    
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="leftside-menu">
+    
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-light">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-dark">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+    
+                <div class="h-100" id="leftside-menu-container" data-simplebar="">
+
+                    <!--- Sidemenu -->
+                    <ul class="side-nav">
+
+                        <li class="side-nav-title side-nav-item">Navigation</li>
+
+                        <li class="side-nav-item">
+                            <a href="/" class="side-nav-link">
+                            <i class="uil-home-alt"></i>
+                                <span> Dashboards </span>
+                            </a>
+                        </li>
+                        <li class="side-nav-title side-nav-item">Apps</li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false" aria-controls="sidebarMultiLevel" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> Records </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarMultiLevel">
+                                <ul class="side-nav-second-level">
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel">
+                                            <span> Academic Year </span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="sidebarSecondLevel">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/academic-years">Academic Year</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/add-academic-year">Add Academic Year</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#attendance" aria-expanded="false" aria-controls="attendance">
+                                            <span> Attendance</span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="attendance">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/mark-attendance">Mark Attendance</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/attendance-reports">Attendance Reports</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#salary-management" aria-expanded="false" aria-controls="salary-management">
+        <span>Salary Management</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="salary-management">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/salary-management">Salary Management</a>
+            </li>
+            <li>
+                <a href="/salary-structures">Salary Structures</a>
+            </li>
+            <li>
+                <a href="/process-salaries">Process Salaries</a>
+            </li>
+            <li>
+                <a href="/salary-payments">Payment History</a>
+            </li>
+        </ul>
+    </div>
+</li>
+<li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#financial-reports" aria-expanded="false" aria-controls="financial-reports">
+        <span>Financial Reports</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="financial-reports">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/expenses">Expenses</a>
+            </li>
+            <li>
+                <a href="/financial-reports">Financial Reports</a>
+            </li>
+            <li>
+                <a href="/add-expense">Add Expense</a>
+            </li>
+            
+        </ul>
+    </div>
+</li>
+                                    <li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#sidebarThirdLevel" aria-expanded="false" aria-controls="sidebarThirdLevel">
+        <span> Results</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="sidebarThirdLevel">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/student-records">Student Records</a>
+            </li>
+            <li>
+                <a href="/enter-scores">Enter Scores</a>
+            </li>
+            
+            <li>
+                <a href="/broadsheet">Broadsheet</a>
+            </li>
+            
+            <li>
+                <a href="/term-reports">Term Report</a>
+            </li>
+        </ul>
+    </div>
+</li>
+                                    
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarLayouts" aria-expanded="false" aria-controls="sidebarLayouts" class="side-nav-link">
+                                <i class="uil-calender text-muted"></i>
+                                <span> Calendar </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarLayouts">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/school-calendar">All Events</a></li>
+                            <li><a href="/add-event">Add Event</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="mdi mdi-teach text-muted"></i>
+                                <span> Teachers </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-teachers">All Teachers</a></li>
+                            <li><a href="/add-teacher">Add Teacher</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEmail" aria-expanded="false" aria-controls="sidebarEmail" class="side-nav-link">
+                                <i class="bi bi-person-fill text-muted"></i>
+                                <span> Students </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEmail">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-students">All Students</a></li>
+                            <li><a href="/add-student">Add Students</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                         <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarIcons" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                                <i class="bi bi-person text-muted"></i>
+                                <span> Staff </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarIcons">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-staff">All Staff</a></li>
+                            <li><a href="/add-staff">Add Staff</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false" aria-controls="sidebarProjects" class="side-nav-link">
+                                <i class="bi-arrow-down"></i>
+                                <span> Classes </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProjects">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/all-classes">All Classes</a></li>
+                            <li><a href="/add-class">Add Class</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSubjects" aria-expanded="false" aria-controls="sidebarSubjects" class="side-nav-link">
+                                <i class="bi bi-book"></i>
+                                <span> Subjects </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSubjects">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="/register-subjects">Add Subject</a>
+                                    </li>
+                                    <li>
+                                        <a href="/view-subjects">Subjects</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTasks" aria-expanded="false" aria-controls="sidebarTasks" class="side-nav-link">
+                                <i class="bi-book"></i>
+                                <span> Library </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTasks">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-library">All Library</a></li>
+                            <li><a href="/add-library">Add Library</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="apps-file-manager.html" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> File Manager </span>
+                            </a>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTables" aria-expanded="false" aria-controls="sidebarTables" class="side-nav-link">
+                                <i class="bi-cash"></i>
+                                <span> Fees </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTables">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/fees-collection">Fees Collection</a></li>
+                            <li><a href="/add-fees">Add Fees</a></li>
+                            <li><a href="/class-bills">Class Bills</a></li>
+
+                                </ul>
+                            </div>
+                        </li>
+                        
+                        
+                        
+                    </ul>
+
+                    <!-- Help Box -->
+                   
+                    <!-- end Help Box -->
+                    <!-- End Sidebar -->
+
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- Sidebar -left -->
+
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar Start -->
+                    <div class="navbar-custom">
+                        <ul class="list-unstyled topbar-menu float-end mb-0">
+                            <li class="dropdown notification-list d-lg-none">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-search noti-icon"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                                    <form class="p-3">
+                                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="dropdown notification-list topbar-dropdown">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <img src="assets/images/flags/us.jpg" alt="user-image" class="me-0 me-sm-1" height="12"> 
+                                    <span class="align-middle d-none d-sm-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
+                                    </a>
+                
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
+                                    </a>
+
+                                </div>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-bell noti-icon"></i>
+                                    <span class="noti-icon-badge"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+
+                                    <!-- item-->
+                                    <div class="dropdown-item noti-title">
+                                        <h5 class="m-0">
+                                            <span class="float-end">
+                                                <a href="javascript: void(0);" class="text-dark">
+                                                    <small>Clear All</small>
+                                                </a>
+                                            </span>Notification
+                                        </h5>
+                                    </div>
+
+                                    <div style="max-height: 230px;" data-simplebar="">
+                                        <!-- item-->
+                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                            <!-- Notifications icon will be added here -->
+                                            <p class="notify-details">See all notifications
+                                                
+                                            </p>
+                                        </a>
+
+                                        
+                                    <!-- All-->
+                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                        View All
+                                    </a>
+
+                                </div>
+                            </li>
+
+                           
+
+                            <li class="notification-list">
+                                <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                    <i class="dripicons-gear noti-icon"></i>
+                                </a>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <span class="account-user-avatar"> 
+                                        <img src="assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                                    </span>
+                                    <span>
+                                        
+                                        <span class="account-user-name"><% if (typeof username !== 'undefined') { %>
+                    <p class="text-muted"><%= username %></p>
+                <% } %>
+                <% if (typeof error !== 'undefined') { %>
+                    <%= error %>
+                <% } %></span>
+                              
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <!-- item-->
+                                    <div class=" dropdown-header noti-title">
+                                        <h6 class="text-overflow m-0">Welcome !</h6>
+                                    </div>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-circle me-1"></i>
+                                        <span>My Account</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-edit me-1"></i>
+                                        <span>Settings</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lifebuoy me-1"></i>
+                                        <span>Support</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/lock-screen" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lock-outline me-1"></i>
+                                        <span>Lock Screen</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/login" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-logout me-1"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+                        <button class="button-menu-mobile open-left">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                        <div class="app-search dropdown d-none d-lg-block">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                    <span class="mdi mdi-magnify search-icon"></span>
+                                    <button class="input-group-text btn-primary" type="submit">Search</button>
+                                </div>
+                            </form>
+
+                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
+                                <!-- item-->
+                                <div class="dropdown-header noti-title">
+                                    <h5 class="text-overflow mb-2">Found <span class="text-danger">17</span> results</h5>
+                                </div>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-notes font-16 me-1"></i>
+                                    <span>Analytics Report</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-life-ring font-16 me-1"></i>
+                                    <span>How can I help you?</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-cog font-16 me-1"></i>
+                                    <span>User profile settings</span>
+                                </a>
+
+                               
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end Topbar -->
+                    <!-- Start Content-->
+                <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Teachers</a></li>
+                                            <li class="breadcrumb-item active">Add Teacher</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">Add Teacher</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            Add New Teacher
+                                        </h5>
+                                        <p class="card-text">
+                                            Fill in the teacher details below.
+                                        </p>
+
+                                        <!-- Success Message Display -->
+                                        <% if (typeof success !== 'undefined' && success) { %>
+                                            <div class="alert alert-success mb-3">
+                                                <%= success %>
+                                            </div>
+                                        <% } %>
+
+                                        <!-- Error Message Display -->
+                                        <% if (error) { %>
+                                            <div class="alert alert-danger mb-3">
+                                                <%= error %>
+                                            </div>
+                                        <% } %>
+
+                                        <form action="/add-teacher" method="post" enctype="multipart/form-data" id="teacherForm">
+                                            <!-- Personal Information Section -->
+                                            <div class="form-section">
+                                                <h5 class="form-section-title"><i class="bi bi-person-circle me-2"></i>Personal Information</h5>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required-field">First Name</label>
+                                                            <input type="text" class="form-control" name="firstName" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required-field">Last Name</label>
+                                                            <input type="text" class="form-control" name="lastName" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required-field">Email</label>
+                                                            <input type="email" class="form-control" name="email" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required-field">Password</label>
+                                                            <input type="password" class="form-control" name="password" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Gender</label>
+                                                            <select class="form-control" name="gender">
+                                                                <option value="">-- Select Gender --</option>
+                                                                <option value="Male">Male</option>
+                                                                <option value="Female">Female</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Date of Birth</label>
+                                                            <input type="date" class="form-control" name="dateOfBirth">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Nationality</label>
+                                                            <select class="form-control" name="nationality">
+                                                                <option value="">-- Select Nationality --</option>
+                                                                <option value="Nigerian">Nigerian</option>
+                                                                <option value="Other">Other</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Profile Image</label>
+                                                            <input type="file" class="form-control" name="image" accept="image/*">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- State of Origin and LGA Selection -->
+                                                <div class="state-lga-container">
+                                                    <div class="state-lga-title">State of Origin Information</div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">State of Origin</label>
+                                                                <select class="form-control" name="stateOfOrigin" id="stateOfOrigin">
+                                                                    <option value="">-- Select State --</option>
+                                                                    <!-- States will be populated by JavaScript -->
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Local Government Area</label>
+                                                                <select class="form-control" name="localGovernment" id="localGovernment">
+                                                                    <option value="">-- Select LGA --</option>
+                                                                    <!-- LGAs will be populated by JavaScript based on state selection -->
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Residential State and LGA Selection -->
+                                                <div class="state-lga-container">
+                                                    <div class="state-lga-title">Residential Information</div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Residential State</label>
+                                                                <select class="form-control" name="residentialState" id="residentialState">
+                                                                    <option value="">-- Select State --</option>
+                                                                    <!-- States will be populated by JavaScript -->
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Residential Local Government Area</label>
+                                                                <select class="form-control" name="residentialLGA" id="residentialLGA">
+                                                                    <option value="">-- Select LGA --</option>
+                                                                    <!-- LGAs will be populated by JavaScript based on state selection -->
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Contact Information Section -->
+                                            <div class="form-section">
+                                                <h5 class="form-section-title"><i class="bi bi-telephone me-2"></i>Contact Information</h5>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Mobile Number</label>
+                                                            <input type="text" class="form-control" name="mobileNumber" placeholder="e.g., 08012345678">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Emergency Contact Name</label>
+                                                            <input type="text" class="form-control" name="emergencyContactName" placeholder="Full name of emergency contact">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Emergency Contact Number</label>
+                                                            <input type="text" class="form-control" name="emergencyContactNumber" placeholder="e.g., 08012345678">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Address</label>
+                                                            <textarea class="form-control" rows="2" name="address" placeholder="Full residential address"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Professional Information Section -->
+                                            <div class="form-section">
+                                                <h5 class="form-section-title"><i class="bi bi-briefcase me-2"></i>Professional Information</h5>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Joining Date</label>
+                                                            <input type="date" class="form-control" name="joiningDate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Designation</label>
+                                                            <input type="text" class="form-control" name="designation" placeholder="e.g., Senior Teacher">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Department</label>
+                                                            <input type="text" class="form-control" name="department"
+                                                    value="" placeholder="e.g., Computer Science">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Education</label>
+                                                            <input type="text" class="form-control" name="education" placeholder="e.g., B.Sc. Computer Science">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row mt-4">
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="bi bi-check-circle me-1"></i> Add Teacher
+                                                    </button>
+                                                    <button type="reset" class="btn btn-light ms-2">
+                                                        <i class="bi bi-x-circle me-1"></i> Reset Form
+                                                    </button>
+                                                    <a href="/all-teachers" class="btn btn-outline-secondary ms-2">
+                                                        <i class="bi bi-list me-1"></i> View All Teachers
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+
+        </div>
+        <!-- END wrapper -->
+
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Settings</h5>
+            </div>
+
+            <div class="rightbar-content h-100" data-simplebar="">
+
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+
+                    <!-- Settings -->
+                    <h5 class="mt-3">Color Scheme</h5>
+                    <hr class="mt-1">
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+       
+
+                    <!-- Width -->
+                    <h5 class="mt-4">Width</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+        
+
+                    <!-- Left Sidebar-->
+                    <h5 class="mt-4">Left Sidebar</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                        <label class="form-check-label" for="default-check">Default</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                        <label class="form-check-label" for="light-check">Light</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                        <label class="form-check-label" for="dark-check">Dark</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked="">
+                        <label class="form-check-label" for="fixed-check">Fixed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                        <label class="form-check-label" for="condensed-check">Condensed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+                        <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+            
+                        <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm" class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a>
+                    </div>
+                </div> <!-- end padding-->
+
+            </div>
+        </div>
+
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
+
+        <!-- JavaScript for form handling -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Nigerian states and their Local Government Areas
+            const nigerianStates = {
+                "Abia": ["Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala Ngwa North", "Isiala Ngwa South", "Isuikwuato", "Obi Ngwa", "Ohafia", "Osisioma", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu Nneochi"],
+                "Adamawa": ["Demsa", "Fufure", "Ganye", "Gayuk", "Gombi", "Grie", "Hong", "Jada", "Lamurde", "Madagali", "Maiha", "Mayo Belwa", "Michika", "Mubi North", "Mubi South", "Numan", "Shelleng", "Song", "Toungo", "Yola North", "Yola South"],
+                "Akwa Ibom": ["Abak", "Eastern Obolo", "Eket", "Esit Eket", "Essien Udim", "Etim Ekpo", "Etinan", "Ibeno", "Ibesikpo Asutan", "Ibiono-Ibom", "Ika", "Ikono", "Ikot Abasi", "Ikot Ekpene", "Ini", "Itu", "Mbo", "Mkpat-Enin", "Nsit-Atai", "Nsit-Ibom", "Nsit-Ubium", "Obot Akara", "Okobo", "Onna", "Oron", "Oruk Anam", "Udung-Uko", "Ukanafun", "Uruan", "Urue-Offong/Oruko", "Uyo"],
+                "Anambra": ["Aguata", "Anambra East", "Anambra West", "Anaocha", "Awka North", "Awka South", "Ayamelum", "Dunukofia", "Ekwusigo", "Idemili North", "Idemili South", "Ihiala", "Njikoka", "Nnewi North", "Nnewi South", "Ogbaru", "Onitsha North", "Onitsha South", "Orumba North", "Orumba South", "Oyi"],
+                "Bauchi": ["Alkaleri", "Bauchi", "Bogoro", "Damban", "Darazo", "Dass", "Gamawa", "Ganjuwa", "Giade", "Itas/Gadau", "Jama'are", "Katagum", "Kirfi", "Misau", "Ningi", "Shira", "Tafawa Balewa", "Toro", "Warji", "Zaki"],
+                "Bayelsa": ["Brass", "Ekeremor", "Kolokuma/Opokuma", "Nembe", "Ogbia", "Sagbama", "Southern Ijaw", "Yenagoa"],
+                "Benue": ["Ado", "Agatu", "Apa", "Buruku", "Gboko", "Guma", "Gwer East", "Gwer West", "Katsina-Ala", "Konshisha", "Kwande", "Logo", "Makurdi", "Obi", "Ogbadibo", "Ohimini", "Oju", "Okpokwu", "Oturkpo", "Tarka", "Ukum", "Ushongo", "Vandeikya"],
+                "Borno": ["Abadam", "Askira/Uba", "Bama", "Bayo", "Biase", "Chibok", "Damboa", "Dikwa", "Gubio", "Guzamala", "Gwoza", "Hawul", "Jere", "Kaga", "Kala/Balge", "Konduga", "Kukawa", "Kwaya Kusar", "Mafa", "Magumeri", "Maiduguri", "Marte", "Mobbar", "Monguno", "Ngala", "Nganzai", "Shani"],
+                "Cross River": ["Abi", "Akamkpa", "Akpabuyo", "Bakassi", "Bekwarra", "Biase", "Boki", "Calabar Municipal", "Calabar South", "Etung", "Ikom", "Obanliku", "Obubra", "Obudu", "Odukpani", "Ogoja", "Yakuur", "Yala"],
+                "Delta": ["Aniocha North", "Aniocha South", "Bomadi", "Burutu", "Ethiope East", "Ethiope West", "Ika North East", "Ika South", "Isoko North", "Isoko South", "Ndokwa East", "Ndokwa West", "Okpe", "Oshimili North", "Oshimili South", "Patani", "Sapele", "Udu", "Ughelli North", "Ughelli South", "Ukwuani", "Uvwie", "Warri North", "Warri South", "Warri South West"],
+                "Ebonyi": ["Abakaliki", "Afikpo North", "Afikpo South", "Ebonyi", "Ezza North", "Ezza South", "Ikwo", "Ishielu", "Ivo", "Izzi", "Ohaozara", "Ohaukwu", "Onicha"],
+                "Edo": ["Akoko-Edo", "Egor", "Esan Central", "Esan North-East", "Esan South-East", "Esan West", "Etsako Central", "Etsako East", "Etsako West", "Igueben", "Ikpoba Okha", "Orhionmwon", "Oredo", "Ovia North-East", "Ovia South-West", "Owan East", "Owan West", "Uhunmwonde"],
+                "Ekiti": ["Ado Ekiti", "Efon", "Ekiti East", "Ekiti South-West", "Ekiti West", "Emure", "Gbonyin", "Ido Osi", "Ijero", "Ikere", "Ikole", "Ilejemeje", "Irepodun/Ifelodun", "Ise/Orun", "Moba", "Oye"],
+                "Enugu": ["Aninri", "Awgu", "Enugu East", "Enugu North", "Enugu South", "Ezeagu", "Igbo Etiti", "Igbo Eze North", "Igbo Eze South", "Isi Uzo", "Nkanu East", "Nkanu West", "Nsukka", "Oji River", "Udenu", "Udi", "Uzo Uwani"],
+                "FCT": ["Abaji", "Bwari", "Gwagwalada", "Kuje", "Kwali", "Municipal Area Council"],
+                "Gombe": ["Akko", "Balanga", "Billiri", "Dukku", "Funakaye", "Gombe", "Kaltungo", "Kwami", "Nafada", "Shongom", "Yamaltu/Deba"],
+                "Imo": ["Aboh Mbaise", "Ahiazu Mbaise", "Ehime Mbano", "Ezinihitte", "Ideato North", "Ideato South", "Ihitte/Uboma", "Ikeduru", "Isiala Mbano", "Isu", "Mbaitoli", "Ngor Okpala", "Njaba", "Nkwerre", "Nwangele", "Obowo", "Oguta", "Ohaji/Egbema", "Okigwe", "Orlu", "Orsu", "Oru East", "Oru West", "Owerri Municipal", "Owerri North", "Owerri West", "Unuimo"],
+                "Jigawa": ["Auyo", "Babura", "Biriniwa", "Birnin Kudu", "Buji", "Dutse", "Gagarawa", "Garki", "Gumel", "Guri", "Gwaram", "Gwiwa", "Hadejia", "Jahun", "Kafin Hausa", "Kazaure", "Kiri Kasama", "Kiyawa", "Kaugama", "Maigatari", "Malam Madori", "Miga", "Ringim", "Roni", "Sule Tankarkar", "Taura", "Yankwashi"],
+                "Kaduna": ["Birnin Gwari", "Chikun", "Giwa", "Igabi", "Ikara", "Jaba", "Jema'a", "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru", "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"],
+                "Kano": ["Ajingi", "Albasu", "Bagwai", "Bebeji", "Bichi", "Bunkure", "Dala", "Dambatta", "Dawakin Kudu", "Dawakin Tofa", "Doguwa", "Fagge", "Gabasawa", "Garko", "Garun Mallam", "Gaya", "Gezawa", "Gwale", "Gwarzo", "Kabo", "Kano Municipal", "Karaye", "Kibiya", "Kiru", "Kumbotso", "Kunchi", "Kura", "Madobi", "Makoda", "Minjibir", "Nasarawa", "Rano", "Rimin Gado", "Rogo", "Shanono", "Sumaila", "Takai", "Tarauni", "Tofa", "Tsanyawa", "Tudun Wada", "Ungogo", "Warawa", "Wudil"],
+                "Katsina": ["Bakori", "Batagarawa", "Batsari", "Baure", "Bindawa", "Charanchi", "Dandume", "Danja", "Dan Musa", "Daura", "Dutsi", "Dutsin Ma", "Faskari", "Funtua", "Ingawa", "Jibia", "Kafur", "Kaita", "Kankara", "Kankia", "Katsina", "Kurfi", "Kusada", "Mai'Adua", "Malumfashi", "Mani", "Mashi", "Matazu", "Musawa", "Rimi", "Sabuwa", "Safana", "Sandamu", "Zango"],
+                "Kebbi": ["Aleiro", "Arewa Dandi", "Argungu", "Augie", "Bagudo", "Birnin Kebbi", "Bunza", "Dandi", "Fakai", "Gwandu", "Jega", "Kalgo", "Koko/Besse", "Maiyama", "Ngaski", "Sakaba", "Shanga", "Suru", "Wasagu/Danko", "Yauri", "Zuru"],
+                "Kogi": ["Adavi", "Ajaokuta", "Ankpa", "Bassa", "Dekina", "Ibaji", "Idah", "Igalamela Odolu", "Ijumu", "Kabba/Bunu", "Kogi", "Lokoja", "Mopa Muro", "Ofu", "Ogori/Magongo", "Okehi", "Okene", "Olamaboro", "Omala", "Yagba East", "Yagba West"],
+                "Kwara": ["Asa", "Baruten", "Edu", "Ekiti", "Ifelodun", "Ilorin East", "Ilorin South", "Ilorin West", "Irepodun", "Isin", "Kaiama", "Moro", "Offa", "Oke Ero", "Oyun", "Pategi"],
+                "Lagos": ["Agege", "Ajeromi-Ifelodun", "Alimosho", "Amuwo-Odofin", "Apapa", "Badagry", "Epe", "Eti Osa", "Ibeju-Lekki", "Ifako-Ijaiye", "Ikeja", "Ikorodu", "Kosofe", "Lagos Island", "Lagos Mainland", "Mushin", "Ojo", "Oshodi-Isolo", "Shomolu", "Surulere"],
+                "Nasarawa": ["Akwanga", "Awe", "Doma", "Karu", "Keana", "Keffi", "Kokona", "Lafia", "Nasarawa", "Nasarawa Egon", "Obi", "Toto", "Wamba"],
+                "Niger": ["Agaie", "Agwara", "Bida", "Borgu", "Bosso", "Chanhaga", "Edati", "Gbako", "Gurara", "Katcha", "Kontagora", "Lapai", "Lavun", "Magama", "Mariga", "Mashegu", "Mokwa", "Moya", "Paikoro", "Rafi", "Rijau", "Shiroro", "Suleja", "Tafa", "Wushishi"],
+                "Ogun": ["Abeokuta North", "Abeokuta South", "Ado-Odo/Ota", "Egbado North", "Egbado South", "Ewekoro", "Ifo", "Ijebu East", "Ijebu North", "Ijebu North East", "Ijebu Ode", "Ikenne", "Imeko Afon", "Ipokia", "Obafemi Owode", "Odeda", "Odogbolu", "Ogun Waterside", "Remo North", "Shagamu", "Yewa North", "Yewa South"],
+                "Ondo": ["Akoko North-East", "Akoko North-West", "Akoko South-East", "Akoko South-West", "Akure North", "Akure South", "Ese Odo", "Idanre", "Ifedore", "Ilaje", "Ile Oluji/Okeigbo", "Irele", "Odigbo", "Okitipupa", "Ondo East", "Ondo West", "Ose", "Owo"],
+                "Osun": ["Aiyedade", "Aiyedire", "Atakunmosa East", "Atakunmosa West", "Boluwaduro", "Boripe", "Ede North", "Ede South", "Egbedore", "Ejigbo", "Ife Central", "Ife East", "Ife North", "Ife South", "Ifedayo", "Ila", "Ilesa East", "Ilesa West", "Irepodun", "Irewole", "Isokan", "Iwo", "Obokun", "Odo Otin", "Ola Oluwa", "Olorunda", "Oriade", "Orolu", "Osogbo"],
+                "Oyo": ["Afijio", "Akinyele", "Atiba", "Atisbo", "Egbeda", "Ibadan North", "Ibadan North-East", "Ibadan North-West", "Ibadan South-East", "Ibadan South-West", "Ibarapa Central", "Ibarapa East", "Ibarapa North", "Ido", "Irepo", "Iseyin", "Itesiwaju", "Iwajowa", "Kajola", "Lagelu", "Ogbomosho North", "Ogbomosho South", "Ogo Oluwa", "Olorunsogo", "Oluyole", "Ona Ara", "Orelope", "Ori Ire", "Oyo East", "Oyo West", "Saki East", "Saki West", "Surulere"],
+                "Plateau": ["Barkin Ladi", "Bassa", "Bokkos", "Jos East", "Jos North", "Jos South", "Kanam", "Kanke", "Langtang North", "Langtang South", "Mangu", "Mikang", "Pankshin", "Qua'an Pan", "Riyom", "Shendam", "Wase"],
+                "Rivers": ["Abua/Odual", "Ahoada East", "Ahoada West", "Akuku-Toru", "Andoni", "Asari-Toru", "Bonny", "Degema", "Eleme", "Emuoha", "Etche", "Gokana", "Ikwerre", "Khana", "Obio/Akpor", "Ogba/Egbema/Ndoni", "Ogu/Bolo", "Okrika", "Omuma", "Opobo/Nkoro", "Oyigbo", "Port Harcourt", "Tai"],
+                "Sokoto": ["Binji", "Bodinga", "Dange Shuni", "Gada", "Goronyo", "Gudu", "Gwadabawa", "Illela", "Isa", "Kebbe", "Kware", "Rabah", "Sabon Birni", "Shagari", "Silame", "Sokoto North", "Sokoto South", "Tambuwal", "Tangaza", "Tureta", "Wamako", "Wurno", "Yabo"],
+                "Taraba": ["Ardo Kola", "Bali", "Donga", "Gashaka", "Gassol", "Ibi", "Jalingo", "Karim Lamido", "Kurmi", "Lau", "Sardauna", "Takum", "Ussa", "Wukari", "Yorro", "Zing"],
+                "Yobe": ["Bade", "Bursari", "Damaturu", "Fika", "Fune", "Geidam", "Gujba", "Gulani", "Jakusko", "Karasuwa", "Machina", "Nangere", "Nguru", "Potiskum", "Tarmuwa", "Yunusari", "Yusufari"],
+                "Zamfara": ["Anka", "Bakura", "Birnin Magaji/Kiyaw", "Bukkuyum", "Bungudu", "Gummi", "Gusau", "Kaura Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Chafe", "Zurmi"]
+            };
+
+            // Get all state and LGA select elements
+            const stateOfOriginSelect = document.getElementById('stateOfOrigin');
+            const localGovernmentSelect = document.getElementById('localGovernment');
+            const residentialStateSelect = document.getElementById('residentialState');
+            const residentialLGASelect = document.getElementById('residentialLGA');
+
+            // Function to populate state dropdowns
+            function populateStateDropdowns() {
+                const states = Object.keys(nigerianStates).sort();
+                
+                // Add states to State of Origin dropdown
+                states.forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state;
+                    option.textContent = state;
+                    stateOfOriginSelect.appendChild(option);
+                });
+                
+                // Add states to Residential State dropdown
+                states.forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state;
+                    option.textContent = state;
+                    residentialStateSelect.appendChild(option);
+                });
+            }
+
+            // Function to update LGA options based on selected state
+            function updateLgaOptions(stateSelect, lgaSelect) {
+                const selectedState = stateSelect.value;
+                
+                // Clear existing options except the first one
+                while (lgaSelect.options.length > 1) {
+                    lgaSelect.remove(1);
+                }
+                
+                if (selectedState && nigerianStates[selectedState]) {
+                    // Add LGAs for the selected state
+                    nigerianStates[selectedState].sort().forEach(lga => {
+                        const option = document.createElement('option');
+                        option.value = lga;
+                        option.textContent = lga;
+                        lgaSelect.appendChild(option);
+                    });
+                }
+            }
+
+            // Add event listeners to state dropdowns
+            stateOfOriginSelect.addEventListener('change', function() {
+                updateLgaOptions(stateOfOriginSelect, localGovernmentSelect);
+            });
+
+            residentialStateSelect.addEventListener('change', function() {
+                updateLgaOptions(residentialStateSelect, residentialLGASelect);
+            });
+
+            // Initialize the form
+            populateStateDropdowns();
+        });
+        </script>
+
+    </body>
+</html>

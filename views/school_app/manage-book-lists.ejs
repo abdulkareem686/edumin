@@ -1,0 +1,1131 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>edu admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="/vendor/bootstrap-select/dist/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+            background-color: #f8f9fa;
+        }
+        .form-section-title {
+            color: #3b5de7;
+            border-bottom: 2px solid #3b5de7;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .state-lga-container {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            background-color: #fff;
+        }
+        .state-lga-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+    </style>
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="leftside-menu">
+    
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-light">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-dark">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+    
+                <div class="h-100" id="leftside-menu-container" data-simplebar="">
+
+                    <!--- Sidemenu -->
+                    <ul class="side-nav">
+
+                        <li class="side-nav-title side-nav-item">Navigation</li>
+
+                        <li class="side-nav-item">
+                            <a href="/" class="side-nav-link">
+                            <i class="uil-home-alt"></i>
+                                <span> Dashboards </span>
+                            </a>
+                        </li>
+                        <li class="side-nav-title side-nav-item">Apps</li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false" aria-controls="sidebarMultiLevel" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> Records </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarMultiLevel">
+                                <ul class="side-nav-second-level">
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel">
+                                            <span> Academic Year </span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="sidebarSecondLevel">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/academic-years">Academic Year</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/add-academic-year">Add Academic Year</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#attendance" aria-expanded="false" aria-controls="attendance">
+                                            <span> Attendance</span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="attendance">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/mark-attendance">Mark Attendance</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/attendance-reports">Attendance Reports</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#salary-management" aria-expanded="false" aria-controls="salary-management">
+        <span>Salary Management</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="salary-management">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/salary-management">Salary Management</a>
+            </li>
+            <li>
+                <a href="/salary-structures">Salary Structures</a>
+            </li>
+            <li>
+                <a href="/process-salaries">Process Salaries</a>
+            </li>
+            <li>
+                <a href="/salary-payments">Payment History</a>
+            </li>
+        </ul>
+    </div>
+</li>
+<li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#financial-reports" aria-expanded="false" aria-controls="financial-reports">
+        <span>Financial Reports</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="financial-reports">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/expenses">Expenses</a>
+            </li>
+            <li>
+                <a href="/financial-reports">Financial Reports</a>
+            </li>
+            <li>
+                <a href="/add-expense">Add Expense</a>
+            </li>
+            
+        </ul>
+    </div>
+</li>
+                                    <li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#sidebarThirdLevel" aria-expanded="false" aria-controls="sidebarThirdLevel">
+        <span> Results</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="sidebarThirdLevel">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/student-records">Student Records</a>
+            </li>
+            <li>
+                <a href="/enter-scores">Enter Scores</a>
+            </li>
+            
+            <li>
+                <a href="/broadsheet">Broadsheet</a>
+            </li>
+            
+            <li>
+                <a href="/term-reports">Term Report</a>
+            </li>
+        </ul>
+    </div>
+</li>
+                                    
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarLayouts" aria-expanded="false" aria-controls="sidebarLayouts" class="side-nav-link">
+                                <i class="uil-calender text-muted"></i>
+                                <span> Calendar </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarLayouts">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/school-calendar">All Events</a></li>
+                            <li><a href="/add-event">Add Event</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="mdi mdi-teach text-muted"></i>
+                                <span> Teachers </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-teachers">All Teachers</a></li>
+                            <li><a href="/add-teacher">Add Teacher</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEmail" aria-expanded="false" aria-controls="sidebarEmail" class="side-nav-link">
+                                <i class="bi bi-person-fill text-muted"></i>
+                                <span> Students </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEmail">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-students">All Students</a></li>
+                            <li><a href="/add-student">Add Students</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                         <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarIcons" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                                <i class="bi bi-person text-muted"></i>
+                                <span> Staff </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarIcons">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-staff">All Staff</a></li>
+                            <li><a href="/add-staff">Add Staff</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false" aria-controls="sidebarProjects" class="side-nav-link">
+                                <i class="bi-arrow-down"></i>
+                                <span> Classes </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProjects">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/all-classes">All Classes</a></li>
+                            <li><a href="/add-class">Add Class</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSubjects" aria-expanded="false" aria-controls="sidebarSubjects" class="side-nav-link">
+                                <i class="bi bi-book"></i>
+                                <span> Subjects </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSubjects">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="/register-subjects">Add Subject</a>
+                                    </li>
+                                    <li>
+                                        <a href="/view-subjects">Subjects</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTasks" aria-expanded="false" aria-controls="sidebarTasks" class="side-nav-link">
+                                <i class="bi-book"></i>
+                                <span> Library </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTasks">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-library">All Library</a></li>
+                            <li><a href="/add-library">Add Library</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="apps-file-manager.html" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> File Manager </span>
+                            </a>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTables" aria-expanded="false" aria-controls="sidebarTables" class="side-nav-link">
+                                <i class="bi-cash"></i>
+                                <span> Fees </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTables">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/fees-collection">Fees Collection</a></li>
+                            <li><a href="/add-fees">Add Fees</a></li>
+                            <li><a href="/class-bills">Class Bills</a></li>
+
+                                </ul>
+                            </div>
+                        </li>
+                        
+                        
+                        
+                    </ul>
+
+                    <!-- Help Box -->
+                   
+                    <!-- end Help Box -->
+                    <!-- End Sidebar -->
+
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- Sidebar -left -->
+
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar Start -->
+                    <div class="navbar-custom">
+                        <ul class="list-unstyled topbar-menu float-end mb-0">
+                            <li class="dropdown notification-list d-lg-none">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-search noti-icon"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                                    <form class="p-3">
+                                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="dropdown notification-list topbar-dropdown">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <img src="assets/images/flags/us.jpg" alt="user-image" class="me-0 me-sm-1" height="12"> 
+                                    <span class="align-middle d-none d-sm-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
+                                    </a>
+                
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
+                                    </a>
+
+                                </div>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-bell noti-icon"></i>
+                                    <span class="noti-icon-badge"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+
+                                    <!-- item-->
+                                    <div class="dropdown-item noti-title">
+                                        <h5 class="m-0">
+                                            <span class="float-end">
+                                                <a href="javascript: void(0);" class="text-dark">
+                                                    <small>Clear All</small>
+                                                </a>
+                                            </span>Notification
+                                        </h5>
+                                    </div>
+
+                                    <div style="max-height: 230px;" data-simplebar="">
+                                        <!-- item-->
+                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                            <!-- Notifications icon will be added here -->
+                                            <p class="notify-details">See all notifications
+                                                
+                                            </p>
+                                        </a>
+
+                                        
+                                    <!-- All-->
+                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                        View All
+                                    </a>
+
+                                </div>
+                            </li>
+
+                           
+
+                            <li class="notification-list">
+                                <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                    <i class="dripicons-gear noti-icon"></i>
+                                </a>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <span class="account-user-avatar"> 
+                                        <img src="assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                                    </span>
+                                    <span>
+                                        
+                                        <span class="account-user-name"><% if (typeof username !== 'undefined') { %>
+                    <p class="text-muted"><%= username %></p>
+                <% } %>
+                <% if (typeof error !== 'undefined') { %>
+                    <%= error %>
+                <% } %></span>
+                              
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <!-- item-->
+                                    <div class=" dropdown-header noti-title">
+                                        <h6 class="text-overflow m-0">Welcome !</h6>
+                                    </div>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-circle me-1"></i>
+                                        <span>My Account</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-edit me-1"></i>
+                                        <span>Settings</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lifebuoy me-1"></i>
+                                        <span>Support</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/lock-screen" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lock-outline me-1"></i>
+                                        <span>Lock Screen</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/login" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-logout me-1"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+                        <button class="button-menu-mobile open-left">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                        <div class="app-search dropdown d-none d-lg-block">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                    <span class="mdi mdi-magnify search-icon"></span>
+                                    <button class="input-group-text btn-primary" type="submit">Search</button>
+                                </div>
+                            </form>
+
+                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
+                                <!-- item-->
+                                <div class="dropdown-header noti-title">
+                                    <h5 class="text-overflow mb-2">Found <span class="text-danger">17</span> results</h5>
+                                </div>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-notes font-16 me-1"></i>
+                                    <span>Analytics Report</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-life-ring font-16 me-1"></i>
+                                    <span>How can I help you?</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-cog font-16 me-1"></i>
+                                    <span>User profile settings</span>
+                                </a>
+
+                               
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end Topbar -->
+                    <!-- Start Content-->
+                <div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Academic</a></li>
+                        <li class="breadcrumb-item active">Manage Book Lists</li>
+                    </ol>
+                </div>
+                <h4 class="page-title">Manage Book Lists</h4>
+            </div>
+        </div>
+    </div>     
+    <!-- end page title --> 
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Filters -->
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Academic Year</label>
+                            <select class="form-select" id="academicYearFilter">
+                                <option value="all">All Years</option>
+                                <% academicYears.forEach(function(year) { %>
+                                    <option value="<%= year.year_name %>" <%= filters.academicYear === year.year_name ? 'selected' : '' %>>
+                                        <%= year.year_name %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Class Level</label>
+                            <select class="form-select" id="classLevelFilter">
+                                <option value="all">All Levels</option>
+                                <% classLevels.forEach(function(level) { %>
+                                    <option value="<%= level.level %>" <%= filters.classLevel === level.level ? 'selected' : '' %>>
+                                        <%= level.level %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Department</label>
+                            <select class="form-select" id="departmentFilter">
+                                <option value="all">All Departments</option>
+                                <% departments.forEach(function(dept) { %>
+                                    <option value="<%= dept.department %>" <%= filters.department === dept.department ? 'selected' : '' %>>
+                                        <%= dept.department %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">&nbsp;</label>
+                            <button class="btn btn-primary w-100" onclick="applyFilters()">Apply Filters</button>
+                        </div>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    <% if (success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Success!</strong> <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <% if (error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Add New Book List Button -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addBookListModal">
+                                <i class="mdi mdi-plus-circle"></i> Add New Book List
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Book Lists Table -->
+                    <div class="table-responsive">
+                        <table class="table table-centered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Academic Year</th>
+                                    <th>Class Level</th>
+                                    <th>Department</th>
+                                    <th>Subject</th>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Price (₦)</th>
+                                    <th>Required</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (bookLists.length === 0) { %>
+                                    <tr>
+                                        <td colspan="9" class="text-center">No book lists found</td>
+                                    </tr>
+                                <% } else { %>
+                                    <% bookLists.forEach(function(book) { %>
+                                        <tr>
+                                            <td><%= book.academic_year %></td>
+                                            <td><%= book.class_level %></td>
+                                            <td><%= book.department || 'N/A' %></td>
+                                            <td><%= book.subject %></td>
+                                            <td><%= book.title %></td>
+                                            <td><%= book.author || 'N/A' %></td>
+                                            <td><%= book.price ? '₦' + book.price.toLocaleString() : 'N/A' %></td>
+                                            <td>
+                                                <span class="badge bg-<%= book.is_required ? 'success' : 'warning' %>">
+                                                    <%= book.is_required ? 'Required' : 'Optional' %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary" onclick="editBookList(<%= book.id %>)" data-bs-toggle="tooltip" title="Edit">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </button>
+                                                <a href="/delete-book-list/<%= book.id %>" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('Are you sure you want to delete this book list?')">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Book List Modal -->
+<div class="modal fade" id="addBookListModal" tabindex="-1" aria-labelledby="addBookListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBookListModalLabel">Add New Book List</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="bookListForm" action="/save-book-list" method="post">
+                    <input type="hidden" id="bookListId" name="id">
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Academic Year*</label>
+                                <select class="form-select" name="academic_year" required>
+                                    <option value="">Select Academic Year</option>
+                                    <% academicYears.forEach(function(year) { %>
+                                        <option value="<%= year.year_name %>"><%= year.year_name %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Class Level*</label>
+                                <select class="form-select" name="class_level" required>
+                                    <option value="">Select Class Level</option>
+                                    <% classLevels.forEach(function(level) { %>
+                                        <option value="<%= level.level %>"><%= level.level %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Department</label>
+                                <select class="form-select" name="department">
+                                    <option value="">Select Department (Optional)</option>
+                                    <% departments.forEach(function(dept) { %>
+                                        <option value="<%= dept.department %>"><%= dept.department %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Subject*</label>
+                                <input type="text" class="form-control" name="subject" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label class="form-label">Title*</label>
+                                <input type="text" class="form-control" name="title" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Price (₦)</label>
+                                <input type="number" class="form-control" name="price" step="0.01" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Author</label>
+                                <input type="text" class="form-control" name="author">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Publisher</label>
+                                <input type="text" class="form-control" name="publisher">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">ISBN</label>
+                                <input type="text" class="form-control" name="isbn">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Required</label>
+                                <select class="form-select" name="is_required">
+                                    <option value="true">Required</option>
+                                    <option value="false">Optional</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="bookListForm" class="btn btn-primary">Save Book List</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Function to show the add book list modal
+function showAddBookListModal() {
+    // Reset the form
+    document.getElementById('bookListForm').reset();
+    document.getElementById('bookListId').value = '';
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('addBookListModal'));
+    modal.show();
+}
+
+// Function to edit a book list
+async function editBookList(id) {
+    try {
+        // Fetch book list data
+        const response = await fetch(`/api/book-list/${id}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            const book = result.data;
+            
+            // Fill the form with book data
+            document.getElementById('bookListId').value = book.id;
+            document.querySelector('select[name="academic_year"]').value = book.academic_year;
+            document.querySelector('select[name="class_level"]').value = book.class_level;
+            document.querySelector('select[name="department"]').value = book.department || '';
+            document.querySelector('input[name="subject"]').value = book.subject;
+            document.querySelector('input[name="title"]').value = book.title;
+            document.querySelector('input[name="author"]').value = book.author || '';
+            document.querySelector('input[name="publisher"]').value = book.publisher || '';
+            document.querySelector('input[name="isbn"]').value = book.isbn || '';
+            document.querySelector('input[name="price"]').value = book.price || '';
+            document.querySelector('select[name="is_required"]').value = book.is_required;
+            
+            // Update modal title
+            document.getElementById('addBookListModalLabel').textContent = 'Edit Book List';
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('addBookListModal'));
+            modal.show();
+        } else {
+            alert('Error loading book list: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error loading book list');
+    }
+}
+
+// Handle form submission
+document.getElementById('bookListForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    try {
+        const response = await fetch('/save-book-list', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            // Close the modal and refresh the page
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addBookListModal'));
+            modal.hide();
+            window.location.reload();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error saving book list');
+    }
+});
+
+// Initialize the modal when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener to the "Add New Book List" button
+    const addButton = document.querySelector('[data-bs-target="#addBookListModal"]');
+    if (addButton) {
+        addButton.addEventListener('click', function() {
+            document.getElementById('addBookListModalLabel').textContent = 'Add New Book List';
+            document.getElementById('bookListForm').reset();
+            document.getElementById('bookListId').value = '';
+        });
+    }
+    
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>         </div>
+            </div>
+                         
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+
+        </div>
+        <!-- END wrapper -->
+
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Settings</h5>
+            </div>
+
+            <div class="rightbar-content h-100" data-simplebar="">
+
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+
+                    <!-- Settings -->
+                    <h5 class="mt-3">Color Scheme</h5>
+                    <hr class="mt-1">
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+       
+
+                    <!-- Width -->
+                    <h5 class="mt-4">Width</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+        
+
+                    <!-- Left Sidebar-->
+                    <h5 class="mt-4">Left Sidebar</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                        <label class="form-check-label" for="default-check">Default</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                        <label class="form-check-label" for="light-check">Light</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                        <label class="form-check-label" for="dark-check">Dark</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked="">
+                        <label class="form-check-label" for="fixed-check">Fixed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                        <label class="form-check-label" for="condensed-check">Condensed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+                        <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+            
+                        <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm" class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a>
+                    </div>
+                </div> <!-- end padding-->
+
+            </div>
+        </div>
+
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+<script>
+// Function to apply filters
+function applyFilters() {
+    const academicYear = document.getElementById('academicYearFilter').value;
+    const classLevel = document.getElementById('classLevelFilter').value;
+    const department = document.getElementById('departmentFilter').value;
+    
+    let url = '/manage-book-lists?';
+    if (academicYear !== 'all') url += `academicYear=${academicYear}&`;
+    if (classLevel !== 'all') url += `classLevel=${classLevel}&`;
+    if (department !== 'all') url += `department=${department}&`;
+    
+    window.location.href = url.slice(0, -1); // Remove trailing & or ?
+}
+
+// Function to edit book list
+async function editBookList(id) {
+    try {
+        const response = await fetch(`/api/book-list/${id}`);
+        const book = await response.json();
+        
+        if (book.success) {
+            // Fill the form with book data
+            document.getElementById('bookListId').value = book.data.id;
+            document.querySelector('select[name="academic_year"]').value = book.data.academic_year;
+            document.querySelector('select[name="class_level"]').value = book.data.class_level;
+            document.querySelector('select[name="department"]').value = book.data.department || '';
+            document.querySelector('input[name="subject"]').value = book.data.subject;
+            document.querySelector('input[name="title"]').value = book.data.title;
+            document.querySelector('input[name="author"]').value = book.data.author || '';
+            document.querySelector('input[name="publisher"]').value = book.data.publisher || '';
+            document.querySelector('input[name="isbn"]').value = book.data.isbn || '';
+            document.querySelector('input[name="price"]').value = book.data.price || '';
+            document.querySelector('select[name="is_required"]').value = book.data.is_required;
+            
+            // Update modal title
+            document.getElementById('bookListModalLabel').textContent = 'Edit Book List';
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('bookListModal'));
+            modal.show();
+        } else {
+            alert('Error loading book list: ' + book.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error loading book list');
+    }
+}
+
+// Function to show add modal
+function showAddModal() {
+    // Reset form
+    document.getElementById('bookListForm').reset();
+    document.getElementById('bookListId').value = '';
+    document.getElementById('bookListModalLabel').textContent = 'Add Book List';
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('bookListModal'));
+    modal.show();
+}
+
+// Handle form submission
+document.getElementById('bookListForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    try {
+        const response = await fetch('/save-book-list', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(result.message);
+            window.location.reload();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error saving book list');
+    }
+});
+
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
+
+        <!-- plugin js -->
+        <script src="assets/js/vendor/dropzone.min.js"></script>
+        <!-- init js -->
+        <script src="assets/js/ui/component.fileupload.js"></script>
+    </body>
+</html>

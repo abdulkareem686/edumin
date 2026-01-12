@@ -1,0 +1,1193 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>edu admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="/vendor/bootstrap-select/dist/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="leftside-menu">
+    
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-light">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-dark">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+    
+                <div class="h-100" id="leftside-menu-container" data-simplebar="">
+
+                    <!--- Sidemenu -->
+                    <ul class="side-nav">
+
+                        <li class="side-nav-title side-nav-item">Navigation</li>
+
+                        <li class="side-nav-item">
+                            <a href="/" class="side-nav-link">
+                            <i class="uil-home-alt"></i>
+                                <span> Dashboards </span>
+                            </a>
+                        </li>
+                        <li class="side-nav-title side-nav-item">Apps</li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false" aria-controls="sidebarMultiLevel" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> Records </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarMultiLevel">
+                                <ul class="side-nav-second-level">
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel">
+                                            <span> Academic Year </span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="sidebarSecondLevel">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/academic-years">Academic Year</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/add-academic-year">Add Academic Year</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#attendance" aria-expanded="false" aria-controls="attendance">
+                                            <span> Attendance</span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="attendance">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/mark-attendance">Mark Attendance</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/attendance-reports">Attendance Reports</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#salary-management" aria-expanded="false" aria-controls="salary-management">
+        <span>Salary Management</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="salary-management">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/salary-management">Salary Management</a>
+            </li>
+            <li>
+                <a href="/salary-structures">Salary Structures</a>
+            </li>
+            <li>
+                <a href="/process-salaries">Process Salaries</a>
+            </li>
+            <li>
+                <a href="/salary-payments">Payment History</a>
+            </li>
+        </ul>
+    </div>
+</li>
+<li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#financial-reports" aria-expanded="false" aria-controls="financial-reports">
+        <span>Financial Reports</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="financial-reports">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/expenses">Expenses</a>
+            </li>
+            <li>
+                <a href="/financial-reports">Financial Reports</a>
+            </li>
+            <li>
+                <a href="/add-expense">Add Expense</a>
+            </li>
+            
+        </ul>
+    </div>
+</li>
+                                    <li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#sidebarThirdLevel" aria-expanded="false" aria-controls="sidebarThirdLevel">
+        <span> Results</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="sidebarThirdLevel">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/student-records">Student Records</a>
+            </li>
+            <li>
+                <a href="/enter-scores">Enter Scores</a>
+            </li>
+            
+            <li>
+                <a href="/broadsheet">Broadsheet</a>
+            </li>
+            
+            <li>
+                <a href="/term-reports">Term Report</a>
+            </li>
+        </ul>
+    </div>
+</li>
+                                    
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarLayouts" aria-expanded="false" aria-controls="sidebarLayouts" class="side-nav-link">
+                                <i class="uil-calender text-muted"></i>
+                                <span> Calendar </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarLayouts">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/school-calendar">All Events</a></li>
+                            <li><a href="/add-event">Add Event</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="mdi mdi-teach text-muted"></i>
+                                <span> Teachers </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-teachers">All Teachers</a></li>
+                            <li><a href="/add-teacher">Add Teacher</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEmail" aria-expanded="false" aria-controls="sidebarEmail" class="side-nav-link">
+                                <i class="bi bi-person-fill text-muted"></i>
+                                <span> Students </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEmail">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-students">All Students</a></li>
+                            <li><a href="/add-student">Add Students</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                         <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarIcons" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                                <i class="bi bi-person text-muted"></i>
+                                <span> Staff </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarIcons">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-staff">All Staff</a></li>
+                            <li><a href="/add-staff">Add Staff</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false" aria-controls="sidebarProjects" class="side-nav-link">
+                                <i class="bi-arrow-down"></i>
+                                <span> Classes </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProjects">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/all-classes">All Classes</a></li>
+                            <li><a href="/add-class">Add Class</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSubjects" aria-expanded="false" aria-controls="sidebarSubjects" class="side-nav-link">
+                                <i class="bi bi-book"></i>
+                                <span> Subjects </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSubjects">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="/register-subjects">Add Subject</a>
+                                    </li>
+                                    <li>
+                                        <a href="/view-subjects">Subjects</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTasks" aria-expanded="false" aria-controls="sidebarTasks" class="side-nav-link">
+                                <i class="bi-book"></i>
+                                <span> Library </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTasks">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-library">All Library</a></li>
+                            <li><a href="/add-library">Add Library</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="apps-file-manager.html" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> File Manager </span>
+                            </a>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTables" aria-expanded="false" aria-controls="sidebarTables" class="side-nav-link">
+                                <i class="bi-cash"></i>
+                                <span> Fees </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTables">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/fees-collection">Fees Collection</a></li>
+                            <li><a href="/add-fees">Add Fees</a></li>
+                            <li><a href="/class-bills">Class Bills</a></li>
+
+                                </ul>
+                            </div>
+                        </li>
+                        
+                        
+                        
+                    </ul>
+
+                    <!-- Help Box -->
+                   
+                    <!-- end Help Box -->
+                    <!-- End Sidebar -->
+
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- Sidebar -left -->
+
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar Start -->
+                    <div class="navbar-custom">
+                        <ul class="list-unstyled topbar-menu float-end mb-0">
+                            <li class="dropdown notification-list d-lg-none">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-search noti-icon"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                                    <form class="p-3">
+                                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="dropdown notification-list topbar-dropdown">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <img src="assets/images/flags/us.jpg" alt="user-image" class="me-0 me-sm-1" height="12"> 
+                                    <span class="align-middle d-none d-sm-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
+                                    </a>
+                
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
+                                    </a>
+
+                                </div>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-bell noti-icon"></i>
+                                    <span class="noti-icon-badge"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+
+                                    <!-- item-->
+                                    <div class="dropdown-item noti-title">
+                                        <h5 class="m-0">
+                                            <span class="float-end">
+                                                <a href="javascript: void(0);" class="text-dark">
+                                                    <small>Clear All</small>
+                                                </a>
+                                            </span>Notification
+                                        </h5>
+                                    </div>
+
+                                    <div style="max-height: 230px;" data-simplebar="">
+                                        <!-- item-->
+                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                            <!-- Notifications icon will be added here -->
+                                            <p class="notify-details">See all notifications
+                                                
+                                            </p>
+                                        </a>
+
+                                        
+                                    <!-- All-->
+                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                        View All
+                                    </a>
+
+                                </div>
+                            </li>
+
+                           
+
+                            <li class="notification-list">
+                                <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                    <i class="dripicons-gear noti-icon"></i>
+                                </a>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <span class="account-user-avatar"> 
+                                        <img src="assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                                    </span>
+                                    <span>
+                                        
+                                        <span class="account-user-name"><% if (typeof username !== 'undefined') { %>
+                    <p class="text-muted"><%= username %></p>
+                <% } %>
+                <% if (typeof error !== 'undefined') { %>
+                    <%= error %>
+                <% } %></span>
+                              
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <!-- item-->
+                                    <div class=" dropdown-header noti-title">
+                                        <h6 class="text-overflow m-0">Welcome !</h6>
+                                    </div>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-circle me-1"></i>
+                                        <span>My Account</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-edit me-1"></i>
+                                        <span>Settings</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lifebuoy me-1"></i>
+                                        <span>Support</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/lock-screen" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lock-outline me-1"></i>
+                                        <span>Lock Screen</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/login" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-logout me-1"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+                        <button class="button-menu-mobile open-left">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                        <div class="app-search dropdown d-none d-lg-block">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                    <span class="mdi mdi-magnify search-icon"></span>
+                                    <button class="input-group-text btn-primary" type="submit">Search</button>
+                                </div>
+                            </form>
+
+                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
+                                <!-- item-->
+                                <div class="dropdown-header noti-title">
+                                    <h5 class="text-overflow mb-2">Found <span class="text-danger">17</span> results</h5>
+                                </div>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-notes font-16 me-1"></i>
+                                    <span>Analytics Report</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-life-ring font-16 me-1"></i>
+                                    <span>How can I help you?</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-cog font-16 me-1"></i>
+                                    <span>User profile settings</span>
+                                </a>
+
+                               
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end Topbar -->
+                    <!-- Start Content-->
+                <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Fees Collection</a></li>
+                                            <li class="breadcrumb-item active">Create Fees</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">Create Fees</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Basic Info</h5>
+                <form action="/add-fees" method="post" class="needs-validation" novalidate>
+    
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="mb-3">
+                <label class="form-label">Student*</label>
+                <select class="form-select" name="studentId" id="studentSelect" required>
+                    <option value="">-- Select Student --</option>
+                    <% students.forEach(student => { %>
+                        <option value="<%= student.id %>" 
+                            data-firstname="<%= student.firstName %>"
+                            data-middlename="<%= student.middleName %>"
+                            data-lastname="<%= student.lastName %>"
+                            data-class="<%= student.className || 'N/A' %>"
+                            data-department="<%= student.classDepartment || '' %>"
+                            data-classid="<%= student.classId || '' %>"
+                            data-email="<%= student.email || '' %>">
+                            <%= student.firstName %> <%= student.middleName %> <%= student.lastName %>
+                            - <%= student.className || 'Not assigned' %>
+                            <% if (student.classDepartment) { %> 
+                                (<%= student.classDepartment %>) 
+                            <% } %>
+                        </option>
+                    <% }); %>
+                </select>
+                <div class="invalid-feedback">Please select a student</div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" readonly>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Middle Name</label>
+                    <input type="text" class="form-control" id="middleName" readonly>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" readonly>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Class</label>
+                    <input type="text" class="form-control" id="studentClass" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Department</label>
+                    <input type="text" class="form-control" id="studentDepartment" readonly>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="studentEmail" readonly>
+            </div>
+
+            <!-- Class Bill Template Section -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">Class Bill Templates</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="form-label">Select Fee Type from Bill</label>
+                        <select class="form-select" id="billFeeType">
+                            <option value="">-- Select Fee Type --</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Bill Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">₦</span>
+                            <input type="text" class="form-control" id="billAmountDisplay" readonly>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-outline-primary" onclick="applyBillTemplate()">
+                            <i class="fas fa-check me-1"></i> Apply Bill Template
+                        </button>
+                    </div>
+                    <small class="text-muted d-block mt-2">Select a fee type to load the standardized amount from class bill</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="mb-3">
+                <label class="form-label">Fee Type*</label>
+                <select class="form-select" name="feeType" id="feeType" required>
+                    <option value="">-- Select Fee Type --</option>
+                    <% feeTypes.forEach(type => { %>
+                        <option value="<%= type %>" <%= (formData.feeType === type) ? 'selected' : '' %>>
+                            <%= type %>
+                        </option>
+                    <% }); %>
+                </select>
+                <div class="invalid-feedback">Please select a fee type</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Payment Type*</label>
+                <select class="form-select" name="paymentType" required>
+                    <option value="">-- Select Payment Type --</option>
+                    <% paymentTypes.forEach(type => { %>
+                        <option value="<%= type %>" <%= (formData.paymentType === type) ? 'selected' : '' %>>
+                            <%= type %>
+                        </option>
+                    <% }); %>
+                </select>
+                <div class="invalid-feedback">Please select a payment type</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Amount (₦)*</label>
+                <div class="input-group">
+                    <span class="input-group-text">₦</span>
+                    <input type="number" class="form-control" name="amount" id="amountInput"
+                        value="<%= formData.amount || '' %>" step="0.01" min="0" required
+                        placeholder="0.00">
+                </div>
+                <div class="invalid-feedback">Please enter a valid amount</div>
+                <div id="amountStatus" class="form-text"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Payment Date*</label>
+                <input type="date" class="form-control" name="paymentDate" 
+                    value="<%= formData.paymentDate || new Date().toISOString().split('T')[0] %>" required>
+                <div class="invalid-feedback">Please select a payment date</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Academic Year*</label>
+                <select class="form-select" name="academicYear" id="academicYear" required>
+                    <option value="">-- Select Academic Year --</option>
+                    <% academicYears.forEach(year => { %>
+                        <option value="<%= year.year_name %>" 
+                            data-id="<%= year.id %>"
+                            <%= (formData.academicYear === year.year_name || year.is_current) ? 'selected' : '' %>>
+                            <%= year.year_name %>
+                            <% if (year.is_current) { %> (Current) <% } %>
+                        </option>
+                    <% }); %>
+                </select>
+                <div class="invalid-feedback">Please select an academic year</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Term*</label>
+                <select class="form-select" name="term" id="term" required>
+                    <option value="">-- Select Term --</option>
+                    <% if (typeof terms !== 'undefined' && terms.length > 0) { %>
+                        <% terms.forEach(term => { %>
+                            <option value="<%= term.term_name %>" 
+                                <%= (formData.term === term.term_name || term.is_current) ? 'selected' : '' %>>
+                                <%= term.term_name %>
+                                <% if (term.is_current) { %> (Current) <% } %>
+                            </option>
+                        <% }); %>
+                    <% } else { %>
+                        <option value="First Term" <%= (formData.term === 'First Term') ? 'selected' : '' %>>First Term</option>
+                        <option value="Second Term" <%= (formData.term === 'Second Term') ? 'selected' : '' %>>Second Term</option>
+                        <option value="Third Term" <%= (formData.term === 'Third Term') ? 'selected' : '' %>>Third Term</option>
+                    <% } %>
+                </select>
+                <div class="invalid-feedback">Please select a term</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Notes (Optional)</label>
+                <textarea class="form-control" name="notes" rows="2" placeholder="Any additional notes about this payment"><%= formData.notes || '' %></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-money-bill-wave me-1"></i> Submit Payment
+            </button>
+            <button type="reset" class="btn btn-outline-secondary ms-2" onclick="resetForm()">
+                <i class="fas fa-times me-1"></i> Cancel
+            </button>
+        </div>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const studentSelect = document.getElementById('studentSelect');
+    const firstNameInput = document.getElementById('firstName');
+    const middleNameInput = document.getElementById('middleName');
+    const lastNameInput = document.getElementById('lastName');
+    const studentClassInput = document.getElementById('studentClass');
+    const studentDepartmentInput = document.getElementById('studentDepartment');
+    const studentEmailInput = document.getElementById('studentEmail');
+    const academicYearSelect = document.getElementById('academicYear');
+    const termSelect = document.getElementById('term');
+    const billFeeTypeSelect = document.getElementById('billFeeType');
+    const billAmountDisplay = document.getElementById('billAmountDisplay');
+    const feeTypeSelect = document.getElementById('feeType');
+    const amountInput = document.getElementById('amountInput');
+    const amountStatus = document.getElementById('amountStatus');
+
+    let currentBillAmount = 0;
+    let currentStudentClassId = '';
+
+    // Update student details when a student is selected
+    studentSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        
+        if (selectedOption.value) {
+            firstNameInput.value = selectedOption.getAttribute('data-firstname') || '';
+            middleNameInput.value = selectedOption.getAttribute('data-middlename') || '';
+            lastNameInput.value = selectedOption.getAttribute('data-lastname') || '';
+            studentClassInput.value = selectedOption.getAttribute('data-class') || 'N/A';
+            studentDepartmentInput.value = selectedOption.getAttribute('data-department') || 'N/A';
+            studentEmailInput.value = selectedOption.getAttribute('data-email') || '';
+            
+            currentStudentClassId = selectedOption.getAttribute('data-classid') || '';
+            
+            // Load class bills for the selected student's class
+            if (currentStudentClassId) {
+                loadClassBills(currentStudentClassId);
+            } else {
+                resetBillSection();
+            }
+        } else {
+            resetStudentDetails();
+            resetBillSection();
+        }
+    });
+
+    // Load class bills for a specific class
+    async function loadClassBills(classId) {
+        billFeeTypeSelect.innerHTML = '<option value="">Loading fee types...</option>';
+        billFeeTypeSelect.disabled = true;
+        billAmountDisplay.value = '';
+        currentBillAmount = 0;
+        
+        try {
+            const response = await fetch(`/get-class-bills?classId=${classId}`);
+            const result = await response.json();
+            
+            billFeeTypeSelect.innerHTML = '<option value="">-- Select Fee Type --</option>';
+            
+            if (result.success && result.bills.length > 0) {
+                result.bills.forEach(bill => {
+                    const option = document.createElement('option');
+                    option.value = bill.fee_type;
+                    option.textContent = `${bill.fee_type}`;
+                    option.setAttribute('data-amount', bill.amount);
+                    billFeeTypeSelect.appendChild(option);
+                });
+                billFeeTypeSelect.disabled = false;
+                showToast('Class bills loaded successfully!', 'success');
+            } else {
+                billFeeTypeSelect.innerHTML = '<option value="">No class bills found</option>';
+                billFeeTypeSelect.disabled = true;
+                showToast('No class bills found for this student\'s class', 'info');
+            }
+        } catch (error) {
+            console.error('Error loading class bills:', error);
+            billFeeTypeSelect.innerHTML = '<option value="">Error loading bills</option>';
+            billFeeTypeSelect.disabled = true;
+            showToast('Error loading class bills', 'danger');
+        }
+    }
+
+    // Update bill amount display when fee type is selected
+    billFeeTypeSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        
+        if (selectedOption.value) {
+            currentBillAmount = parseFloat(selectedOption.getAttribute('data-amount')) || 0;
+            billAmountDisplay.value = currentBillAmount.toLocaleString('en-NG', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            
+            // Also set the fee type in the main fee type select
+            for (let i = 0; i < feeTypeSelect.options.length; i++) {
+                if (feeTypeSelect.options[i].value === selectedOption.value) {
+                    feeTypeSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        } else {
+            currentBillAmount = 0;
+            billAmountDisplay.value = '';
+        }
+        
+        updateAmountStatus();
+    });
+
+    // Update amount status when amount changes
+    amountInput.addEventListener('input', updateAmountStatus);
+
+    function updateAmountStatus() {
+        const enteredAmount = parseFloat(amountInput.value) || 0;
+        
+        if (currentBillAmount > 0) {
+            if (enteredAmount === 0) {
+                amountStatus.textContent = `Bill amount: ₦${currentBillAmount.toLocaleString()}`;
+                amountStatus.className = 'form-text text-info';
+            } else if (enteredAmount < currentBillAmount) {
+                const balance = currentBillAmount - enteredAmount;
+                amountStatus.textContent = `Partial payment. Balance: ₦${balance.toLocaleString()}`;
+                amountStatus.className = 'form-text text-warning';
+            } else if (enteredAmount === currentBillAmount) {
+                amountStatus.textContent = 'Full payment received';
+                amountStatus.className = 'form-text text-success';
+            } else {
+                const overpayment = enteredAmount - currentBillAmount;
+                amountStatus.textContent = `Overpayment: ₦${overpayment.toLocaleString()}`;
+                amountStatus.className = 'form-text text-info';
+            }
+        } else {
+            amountStatus.textContent = '';
+        }
+    }
+
+    // Apply bill template to form
+    window.applyBillTemplate = function() {
+        if (billFeeTypeSelect.value && currentBillAmount > 0) {
+            amountInput.value = currentBillAmount;
+            updateAmountStatus();
+            showToast('Bill template applied successfully!', 'success');
+        } else {
+            showToast('Please select a fee type from the bill template', 'warning');
+        }
+    };
+
+    // Function to load terms for selected academic year
+    function loadTermsForAcademicYear(academicYearId) {
+        if (!academicYearId) return;
+        
+        // Show loading state
+        termSelect.innerHTML = '<option value="">Loading terms...</option>';
+        termSelect.disabled = true;
+        
+        fetch(`/api/terms/${academicYearId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch terms');
+                }
+                return response.json();
+            })
+            .then(terms => {
+                termSelect.innerHTML = '<option value="">-- Select Term --</option>';
+                terms.forEach(term => {
+                    const isCurrent = term.is_current ? ' (Current)' : '';
+                    termSelect.innerHTML += `
+                        <option value="${term.term_name}" ${term.is_current ? 'selected' : ''}>
+                            ${term.term_name}${isCurrent}
+                        </option>
+                    `;
+                });
+                termSelect.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error loading terms:', error);
+                termSelect.innerHTML = `
+                    <option value="">-- Select Term --</option>
+                    <option value="First Term">First Term</option>
+                    <option value="Second Term">Second Term</option>
+                    <option value="Third Term">Third Term</option>
+                `;
+                termSelect.disabled = false;
+            });
+    }
+    
+    academicYearSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const academicYearId = selectedOption.getAttribute('data-id');
+        
+        if (academicYearId) {
+            loadTermsForAcademicYear(academicYearId);
+        } else {
+            termSelect.innerHTML = '<option value="">-- Select Term --</option>';
+        }
+        
+        // Reload class bills if academic year changes and we have a student selected
+        if (currentStudentClassId && studentSelect.value) {
+            loadClassBills(currentStudentClassId);
+        }
+    });
+
+    termSelect.addEventListener('change', function() {
+        // Reload class bills if term changes and we have a student selected
+        if (currentStudentClassId && studentSelect.value) {
+            loadClassBills(currentStudentClassId);
+        }
+    });
+    
+    // Initialize if there's a preselected academic year
+    if (academicYearSelect.value) {
+        const selectedOption = academicYearSelect.options[academicYearSelect.selectedIndex];
+        const academicYearId = selectedOption.getAttribute('data-id');
+        
+        if (academicYearId) {
+            loadTermsForAcademicYear(academicYearId);
+        }
+    }
+
+    // Initialize form validation
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+
+    // Set default payment date to today if empty
+    const paymentDateInput = document.querySelector('input[name="paymentDate"]');
+    if (!paymentDateInput.value) {
+        paymentDateInput.value = new Date().toISOString().split('T')[0];
+    }
+
+    // Reset functions
+    function resetStudentDetails() {
+        firstNameInput.value = '';
+        middleNameInput.value = '';
+        lastNameInput.value = '';
+        studentClassInput.value = '';
+        studentDepartmentInput.value = '';
+        studentEmailInput.value = '';
+        currentStudentClassId = '';
+    }
+
+    function resetBillSection() {
+        billFeeTypeSelect.innerHTML = '<option value="">-- Select Fee Type --</option>';
+        billFeeTypeSelect.disabled = true;
+        billAmountDisplay.value = '';
+        currentBillAmount = 0;
+        amountStatus.textContent = '';
+    }
+
+    window.resetForm = function() {
+        const form = document.querySelector('form');
+        form.classList.remove('was-validated');
+        form.reset();
+        resetStudentDetails();
+        resetBillSection();
+        paymentDateInput.value = new Date().toISOString().split('T')[0];
+    };
+
+    // Toast notification function
+    function showToast(message, type = 'info') {
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        
+        // Add to page
+        document.body.appendChild(toast);
+        
+        // Show toast
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+        
+        // Remove after hidden
+        toast.addEventListener('hidden.bs.toast', function() {
+            document.body.removeChild(toast);
+        });
+    }
+
+    // Trigger change event for student select if there's a preselected value
+    if (studentSelect.value) {
+        studentSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                         
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+
+        </div>
+        <!-- END wrapper -->
+
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Settings</h5>
+            </div>
+
+            <div class="rightbar-content h-100" data-simplebar="">
+
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+
+                    <!-- Settings -->
+                    <h5 class="mt-3">Color Scheme</h5>
+                    <hr class="mt-1">
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+       
+
+                    <!-- Width -->
+                    <h5 class="mt-4">Width</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+        
+
+                    <!-- Left Sidebar-->
+                    <h5 class="mt-4">Left Sidebar</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                        <label class="form-check-label" for="default-check">Default</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                        <label class="form-check-label" for="light-check">Light</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                        <label class="form-check-label" for="dark-check">Dark</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked="">
+                        <label class="form-check-label" for="fixed-check">Fixed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                        <label class="form-check-label" for="condensed-check">Condensed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+                        <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+            
+                        <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm" class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a>
+                    </div>
+                </div> <!-- end padding-->
+
+            </div>
+        </div>
+
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
+
+        <!-- plugin js -->
+        <script src="assets/js/vendor/dropzone.min.js"></script>
+        <!-- init js -->
+        <script src="assets/js/ui/component.fileupload.js"></script>
+        <script>
+// Auto-fill student details when selected
+document.getElementById('studentSelect').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    document.getElementById('firstName').value = selectedOption.dataset.firstname || '';
+    document.getElementById('lastName').value = selectedOption.dataset.lastname || '';
+    document.getElementById('rollNo').value = selectedOption.dataset.rollno || 'N/A';
+    document.getElementById('studentClass').value = selectedOption.dataset.class || 'N/A';
+});
+
+// Initialize datepicker
+$(document).ready(function(){
+    $('.datepicker').datepicker({
+        format: 'dd-M-yyyy',
+        autoclose: true,
+        todayHighlight: true
+    });
+});
+
+// Form validation
+(function() {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+</script>
+    </body>
+</html>

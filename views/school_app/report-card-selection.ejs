@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Card Selection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card { margin-bottom: 20px; }
+        .form-label { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <!-- Report Card Section -->
+<div class="card mt-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-file-text me-2"></i>Report Card
+        </h5>
+    </div>
+    <div class="card-body">
+        <form id="reportCardForm" method="GET" action="/report-card">
+            <input type="hidden" name="studentId" value="<%= student.id %>">
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Academic Year:</label>
+                    <select class="form-select" id="academicYear" name="academicYear" required>
+                        <option value="">Select Academic Year</option>
+                        <% academicYears.forEach(year => { %>
+                        <option value="<%= year.year_name %>"><%= year.year_name %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Term:</label>
+                    <select class="form-select" id="term" name="term" required>
+                        <option value="">Select Term</option>
+                        <% terms.forEach(term => { %>
+                        <option value="<%= term %>"><%= term %></option>
+                        <% }); %>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-file-text me-2"></i> Generate Report Card
+                </button>
+            </div>
+        </form>
+
+        <!-- Quick Links for Common Terms -->
+        <div class="mt-4">
+            <h6>Quick View:</h6>
+            <div class="d-flex flex-wrap gap-2">
+                <% 
+                const currentYear = new Date().getFullYear();
+                const academicYear = `${currentYear-1}-${currentYear}`;
+                %>
+                <a href="/report-card?studentId=<%= student.id %>&academicYear=<%= academicYear %>&term=First Term" 
+                   class="btn btn-outline-primary btn-sm">First Term</a>
+                <a href="/report-card?studentId=<%= student.id %>&academicYear=<%= academicYear %>&term=Second Term" 
+                   class="btn btn-outline-primary btn-sm">Second Term</a>
+                <a href="/report-card?studentId=<%= student.id %>&academicYear=<%= academicYear %>&term=Third Term" 
+                   class="btn btn-outline-primary btn-sm">Third Term</a>
+                <a href="/report-card?studentId=<%= student.id %>&academicYear=<%= academicYear %>&term=Session" 
+                   class="btn btn-outline-success btn-sm">Full Session</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        function loadStudents(classId) {
+            if (!classId) {
+                document.getElementById('studentId').innerHTML = '<option value="">Select Student</option>';
+                return;
+            }
+            
+            fetch(`/api/students-by-class/${classId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const studentSelect = document.getElementById('studentId');
+                        studentSelect.innerHTML = '<option value="">Select Student</option>';
+                        
+                        data.students.forEach(student => {
+                            const option = document.createElement('option');
+                            option.value = student.id;
+                            option.textContent = `${student.firstName} ${student.middleName || ''} ${student.lastName}`;
+                            studentSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading students:', error);
+                });
+        }
+        
+        // Load students when class is already selected on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const classId = document.getElementById('classId').value;
+            if (classId) {
+                loadStudents(classId);
+            }
+        });
+    </script>
+</body>
+</html>

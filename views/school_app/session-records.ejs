@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Records - School Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #4e54c8;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 0;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
+        }
+        
+        .page-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: white;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .info-card {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .info-item {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #374151;
+            min-width: 120px;
+        }
+        
+        .info-value {
+            color: #6b7280;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            background: #f1f5f9;
+        }
+        
+        .badge-subject {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #6366f1 100%);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-department {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #e3e6f0;
+            text-align: center;
+        }
+        
+        .student-name {
+            font-weight: 600;
+            color: #2d3748;
+            text-align: left;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5809b5 0%, #1c64e0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(106, 17, 203, 0.05);
+        }
+        
+        .score-cell {
+            font-weight: 600;
+        }
+        
+        .high-score {
+            color: var(--success-color);
+        }
+        
+        .medium-score {
+            color: var(--warning-color);
+        }
+        
+        .low-score {
+            color: var(--danger-color);
+        }
+        
+        .summary-row {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+        
+        .session-table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .print-btn {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);
+            margin-left: 1rem;
+        }
+        
+        .print-btn:hover {
+            background: linear-gradient(135deg, #047857 0%, #0d966e 100%);
+            transform: translateY(-2px);
+        }
+        
+        .form-select {
+            border-radius: 10px;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.25);
+        }
+        
+        .selection-card {
+            transition: all 0.3s ease;
+        }
+        
+        .selection-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                padding: 1rem;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .info-label {
+                margin-bottom: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="page-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="page-title"><i class="fas fa-chart-line me-2"></i>Session Records</h1>
+                        <p class="page-subtitle mb-0">Academic performance overview for <%= academicYear %></p>
+                    </div>
+                    <div>
+                        <a href="/session-records" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Back to Selection
+                        </a>
+                        <button class="btn print-btn" onclick="window.print()">
+                            <i class="fas fa-print me-1"></i> Print Records
+                        </button>
+                    </div>
+                </div>
+
+                <% if (success) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong><i class="fas fa-check-circle me-2"></i>Success:</strong> <%= success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                <% if (error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong><i class="fas fa-exclamation-circle me-2"></i>Error:</strong> <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+
+                <!-- Student Selection Form -->
+                <div class="card selection-card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0"><i class="fas fa-user-graduate me-2"></i>Select Student</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="studentSelectionForm" method="GET" action="/session-records">
+                            <input type="hidden" name="classId" value="<%= classId %>">
+                            <input type="hidden" name="academicYear" value="<%= academicYear %>">
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="studentId" class="form-label">Select Student</label>
+                                        <select class="form-select" id="studentId" name="studentId" required>
+                                            <option value="">-- Select a Student --</option>
+                                            <% Object.keys(students).forEach(studentId => { 
+                                                const student = students[studentId];
+                                            %>
+                                                <option value="<%= studentId %>" <%= (selectedStudentId === studentId) ? 'selected' : '' %>>
+                                                    <%= student.firstName %> <%= student.lastName %>
+                                                    <% if (student.department) { %> - <%= student.department %><% } %>
+                                                </option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-search me-2"></i>View Records
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Session Details -->
+                <% if (selectedStudentId) { %>
+                <div class="card info-card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0"><i class="fas fa-info-circle me-2"></i>Session Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="info-item">
+                                    <span class="info-label">Class:</span>
+                                    <span class="info-value"><%= className %></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="info-item">
+                                    <span class="info-label">Level:</span>
+                                    <span class="info-value"><%= classLevel %></span>
+                                </div>
+                            </div>
+                            <% if (classDepartment) { %>
+                            <div class="col-md-3">
+                                <div class="info-item">
+                                    <span class="info-label">Department:</span>
+                                    <span class="info-value badge-subject"><%= classDepartment %></span>
+                                </div>
+                            </div>
+                            <% } %>
+                            <div class="col-md-3">
+                                <div class="info-item">
+                                    <span class="info-label">Academic Year:</span>
+                                    <span class="info-value"><%= academicYear %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session Records -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0"><i class="fas fa-table me-2"></i>Session Performance - <%= academicYear %></h5>
+                        <span class="badge bg-light text-dark">Total Students: <%= Object.keys(students).length %></span>
+                    </div>
+                    <div class="card-body">
+                        <% Object.keys(students).forEach(studentId => { 
+                            const student = students[studentId];
+                            if (selectedStudentId && studentId !== selectedStudentId) return;
+                        %>
+                            <div class="student-card mb-4">
+                                <div class="student-header bg-light p-3 rounded">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-user-graduate me-2"></i>
+                                        <%= student.firstName %> <%= student.lastName %>
+                                        <% if (student.department) { %>
+                                            <span class="badge-department ms-2"><%= student.department %></span>
+                                        <% } %>
+                                    </h6>
+                                    <div class="student-stats mt-2">
+                                        <span class="badge bg-primary me-2">Overall Average: <%= student.overallAverage %></span>
+                                        <span class="badge bg-success">Percentage: <%= student.percentage %>%</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Subject</th>
+                                                <th>First Term</th>
+                                                <th>Second Term</th>
+                                                <th>Third Term</th>
+                                                <th>Average</th>
+                                                <th>Grade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% student.subjects.forEach(subject => { 
+                                                let grade = 'F';
+                                                let gradeClass = 'low-score';
+                                                if (subject.average >= 80) {
+                                                    grade = 'A';
+                                                    gradeClass = 'high-score';
+                                                } else if (subject.average >= 70) {
+                                                    grade = 'B';
+                                                    gradeClass = 'high-score';
+                                                } else if (subject.average >= 60) {
+                                                    grade = 'C';
+                                                    gradeClass = 'medium-score';
+                                                } else if (subject.average >= 50) {
+                                                    grade = 'D';
+                                                    gradeClass = 'medium-score';
+                                                } else if (subject.average >= 40) {
+                                                    grade = 'E';
+                                                    gradeClass = 'low-score';
+                                                }
+                                            %>
+                                                <tr>
+                                                    <td class="fw-bold"><%= subject.subject_name %></td>
+                                                    <td class="score-cell"><%= subject.first_term %></td>
+                                                    <td class="score-cell"><%= subject.second_term %></td>
+                                                    <td class="score-cell"><%= subject.third_term %></td>
+                                                    <td class="score-cell fw-bold"><%= subject.average %></td>
+                                                    <td class="fw-bold <%= gradeClass %>"><%= grade %></td>
+                                                </tr>
+                                            <% }); %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+                <% } else { %>
+                    <div class="card">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-user-graduate fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Select a student to view their session records</h5>
+                            <p class="text-muted">Choose a student from the dropdown above to display their academic performance for <%= academicYear %></p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            $('.alert').alert('close');
+        }, 5000);
+        
+        // Print functionality
+        function printSessionRecords() {
+            window.print();
+        }
+        
+        // Auto-submit form when student is selected
+        $(document).ready(function() {
+            $('#studentId').change(function() {
+                if ($(this).val()) {
+                    $('#studentSelectionForm').submit();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

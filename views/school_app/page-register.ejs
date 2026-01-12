@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Register | Hyper - Responsive Bootstrap 5 Admin Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style" />
+
+    </head>
+
+    <body class="authentication-bg pb-0" data-layout-config='{"darkMode":false}'>
+
+        <div class="auth-fluid">
+            <!--Auth fluid left content -->
+            <div class="auth-fluid-form-box">
+                <div class="align-items-center d-flex h-100">
+                    <div class="card-body">
+
+                        <!-- Logo -->
+                        <div class="auth-brand text-center text-lg-start">
+                            <a href="" class="logo-dark">
+                                <span><img src="" alt="" height="18"></span>
+                            </a>
+                            <a href="" class="logo-light">
+                                <span><img src="" alt="" height="18"></span>
+                            </a>
+                        </div>
+
+                        <!-- title-->
+                        <h4 class="mt-0">School Registration</h4>
+<p class="text-muted mb-4">Create your school account, it takes less than a minute</p>
+
+<% if (error) { %>
+    <div class="alert alert-danger">
+        <%= error %>
+    </div>
+<% } %>
+
+<form action="/register" method="post">
+    <!-- School Information Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">School Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="schoolName" class="form-label">School Name *</label>
+                    <input class="form-control" type="text" id="schoolName" placeholder="Enter school name" name="schoolName" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="schoolEmail" class="form-label">School Email *</label>
+                    <input class="form-control" type="email" id="schoolEmail" placeholder="school@example.com" name="schoolEmail" required>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="schoolPhone" class="form-label">School Phone *</label>
+                    <input class="form-control" type="tel" id="schoolPhone" placeholder="+234 800 000 0000" name="schoolPhone" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="schoolWebsite" class="form-label">School Website</label>
+                    <input class="form-control" type="url" id="schoolWebsite" placeholder="https://www.school.edu.ng" name="schoolWebsite">
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="schoolAddress" class="form-label">School Address *</label>
+                <textarea class="form-control" id="schoolAddress" placeholder="Enter full school address" name="schoolAddress" rows="2" required></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Account Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Administrator Account</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="fullname" class="form-label">Username *</label>
+                    <input class="form-control" type="text" id="fullname" placeholder="Enter your username" name="username" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="emailaddress" class="form-label">Email address *</label>
+                    <input class="form-control" type="email" id="emailaddress" placeholder="admin@example.com" name="email" required>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="password" class="form-label">Password *</label>
+                    <input class="form-control" type="password" name="password" required id="password" placeholder="Enter your password">
+                    <div class="form-text">Must be at least 8 characters</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                    <input class="form-control" type="password" name="confirmPassword" required id="confirmPassword" placeholder="Confirm your password">
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="role" class="form-label">User Role *</label>
+                <select class="form-select" id="role" name="role" required>
+                    <option value="">Select Role</option>
+                    <option value="admin">Administrator</option>
+                </select>
+                <div class="form-text">Administrators have full system access</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions -->
+    <div class="mb-3">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="checkbox-signup" required>
+            <label class="form-check-label" for="checkbox-signup">
+                I accept the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a> *
+            </label>
+        </div>
+    </div>
+    
+    <div class="mb-0 d-grid text-center">
+        <button class="btn btn-primary" type="submit">
+            <i class="mdi mdi-account-circle"></i> Register School
+        </button>
+    </div>
+    
+    
+</form>
+
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>1. Account Registration</h6>
+                <p>You must provide accurate and complete information when creating your school account.</p>
+                
+                <h6>2. School Administration</h6>
+                <p>As the administrator, you are responsible for managing user accounts and maintaining data accuracy.</p>
+                
+                <h6>3. Data Privacy</h6>
+                <p>We respect your privacy and are committed to protecting your school's data.</p>
+                
+                <h6>4. Acceptable Use</h6>
+                <p>You agree to use the system only for lawful purposes and in accordance with these terms.</p>
+                
+                <h6>5. Subscription</h6>
+                <p>This account includes a 30-day free trial. After the trial period, a subscription may be required.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Social Signup (Optional) -->
+<div class="text-center mt-4">
+    <p class="text-muted font-16">Or sign up using</p>
+    <ul class="social-list list-inline mt-3">
+        <li class="list-inline-item">
+            <a href="javascript: void(0);" class="social-list-item border-primary text-primary"><i class="mdi mdi-facebook"></i></a>
+        </li>
+        <li class="list-inline-item">
+            <a href="javascript: void(0);" class="social-list-item border-danger text-danger"><i class="mdi mdi-google"></i></a>
+        </li>
+        <li class="list-inline-item">
+            <a href="javascript: void(0);" class="social-list-item border-info text-info"><i class="mdi mdi-twitter"></i></a>
+        </li>
+    </ul>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password confirmation validation
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    function validatePassword() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Passwords do not match');
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+    }
+    
+    password.addEventListener('change', validatePassword);
+    confirmPassword.addEventListener('keyup', validatePassword);
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+                        <!-- end form-->
+
+                        <!-- Footer-->
+                        <footer class="footer footer-alt">
+                            <p class="text-muted">Already have account? <a href="/login" class="text-muted ms-1"><b>Log In</b></a></p>
+                        </footer>
+
+                    </div> <!-- end .card-body -->
+                </div> <!-- end .align-items-center.d-flex.h-100-->
+            </div>
+            <!-- end auth-fluid-form-box-->
+
+            <!-- Auth fluid right content -->
+            <div class="auth-fluid-right text-center">
+            <div class="auth-user-testimonial">
+                <h2 class="mb-3">School Management System</h2>
+                <p class="lead"><i class="mdi mdi-format-quote-open"></i> A complete solution for managing students, teachers, and administrative tasks. <i class="mdi mdi-format-quote-close"></i>
+                </p>
+                <p>
+                    - School Administration
+                </p>
+            </div> <!-- end auth-user-testimonial-->
+        </div>
+            <!-- end Auth fluid right content -->
+        </div>
+        <!-- end auth-fluid-->
+
+        <!-- bundle -->
+        <script src="/assets/js/vendor.min.js"></script>
+        <script src="/assets/js/app.min.js"></script>
+
+    </body>
+
+</html>

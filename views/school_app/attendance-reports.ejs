@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Attendance Reports - edu admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .attendance-badge { font-size: 0.85rem; padding: 0.35em 0.65em; }
+        .stats-card { border-left: 4px solid; }
+        .stats-card.total { border-left-color: #0d6efd; }
+        .stats-card.present { border-left-color: #198754; }
+        .stats-card.absent { border-left-color: #dc3545; }
+        .stats-card.attendance { border-left-color: #6f42c1; }
+        .view-type-btn.active { background-color: #0d6efd; color: white; }
+        .session-badge { font-size: 0.75rem; padding: 0.25em 0.5em; }
+        .export-buttons { margin-bottom: 20px; }
+        .attendance-progress { height: 20px; }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="leftside-menu">
+    
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-light">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-dark">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+    
+                <div class="h-100" id="leftside-menu-container" data-simplebar="">
+
+                    <!--- Sidemenu -->
+                    <ul class="side-nav">
+
+                        <li class="side-nav-title side-nav-item">Navigation</li>
+
+                        <li class="side-nav-item">
+                            <a href="/" class="side-nav-link">
+                            <i class="uil-home-alt"></i>
+                                <span> Dashboards </span>
+                            </a>
+                        </li>
+                        <li class="side-nav-title side-nav-item">Apps</li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false" aria-controls="sidebarMultiLevel" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> Records </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarMultiLevel">
+                                <ul class="side-nav-second-level">
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel">
+                                            <span> Academic Year </span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="sidebarSecondLevel">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/academic-years">Academic Year</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/add-academic-year">Add Academic Year</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#attendance" aria-expanded="false" aria-controls="attendance">
+                                            <span> Attendance</span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="attendance">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/mark-attendance">Mark Attendance</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/attendance-reports">Attendance Reports</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#salary-management" aria-expanded="false" aria-controls="salary-management">
+        <span>Salary Management</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="salary-management">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/salary-management">Salary Management</a>
+            </li>
+            <li>
+                <a href="/salary-structures">Salary Structures</a>
+            </li>
+            <li>
+                <a href="/process-salaries">Process Salaries</a>
+            </li>
+            <li>
+                <a href="/salary-payments">Payment History</a>
+            </li>
+        </ul>
+    </div>
+</li>
+<li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#financial-reports" aria-expanded="false" aria-controls="financial-reports">
+        <span>Financial Reports</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="financial-reports">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/expenses">Expenses</a>
+            </li>
+            <li>
+                <a href="/financial-reports">Financial Reports</a>
+            </li>
+            <li>
+                <a href="/add-expense">Add Expense</a>
+            </li>
+            
+        </ul>
+    </div>
+</li>
+                                    <li class="side-nav-item">
+    <a data-bs-toggle="collapse" href="#sidebarThirdLevel" aria-expanded="false" aria-controls="sidebarThirdLevel">
+        <span> Results</span>
+        <span class="menu-arrow"></span>
+    </a>
+    <div class="collapse" id="sidebarThirdLevel">
+        <ul class="side-nav-third-level">
+            <li>
+                <a href="/student-records">Student Records</a>
+            </li>
+            <li>
+                <a href="/enter-scores">Enter Scores</a>
+            </li>
+            
+            <li>
+                <a href="/broadsheet">Broadsheet</a>
+            </li>
+            
+            <li>
+                <a href="/term-reports">Term Report</a>
+            </li>
+        </ul>
+    </div>
+</li>
+                                    
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarLayouts" aria-expanded="false" aria-controls="sidebarLayouts" class="side-nav-link">
+                                <i class="uil-calender text-muted"></i>
+                                <span> Calendar </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarLayouts">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/school-calendar">All Events</a></li>
+                            <li><a href="/add-event">Add Event</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="mdi mdi-teach text-muted"></i>
+                                <span> Teachers </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-teachers">All Teachers</a></li>
+                            <li><a href="/add-teacher">Add Teacher</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEmail" aria-expanded="false" aria-controls="sidebarEmail" class="side-nav-link">
+                                <i class="bi bi-person-fill text-muted"></i>
+                                <span> Students </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEmail">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-students">All Students</a></li>
+                            <li><a href="/add-student">Add Students</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                         <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarIcons" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                                <i class="bi bi-person text-muted"></i>
+                                <span> Staff </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarIcons">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-staff">All Staff</a></li>
+                            <li><a href="/add-staff">Add Staff</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false" aria-controls="sidebarProjects" class="side-nav-link">
+                                <i class="bi-arrow-down"></i>
+                                <span> Classes </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProjects">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/all-classes">All Classes</a></li>
+                            <li><a href="/add-class">Add Class</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSubjects" aria-expanded="false" aria-controls="sidebarSubjects" class="side-nav-link">
+                                <i class="bi bi-book"></i>
+                                <span> Subjects </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSubjects">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="/register-subjects">Add Subject</a>
+                                    </li>
+                                    <li>
+                                        <a href="/view-subjects">Subjects</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTasks" aria-expanded="false" aria-controls="sidebarTasks" class="side-nav-link">
+                                <i class="bi-book"></i>
+                                <span> Library </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTasks">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-library">All Library</a></li>
+                            <li><a href="/add-library">Add Library</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="apps-file-manager.html" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> File Manager </span>
+                            </a>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTables" aria-expanded="false" aria-controls="sidebarTables" class="side-nav-link">
+                                <i class="bi-cash"></i>
+                                <span> Fees </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTables">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/fees-collection">Fees Collection</a></li>
+                            <li><a href="/add-fees">Add Fees</a></li>
+                            <li><a href="/class-bills">Class Bills</a></li>
+
+                                </ul>
+                            </div>
+                        </li>
+                        
+                        
+                        
+                    </ul>
+
+                    <!-- Help Box -->
+                   
+                    <!-- end Help Box -->
+                    <!-- End Sidebar -->
+
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- Sidebar -left -->
+
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar Start -->
+                    <div class="navbar-custom">
+                        <ul class="list-unstyled topbar-menu float-end mb-0">
+                            <li class="dropdown notification-list d-lg-none">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-search noti-icon"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                                    <form class="p-3">
+                                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="dropdown notification-list topbar-dropdown">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <img src="assets/images/flags/us.jpg" alt="user-image" class="me-0 me-sm-1" height="12"> 
+                                    <span class="align-middle d-none d-sm-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
+                                    </a>
+                
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
+                                    </a>
+
+                                </div>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-bell noti-icon"></i>
+                                    <span class="noti-icon-badge"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+
+                                    <!-- item-->
+                                    <div class="dropdown-item noti-title">
+                                        <h5 class="m-0">
+                                            <span class="float-end">
+                                                <a href="javascript: void(0);" class="text-dark">
+                                                    <small>Clear All</small>
+                                                </a>
+                                            </span>Notification
+                                        </h5>
+                                    </div>
+
+                                    <div style="max-height: 230px;" data-simplebar="">
+                                        <!-- item-->
+                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                            <!-- Notifications icon will be added here -->
+                                            <p class="notify-details">See all notifications
+                                                
+                                            </p>
+                                        </a>
+
+                                        
+                                    <!-- All-->
+                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                        View All
+                                    </a>
+
+                                </div>
+                            </li>
+
+                           
+
+                            <li class="notification-list">
+                                <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                    <i class="dripicons-gear noti-icon"></i>
+                                </a>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <span class="account-user-avatar"> 
+                                        <img src="assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                                    </span>
+                                    <span>
+                                        
+                                        <span class="account-user-name"><% if (typeof username !== 'undefined') { %>
+                    <p class="text-muted"><%= username %></p>
+                <% } %>
+                <% if (typeof error !== 'undefined') { %>
+                    <%= error %>
+                <% } %></span>
+                              
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <!-- item-->
+                                    <div class=" dropdown-header noti-title">
+                                        <h6 class="text-overflow m-0">Welcome !</h6>
+                                    </div>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-circle me-1"></i>
+                                        <span>My Account</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-edit me-1"></i>
+                                        <span>Settings</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lifebuoy me-1"></i>
+                                        <span>Support</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/lock-screen" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lock-outline me-1"></i>
+                                        <span>Lock Screen</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/login" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-logout me-1"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+                        <button class="button-menu-mobile open-left">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                        <div class="app-search dropdown d-none d-lg-block">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                    <span class="mdi mdi-magnify search-icon"></span>
+                                    <button class="input-group-text btn-primary" type="submit">Search</button>
+                                </div>
+                            </form>
+
+                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
+                                <!-- item-->
+                                <div class="dropdown-header noti-title">
+                                    <h5 class="text-overflow mb-2">Found <span class="text-danger">17</span> results</h5>
+                                </div>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-notes font-16 me-1"></i>
+                                    <span>Analytics Report</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-life-ring font-16 me-1"></i>
+                                    <span>How can I help you?</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-cog font-16 me-1"></i>
+                                    <span>User profile settings</span>
+                                </a>
+
+                               
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end Topbar -->
+                    <!-- Start Content-->
+         <div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Attendance</a></li>
+                        <li class="breadcrumb-item active">Attendance Reports</li>
+                    </ol>
+                </div>
+                <h4 class="page-title">Attendance Reports</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <!-- Filter Form -->
+                    <form id="reportFilter" class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label">Academic Year</label>
+                            <select class="form-select" name="academicYear">
+                                <option value="">Select Academic Year</option>
+                                <% academicYears.forEach(year => { %>
+                                    <option value="<%= year.year_name %>" <%= selectedAcademicYear == year.year_name ? 'selected' : '' %>>
+                                        <%= year.year_name %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Term</label>
+                            <select class="form-select" name="term">
+                                <option value="">Select Term</option>
+                                <% terms.forEach(term => { %>
+                                    <option value="<%= term.term_name %>" <%= selectedTerm == term.term_name ? 'selected' : '' %>>
+                                        <%= term.term_name %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Select Class</label>
+                            <select class="form-select" name="classId" id="classFilter">
+                                <option value="">Select Class</option>
+                                <% classes.forEach(cls => { %>
+                                    <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>>
+                                        <%= cls.className %> 
+                                        <% if (cls.department) { %>(<%= cls.department %>)<% } %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <!-- Week Selection (shown when class is selected) -->
+<% if (selectedClassId && selectedAcademicYear && selectedTerm) { %>
+<div class="col-md-3">
+    <label class="form-label">Week Start Date</label>
+    <input type="date" class="form-control" name="weekStart" 
+        value="<%= selectedWeekStart %>">
+</div>
+<div class="col-md-3">
+    <label class="form-label">Week End Date</label>
+    <input type="date" class="form-control" name="weekEnd" 
+        value="<%= selectedWeekEnd %>">
+</div>
+<% } %>
+
+<!-- Add these hidden fields INSIDE the form, not as separate divs -->
+<input type="hidden" name="weekStartHidden" value="<%= selectedWeekStart || '' %>">
+<input type="hidden" name="weekEndHidden" value="<%= selectedWeekEnd || '' %>">
+                        
+                        <div class="col-md-2">
+                            <label class="form-label">Month (Optional)</label>
+                            <input type="month" class="form-control" name="month" 
+                                value="<%= selectedMonth %>">
+                        </div>
+                        
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="uil uil-filter me-1"></i> Generate
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Attendance Percentage Cards -->
+                    <div class="row mb-4">
+                        <% if (weeklyPercentage && weeklyPercentage.percentage) { %>
+<div class="col-md-4 mb-3">
+    <div class="card border-primary h-100">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+                <i class="uil uil-chart-pie-alt me-2"></i>
+                Weekly Attendance
+                <small class="float-end">
+                    <%= moment(weeklyPercentage.weekStart).format('MMM D') %> - <%= moment(weeklyPercentage.weekEnd).format('MMM D') %>
+                </small>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="text-center mb-3">
+                <h2 class="<%= weeklyPercentage.percentage >= 90 ? 'text-success' : 
+                           weeklyPercentage.percentage >= 75 ? 'text-info' : 
+                           weeklyPercentage.percentage >= 60 ? 'text-warning' : 'text-danger' %>">
+                    <%= weeklyPercentage.percentage %>%
+                </h2>
+                <p class="text-muted mb-0"><%= weeklyPercentage.presentCount %>/<%= weeklyPercentage.totalSessions %> Sessions</p>
+            </div>
+            <div class="progress weekly-progress mb-2">
+                <div class="progress-bar 
+                    <%= weeklyPercentage.percentage >= 90 ? 'bg-success' : 
+                       weeklyPercentage.percentage >= 75 ? 'bg-info' : 
+                       weeklyPercentage.percentage >= 60 ? 'bg-warning' : 'bg-danger' %>" 
+                    role="progressbar" 
+                    style="width: <%= weeklyPercentage.percentage %>%">
+                </div>
+            </div>
+            <small class="text-muted">
+                <i class="uil uil-calculator-alt me-1"></i>
+                Formula: (Present / Total Sessions) × 100
+            </small>
+        </div>
+    </div>
+</div>
+<% } %>
+                        <!-- Termly Attendance Percentage -->
+                        <% if (termlyPercentage) { %>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-success h-100">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="uil uil-analysis me-2"></i>
+                                        Termly Attendance
+                                        <small class="float-end">
+                                            <%= selectedTerm %>
+                                        </small>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <h2 class="<%= termlyPercentage.percentage >= 90 ? 'text-success' : 
+                                                   termlyPercentage.percentage >= 75 ? 'text-info' : 
+                                                   termlyPercentage.percentage >= 60 ? 'text-warning' : 'text-danger' %>">
+                                            <%= termlyPercentage.percentage %>%
+                                        </h2>
+                                        <p class="text-muted mb-0"><%= termlyPercentage.presentCount %>/<%= termlyPercentage.maxPossibleAttendance %> Possible</p>
+                                    </div>
+                                    <div class="progress termly-progress mb-2">
+                                        <div class="progress-bar 
+                                            <%= termlyPercentage.percentage >= 90 ? 'bg-success' : 
+                                               termlyPercentage.percentage >= 75 ? 'bg-info' : 
+                                               termlyPercentage.percentage >= 60 ? 'bg-warning' : 'bg-danger' %>" 
+                                            role="progressbar" 
+                                            style="width: <%= termlyPercentage.percentage %>%">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="uil uil-calculator-alt me-1"></i>
+                                        Formula: (Present / Max Possible) × 100
+                                        <br>Max Possible: <%= termlyPercentage.studentCount %> students × <%= termlyPercentage.schoolDays %> days
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <!-- Yearly Attendance Percentage -->
+                        <% if (yearlyPercentage) { %>
+                        <div class="col-md-4 mb-3">
+                            <div class="card border-warning h-100">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="card-title mb-0">
+                                        <i class="uil uil-graduation-hat me-2"></i>
+                                        Yearly Attendance
+                                        <small class="float-end">
+                                            <%= yearlyPercentage.academicYear %>
+                                        </small>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <h2 class="<%= yearlyPercentage.percentage >= 90 ? 'text-success' : 
+                                                   yearlyPercentage.percentage >= 75 ? 'text-info' : 
+                                                   yearlyPercentage.percentage >= 60 ? 'text-warning' : 'text-danger' %>">
+                                            <%= yearlyPercentage.percentage %>%
+                                        </h2>
+                                        <p class="text-muted mb-0"><%= yearlyPercentage.presentCount %>/<%= yearlyPercentage.maxPossibleAttendance %> Possible</p>
+                                    </div>
+                                    <div class="progress yearly-progress mb-2">
+                                        <div class="progress-bar 
+                                            <%= yearlyPercentage.percentage >= 90 ? 'bg-success' : 
+                                               yearlyPercentage.percentage >= 75 ? 'bg-info' : 
+                                               yearlyPercentage.percentage >= 60 ? 'bg-warning' : 'bg-danger' %>" 
+                                            role="progressbar" 
+                                            style="width: <%= yearlyPercentage.percentage %>%">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="uil uil-calculator-alt me-1"></i>
+                                        Formula: (Present / Max Possible) × 100
+                                        <br>Max Possible: <%= yearlyPercentage.studentCount %> students × <%= yearlyPercentage.schoolDays %> days
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+
+                    <!-- Comparison Chart -->
+                    <% if (weeklyPercentage && termlyPercentage && yearlyPercentage) { %>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="uil uil-chart-bar me-2"></i>
+                                        Attendance Comparison
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="comparison-chart">
+                                                <h6 class="text-center mb-3">Attendance Performance Comparison</h6>
+                                                <div class="progress mb-2" style="height: 25px;">
+                                                    <div class="progress-bar bg-info" role="progressbar" 
+                                                         style="width: <%= weeklyPercentage.percentage %>%">
+                                                        Weekly: <%= weeklyPercentage.percentage %>%
+                                                    </div>
+                                                </div>
+                                                <div class="progress mb-2" style="height: 25px;">
+                                                    <div class="progress-bar bg-success" role="progressbar" 
+                                                         style="width: <%= termlyPercentage.percentage %>%">
+                                                        Termly: <%= termlyPercentage.percentage %>%
+                                                    </div>
+                                                </div>
+                                                <div class="progress" style="height: 25px;">
+                                                    <div class="progress-bar bg-warning" role="progressbar" 
+                                                         style="width: <%= yearlyPercentage.percentage %>%">
+                                                        Yearly: <%= yearlyPercentage.percentage %>%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="comparison-stats">
+                                                <h6 class="text-center mb-3">Performance Analysis</h6>
+                                                <div class="list-group">
+                                                    <% 
+                                                    const weeklyTermDiff = (parseFloat(weeklyPercentage.percentage) - parseFloat(termlyPercentage.percentage)).toFixed(2);
+                                                    const weeklyYearDiff = (parseFloat(weeklyPercentage.percentage) - parseFloat(yearlyPercentage.percentage)).toFixed(2);
+                                                    const termYearDiff = (parseFloat(termlyPercentage.percentage) - parseFloat(yearlyPercentage.percentage)).toFixed(2);
+                                                    
+                                                    const getPerformanceClass = (diff) => diff > 5 ? 'text-success' : diff < -5 ? 'text-danger' : 'text-warning';
+                                                    const getPerformanceIcon = (diff) => diff > 5 ? 'uil-arrow-up' : diff < -5 ? 'uil-arrow-down' : 'uil-minus';
+                                                    const getPerformanceText = (diff) => diff > 5 ? 'Better' : diff < -5 ? 'Worse' : 'Similar';
+                                                    %>
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>Weekly vs Termly:</span>
+                                                            <span class="fw-bold <%= getPerformanceClass(weeklyTermDiff) %>">
+                                                                <i class="uil <%= getPerformanceIcon(weeklyTermDiff) %> me-1"></i>
+                                                                <%= Math.abs(weeklyTermDiff) %>% <%= getPerformanceText(weeklyTermDiff) %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>Weekly vs Yearly:</span>
+                                                            <span class="fw-bold <%= getPerformanceClass(weeklyYearDiff) %>">
+                                                                <i class="uil <%= getPerformanceIcon(weeklyYearDiff) %> me-1"></i>
+                                                                <%= Math.abs(weeklyYearDiff) %>% <%= getPerformanceText(weeklyYearDiff) %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>Termly vs Yearly:</span>
+                                                            <span class="fw-bold <%= getPerformanceClass(termYearDiff) %>">
+                                                                <i class="uil <%= getPerformanceIcon(termYearDiff) %> me-1"></i>
+                                                                <%= Math.abs(termYearDiff) %>% <%= getPerformanceText(termYearDiff) %>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <!-- View Type Selector -->
+                    <% if (selectedClassId && selectedAcademicYear && selectedTerm) { %>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label">Report View:</label>
+                            <div class="btn-group" role="group">
+                                <a href="/attendance-reports?academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>&classId=<%= selectedClassId %>&month=<%= selectedMonth %>&viewType=summary<% if (selectedWeekStart && selectedWeekEnd) { %>&weekStart=<%= selectedWeekStart %>&weekEnd=<%= selectedWeekEnd %><% } %>"
+                                   class="btn btn-outline-primary <%= selectedViewType === 'summary' ? 'active' : '' %>">
+                                    Summary View
+                                </a>
+                                <a href="/attendance-reports?academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>&classId=<%= selectedClassId %>&month=<%= selectedMonth %>&viewType=detailed<% if (selectedWeekStart && selectedWeekEnd) { %>&weekStart=<%= selectedWeekStart %>&weekEnd=<%= selectedWeekEnd %><% } %>"
+                                   class="btn btn-outline-primary <%= selectedViewType === 'detailed' ? 'active' : '' %>">
+                                    Detailed View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <!-- Student Selector -->
+                    <% if (selectedClassId && students.length > 0 && selectedViewType === 'summary') { %>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Student (Optional)</label>
+                            <select class="form-select" name="studentId" onchange="this.form.submit()">
+                                <option value="">All Students</option>
+                                <% students.forEach(student => { %>
+                                    <option value="<%= student.id %>" <%= selectedStudentId == student.id ? 'selected' : '' %>>
+                                        <%= student.firstName %> <%= student.lastName %>
+                                        <% if (student.admission_number) { %>(<%= student.admission_number %>)<% } %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <!-- Overall Statistics -->
+                    <% if (selectedClassId && reportData.length > 0 && selectedViewType === 'summary' && !selectedStudentId) { %>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card stats-card total">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-muted">Total Students</h6>
+                                    <h3 class="text-primary"><%= overallStats.totalStudents %></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stats-card present">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-muted">Total Present</h6>
+                                    <h3 class="text-success"><%= overallStats.totalPresent %></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stats-card absent">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-muted">Total Sessions</h6>
+                                    <h3 class="text-danger"><%= overallStats.totalSessions %></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card stats-card attendance">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title text-muted">Avg. Attendance</h6>
+                                    <h3 class="text-purple"><%= overallStats.avgAttendance %>%</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <!-- Export Buttons -->
+                    <% if (reportData.length > 0) { %>
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="btn-group export-buttons">
+                                <button type="button" class="btn btn-success" onclick="exportToPDF()">
+                                    <i class="uil uil-file-alt me-1"></i> Export PDF
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="exportToExcel()">
+                                    <i class="uil uil-file me-1"></i> Export Excel
+                                </button>
+                                <button type="button" class="btn btn-info text-white" onclick="exportToCSV()">
+                                    <i class="uil uil-file-blank me-1"></i> Export CSV
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <!-- Report Content -->
+                    <% if (selectedClassId && reportData.length > 0) { %>
+                        <% if (selectedViewType === 'detailed') { %>
+                            <!-- Detailed View -->
+                            <div class="table-responsive">
+                                <h5 class="mb-3">Detailed Attendance Records - <%= selectedAcademicYear %> <%= selectedTerm %></h5>
+                                <table class="table table-striped table-bordered">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Student</th>
+                                            <th>Admission No</th>
+                                            <th class="text-center">Morning</th>
+                                            <th class="text-center">Afternoon</th>
+                                            <th>Notes</th>
+                                            <th>Recorded By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% reportData.forEach(record => { %>
+                                        <tr>
+                                            <td><%= moment(record.date).format('DD MMM YYYY') %></td>
+                                            <td><%= record.student_name %></td>
+                                            <td><%= record.admission_number || 'N/A' %></td>
+                                            <td class="text-center">
+                                                <span class="badge session-badge bg-<%= 
+                                                    record.morning_status === 'present' ? 'success' : 
+                                                    record.morning_status === 'absent' ? 'danger' : 
+                                                    record.morning_status === 'late' ? 'warning' : 'info' %>">
+                                                    <%= record.morning_status ? record.morning_status.toUpperCase() : 'N/A' %>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge session-badge bg-<%= 
+                                                    record.afternoon_status === 'present' ? 'success' : 
+                                                    record.afternoon_status === 'absent' ? 'danger' : 
+                                                    record.afternoon_status === 'late' ? 'warning' : 'info' %>">
+                                                    <%= record.afternoon_status ? record.afternoon_status.toUpperCase() : 'N/A' %>
+                                                </span>
+                                            </td>
+                                            <td><%= record.notes || 'N/A' %></td>
+                                            <td><%= record.recorded_by_name || 'System' %></td>
+                                        </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else if (selectedStudentId) { %>
+                            <!-- Student Detail View -->
+                            <div class="table-responsive">
+                                <h5 class="mb-3">Attendance Details for 
+                                    <%= reportData[0]?.student_name || 'Student' %> - 
+                                    <%= selectedAcademicYear %> <%= selectedTerm %>
+                                </h5>
+                                <table class="table table-striped">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Day</th>
+                                            <th class="text-center">Morning</th>
+                                            <th class="text-center">Afternoon</th>
+                                            <th>Notes</th>
+                                            <th>Recorded By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% reportData.forEach(record => { %>
+                                        <tr>
+                                            <td><%= moment(record.date).format('DD MMM YYYY') %></td>
+                                            <td><%= moment(record.date).format('dddd') %></td>
+                                            <td class="text-center">
+                                                <span class="badge session-badge bg-<%= 
+                                                    record.morning_status === 'present' ? 'success' : 
+                                                    record.morning_status === 'absent' ? 'danger' : 
+                                                    record.morning_status === 'late' ? 'warning' : 'info' %>">
+                                                    <%= record.morning_status ? record.morning_status.toUpperCase() : 'N/A' %>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge session-badge bg-<%= 
+                                                    record.afternoon_status === 'present' ? 'success' : 
+                                                    record.afternoon_status === 'absent' ? 'danger' : 
+                                                    record.afternoon_status === 'late' ? 'warning' : 'info' %>">
+                                                    <%= record.afternoon_status ? record.afternoon_status.toUpperCase() : 'N/A' %>
+                                                </span>
+                                            </td>
+                                            <td><%= record.notes || 'N/A' %></td>
+                                            <td><%= record.recorded_by_name || 'System' %></td>
+                                        </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } else { %>
+                            <!-- Summary View -->
+                            <div class="table-responsive">
+                                <h5 class="mb-3">Class Attendance Summary - <%= selectedAcademicYear %> <%= selectedTerm %></h5>
+                                <table class="table table-striped table-bordered">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>Student Name</th>
+                                            <th>Admission No</th>
+                                            <th class="text-center text-success">Morning Present</th>
+                                            <th class="text-center text-danger">Morning Absent</th>
+                                            <th class="text-center text-warning">Morning Late</th>
+                                            <th class="text-center text-success">Afternoon Present</th>
+                                            <th class="text-center text-danger">Afternoon Absent</th>
+                                            <th class="text-center text-warning">Afternoon Late</th>
+                                            <th class="text-center">Total Sessions</th>
+                                            <th class="text-center">Attendance %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% reportData.forEach(student => { %>
+                                        <tr>
+                                            <td><%= student.student_name %></td>
+                                            <td><%= student.admission_number || 'N/A' %></td>
+                                            <td class="text-center text-success"><%= student.morning_present %></td>
+                                            <td class="text-center text-danger"><%= student.morning_absent %></td>
+                                            <td class="text-center text-warning"><%= student.morning_late %></td>
+                                            <td class="text-center text-success"><%= student.afternoon_present %></td>
+                                            <td class="text-center text-danger"><%= student.afternoon_absent %></td>
+                                            <td class="text-center text-warning"><%= student.afternoon_late %></td>
+                                            <td class="text-center"><%= student.total_sessions %></td>
+                                            <td class="text-center">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="progress attendance-progress me-2 flex-grow-1">
+                                                        <div class="progress-bar <%= student.attendance_percentage >= 80 ? 'bg-success' : student.attendance_percentage >= 60 ? 'bg-warning' : 'bg-danger' %>" 
+                                                             role="progressbar" 
+                                                             style="width: <%= student.attendance_percentage %>%"
+                                                             aria-valuenow="<%= student.attendance_percentage %>" 
+                                                             aria-valuemin="0" 
+                                                             aria-valuemax="100">
+                                                        </div>
+                                                    </div>
+                                                    <span class="fw-bold <%= student.attendance_percentage >= 80 ? 'text-success' : student.attendance_percentage >= 60 ? 'text-warning' : 'text-danger' %>">
+                                                        <%= student.attendance_percentage %>%
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } %>
+                    <% } %>
+
+                    <% if (selectedClassId && reportData.length === 0) { %>
+                        <div class="text-center py-5">
+                            <i class="uil uil-search display-1 text-muted"></i>
+                            <h5 class="mt-3 text-muted">No attendance records found</h5>
+                            <p class="text-muted">No attendance data available for the selected criteria</p>
+                        </div>
+                    <% } %>
+
+                    <% if (!selectedClassId || !selectedAcademicYear || !selectedTerm) { %>
+                        <div class="text-center py-5">
+                            <i class="uil uil-chart-bar display-1 text-muted"></i>
+                            <h5 class="mt-3 text-muted">Select filters to generate reports</h5>
+                            <p class="text-muted">Choose academic year, term, and class to view attendance reports</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Progress bar styling */
+.weekly-progress, .termly-progress, .yearly-progress {
+    height: 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.weekly-progress .progress-bar, .termly-progress .progress-bar, .yearly-progress .progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Card hover effects */
+.stats-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stats-card.total { border-left: 4px solid #3b5de7; }
+.stats-card.present { border-left: 4px solid #45cb85; }
+.stats-card.absent { border-left: 4px solid #e43a52; }
+.stats-card.attendance { border-left: 4px solid #9055fd; }
+
+/* Session badges */
+.session-badge {
+    font-size: 0.75rem;
+    padding: 0.4em 0.6em;
+}
+
+/* Attendance progress bars */
+.attendance-progress {
+    height: 8px;
+    border-radius: 4px;
+}
+
+/* Comparison chart */
+.comparison-chart .progress {
+    margin-bottom: 15px;
+    height: 25px;
+    border-radius: 5px;
+}
+
+.comparison-chart .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* List group items */
+.list-group-item {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+}
+</style>
+
+<script>
+// Function to automatically calculate week dates when month is selected
+document.getElementById('reportFilter').addEventListener('change', function(e) {
+    if (e.target.name === 'month' && e.target.value) {
+        const monthStart = moment(e.target.value + '-01');
+        const weekStart = monthStart.startOf('week').format('YYYY-MM-DD');
+        const weekEnd = monthStart.startOf('week').add(6, 'days').format('YYYY-MM-DD');
+        
+        // Set week dates in hidden fields or create them if they don't exist
+        let weekStartField = document.querySelector('input[name="weekStart"]');
+        let weekEndField = document.querySelector('input[name="weekEnd"]');
+        
+        if (!weekStartField) {
+            // Create hidden fields for week dates
+            const weekStartInput = document.createElement('input');
+            weekStartInput.type = 'hidden';
+            weekStartInput.name = 'weekStart';
+            weekStartInput.value = weekStart;
+            this.appendChild(weekStartInput);
+            
+            const weekEndInput = document.createElement('input');
+            weekEndInput.type = 'hidden';
+            weekEndInput.name = 'weekEnd';
+            weekEndInput.value = weekEnd;
+            this.appendChild(weekEndInput);
+        } else {
+            weekStartField.value = weekStart;
+            weekEndField.value = weekEnd;
+        }
+    }
+});
+
+// Export functions (placeholder implementations)
+function exportToPDF() {
+    alert('PDF export functionality would be implemented here');
+    // Implementation would use a library like jsPDF or window.print()
+}
+
+function exportToExcel() {
+    alert('Excel export functionality would be implemented here');
+    // Implementation would use a library like SheetJS
+}
+
+function exportToCSV() {
+    alert('CSV export functionality would be implemented here');
+    // Implementation would convert table data to CSV format
+}
+
+// Add this to your form submission handling
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form'); // Your attendance report form
+    if (form) {
+        form.addEventListener('submit', function() {
+            // Preserve week parameters
+            const weekStart = '<%= selectedWeekStart || "" %>';
+            const weekEnd = '<%= selectedWeekEnd || "" %>';
+            
+            if (weekStart && weekEnd) {
+                const weekStartInput = document.createElement('input');
+                weekStartInput.type = 'hidden';
+                weekStartInput.name = 'weekStart';
+                weekStartInput.value = weekStart;
+                form.appendChild(weekStartInput);
+                
+                const weekEndInput = document.createElement('input');
+                weekEndInput.type = 'hidden';
+                weekEndInput.name = 'weekEnd';
+                weekEndInput.value = weekEnd;
+                form.appendChild(weekEndInput);
+            }
+        });
+    }
+});
+</script>
+
+<script src="/assets/js/vendor.min.js"></script>
+<script src="/assets/js/app.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filter form submission
+        document.getElementById('reportFilter').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const params = new URLSearchParams();
+            
+            for (const [key, value] of formData.entries()) {
+                if (value) {
+                    params.append(key, value);
+                }
+            }
+            
+            window.location.href = '/attendance-reports?' + params.toString();
+        });
+
+        // Enable student dropdown when class is selected
+        const classSelect = document.querySelector('select[name="classId"]');
+        const studentSelect = document.querySelector('select[name="studentId"]');
+        
+        if (classSelect && studentSelect) {
+            classSelect.addEventListener('change', function() {
+                if (this.value) {
+                    studentSelect.disabled = false;
+                } else {
+                    studentSelect.disabled = true;
+                }
+            });
+        }
+    });
+
+    function exportToPDF() {
+        alert('PDF export functionality would be implemented here');
+        // Actual implementation would use jsPDF to generate PDF
+    }
+
+    function exportToExcel() {
+        alert('Excel export functionality would be implemented here');
+        // Actual implementation would use SheetJS to generate Excel
+    }
+
+    function exportToCSV() {
+        alert('CSV export functionality would be implemented here');
+        // Actual implementation would generate CSV data
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,831 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Staff Profile - <%= staff.firstName %> <%= staff.lastName %></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link rel="stylesheet" href="/vendor/bootstrap-select/dist/css/bootstrap-select.min.css">
+    </head>
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="leftside-menu">
+    
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-light">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+
+                <!-- LOGO -->
+                <a href="/" class="logo text-center logo-dark">
+                    <span class="logo-lg">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                    <span class="logo-sm">
+                        <h3 alt="" height="16"> edu admin</h3>
+                    </span>
+                </a>
+    
+                <div class="h-100" id="leftside-menu-container" data-simplebar="">
+
+                    <!--- Sidemenu -->
+                    <ul class="side-nav">
+
+                        <li class="side-nav-title side-nav-item">Navigation</li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarDashboards" aria-expanded="false" aria-controls="sidebarDashboards" class="side-nav-link">
+                                <i class="uil-home-alt"></i>
+                                
+                                <span> Dashboards </span>
+                            </a>
+                            <div class="collapse" id="sidebarDashboards">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/">Dashboard</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-title side-nav-item">Apps</li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarMultiLevel" aria-expanded="false" aria-controls="sidebarMultiLevel" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> Records </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarMultiLevel">
+                                <ul class="side-nav-second-level">
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#sidebarSecondLevel" aria-expanded="false" aria-controls="sidebarSecondLevel">
+                                            <span> Academic Year </span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="sidebarSecondLevel">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/academic-years">Academic Year</a>
+                                                </li>
+                                                <li>
+                                                    <a href="/add-academic-year">Add Academic Year</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="side-nav-item">
+                                        <a data-bs-toggle="collapse" href="#sidebarThirdLevel" aria-expanded="false" aria-controls="sidebarThirdLevel">
+                                            <span> Results</span>
+                                            <span class="menu-arrow"></span>
+                                        </a>
+                                        <div class="collapse" id="sidebarThirdLevel">
+                                            <ul class="side-nav-third-level">
+                                                <li>
+                                                    <a href="/broadsheet">Broadsheet</a>
+                                                </li>
+                                               <li>
+                                                    <a href="javascript: void(0);">Item 1</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarLayouts" aria-expanded="false" aria-controls="sidebarLayouts" class="side-nav-link">
+                                <i class="uil-calender text-muted"></i>
+                                <span> Calendar </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarLayouts">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/school-calendar">All Events</a></li>
+                            <li><a href="/add-event">Add Event</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="dripicons-user-group text-muted"></i>
+                                <span> Teachers </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-teachers">All Teachers</a></li>
+                            <li><a href="/add-teacher">Add Teacher</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEmail" aria-expanded="false" aria-controls="sidebarEmail" class="side-nav-link">
+                                <i class="dripicons-user-group text-muted"></i>
+                                <span> Students </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEmail">
+                                <ul class="side-nav-second-level">
+                                   <li><a href="/all-students">All Students</a></li>
+                            <li><a href="/add-student">Add Students</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                         <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarIcons" aria-expanded="false" aria-controls="sidebarIcons" class="side-nav-link">
+                                <i class="dripicons-user-group text-muted"></i>
+                                <span> Staff </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarIcons">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-staff">All Staff</a></li>
+                            <li><a href="/add-staff">Add Staff</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarProjects" aria-expanded="false" aria-controls="sidebarProjects" class="side-nav-link">
+                                <i class="uil-briefcase"></i>
+                                <span> Classes </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarProjects">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/all-classes">All Classes</a></li>
+                            <li><a href="/add-class">Add Class</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarSubjects" aria-expanded="false" aria-controls="sidebarSubjects" class="side-nav-link">
+                                <i class="uil-table"></i>
+                                <span> Subjects </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarSubjects">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="/register-subjects">Add Subject</a>
+                                    </li>
+                                    <li>
+                                        <a href="/view-subjects">Subjects</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarResultManagement" aria-expanded="false" aria-controls="sidebarResultManagement" class="side-nav-link">
+                                <i class="uil-table"></i>
+                                <span> Result management </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarResultManagement">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="/add-academic-record">Add Academic Record</a>
+                                    </li>
+                                    <li>
+                                        <a href="/view-academic-record">View Academic Records</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTasks" aria-expanded="false" aria-controls="sidebarTasks" class="side-nav-link">
+                                <i class="uil-clipboard-alt"></i>
+                                <span> Library </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTasks">
+                                <ul class="side-nav-second-level">
+                                     <li><a href="/all-library">All Library</a></li>
+                            <li><a href="/add-library">Add Library</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href="apps-file-manager.html" class="side-nav-link">
+                                <i class="uil-folder-plus"></i>
+                                <span> File Manager </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarPages" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
+                                <i class="uil-copy-alt"></i>
+                                <span> Departments </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarPages">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/all-departments">All Departments</a></li>
+                            <li><a href="/add-departments">Add Departments</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarForms" aria-expanded="false" aria-controls="sidebarForms" class="side-nav-link">
+                                <i class="uil-document-layout-center"></i>
+                                <span> Holiday </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarForms">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/all-holiday">All Holiday</a></li>
+                            <li><a href="/add-holiday">Add Holiday</a></li>
+                            <li><a href="/holiday-calendar">Holiday Calendar</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarTables" aria-expanded="false" aria-controls="sidebarTables" class="side-nav-link">
+                                <i class="uil-table"></i>
+                                <span> Fees </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarTables">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/fees-collection">Fees Collection</a></li>
+                            <li><a href="/add-fees">Add Fees</a></li>
+                            <li><a href="/fees-receipt">Fees Receipt</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarbills" aria-expanded="false" aria-controls="sidebarbills" class="side-nav-link">
+                                <i class="uil-table"></i>
+                                <span> Bills </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarbills">
+                                <ul class="side-nav-second-level">
+                                    <li><a href="/add-bill">Add bill</a></li>
+                                    <li><a href="/bills">Bills</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarMaps" aria-expanded="false" aria-controls="sidebarMaps" class="side-nav-link">
+                                <i class="uil-location-point"></i>
+                                <span> Maps </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarMaps">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="maps-google.html">Google Maps</a>
+                                    </li>
+                                    <li>
+                                        <a href="maps-vector.html">Vector Maps</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        
+                    </ul>
+
+                    <!-- Help Box -->
+                   
+                    <!-- end Help Box -->
+                    <!-- End Sidebar -->
+
+                    <div class="clearfix"></div>
+
+                </div>
+                <!-- Sidebar -left -->
+
+            </div>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar Start -->
+                    <div class="navbar-custom">
+                        <ul class="list-unstyled topbar-menu float-end mb-0">
+                            <li class="dropdown notification-list d-lg-none">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-search noti-icon"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
+                                    <form class="p-3">
+                                        <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username">
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="dropdown notification-list topbar-dropdown">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <img src="/assets/images/flags/us.jpg" alt="user-image" class="me-0 me-sm-1" height="12"> 
+                                    <span class="align-middle d-none d-sm-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="/assets/images/flags/germany.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="/assets/images/flags/italy.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
+                                    </a>
+                
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="/assets/images/flags/spain.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <img src="/assets/images/flags/russia.jpg" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
+                                    </a>
+
+                                </div>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <i class="dripicons-bell noti-icon"></i>
+                                    <span class="noti-icon-badge"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+
+                                    <!-- item-->
+                                    <div class="dropdown-item noti-title">
+                                        <h5 class="m-0">
+                                            <span class="float-end">
+                                                <a href="javascript: void(0);" class="text-dark">
+                                                    <small>Clear All</small>
+                                                </a>
+                                            </span>Notification
+                                        </h5>
+                                    </div>
+
+                                    <div style="max-height: 230px;" data-simplebar="">
+                                        <!-- item-->
+                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                            <!-- Notifications icon will be added here -->
+                                            <p class="notify-details">See all notifications
+                                                
+                                            </p>
+                                        </a>
+
+                                        
+                                    <!-- All-->
+                                    <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                                        View All
+                                    </a>
+
+                                </div>
+                            </li>
+
+                           
+
+                            <li class="notification-list">
+                                <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                    <i class="dripicons-gear noti-icon"></i>
+                                </a>
+                            </li>
+
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <span class="account-user-avatar"> 
+                                        <img src="/assets/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle">
+                                    </span>
+                                    <span>
+                                        
+                                        <span class="account-user-name"><% if (typeof username !== 'undefined') { %>
+                    <p class="text-muted"><%= username %></p>
+                <% } %>
+                <% if (typeof error !== 'undefined') { %>
+                    <%= error %>
+                <% } %></span>
+                              
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <!-- item-->
+                                    <div class=" dropdown-header noti-title">
+                                        <h6 class="text-overflow m-0">Welcome !</h6>
+                                    </div>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-circle me-1"></i>
+                                        <span>My Account</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-edit me-1"></i>
+                                        <span>Settings</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lifebuoy me-1"></i>
+                                        <span>Support</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/lock-screen" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lock-outline me-1"></i>
+                                        <span>Lock Screen</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="/login" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-logout me-1"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+                        <button class="button-menu-mobile open-left">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                        <div class="app-search dropdown d-none d-lg-block">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
+                                    <span class="mdi mdi-magnify search-icon"></span>
+                                    <button class="input-group-text btn-primary" type="submit">Search</button>
+                                </div>
+                            </form>
+
+                            <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
+                                <!-- item-->
+                                <div class="dropdown-header noti-title">
+                                    <h5 class="text-overflow mb-2">Found <span class="text-danger">17</span> results</h5>
+                                </div>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-notes font-16 me-1"></i>
+                                    <span>Analytics Report</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-life-ring font-16 me-1"></i>
+                                    <span>How can I help you?</span>
+                                </a>
+
+                                <!-- item-->
+                                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                    <i class="uil-cog font-16 me-1"></i>
+                                    <span>User profile settings</span>
+                                </a>
+
+                               
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end Topbar -->
+    
+    
+                    <!-- Start Content-->
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    
+                </div>
+                <h4 class="page-title">Staff Profile: <%= staff.firstName %> <%= staff.lastName %></h4>
+            </div>
+        </div>
+    </div>     
+
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- Profile Header -->
+            <div class="card bg-primary">
+                <div class="card-body profile-user-box">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <div class="avatar-lg">
+                                <% if (staff.imagePath) { %>
+                                    <img src="<%= staff.imagePath %>" alt="<%= staff.firstName %>" class="rounded-circle img-thumbnail" style="width: 120px; height: 120px;">
+                                <% } else { %>
+                                    <div class="avatar-lg bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                                        <span class="display-4 text-primary"><%= staff.firstName.charAt(0) %><%= staff.lastName.charAt(0) %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <h4 class="mt-1 mb-1 text-white"><%= staff.firstName %> <%= staff.lastName %></h4>
+                                <p class="font-13 text-white-50">
+                                    <%= staff.position || 'Staff Member' %> - <%= staff.department || 'Department' %>
+                                </p>
+                                
+                                <ul class="mb-0 list-inline text-light">
+                                    <li class="list-inline-item me-3">
+                                        <h5 class="mb-1"><%= staff.joiningDate ? moment(staff.joiningDate).format('YYYY') : 'N/A' %></h5>
+                                        <p class="mb-0 font-13 text-white-50">Joining Year</p>
+                                    </li>
+                                    <li class="list-inline-item me-3">
+                                        <h5 class="mb-1"><%= staff.department || 'N/A' %></h5>
+                                        <p class="mb-0 font-13 text-white-50">Department</p>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <h5 class="mb-1"><%= staff.nationality || 'N/A' %></h5>
+                                        <p class="mb-0 font-13 text-white-50">Nationality</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <a href="/" class="btn btn-light">
+                                <i class="mdi mdi-home me-1"></i> Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-xl-4">
+            <!-- Personal Information -->
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Personal Information</h4>
+                    
+                    <hr>
+
+                    <div class="text-start">
+                        <p class="text-muted mb-2"><strong>Full Name:</strong> 
+                            <span class="ms-2"><%= staff.firstName %> <%= staff.lastName %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Email:</strong> 
+                            <span class="ms-2"><%= staff.email %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Phone:</strong>
+                            <span class="ms-2"><%= staff.phone || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Date of Birth:</strong> 
+                            <span class="ms-2"><%= staff.dateOfBirth ? moment(staff.dateOfBirth).format('MMMM Do, YYYY') : 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Gender:</strong> 
+                            <span class="ms-2"><%= staff.gender || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-0"><strong>Nationality:</strong> 
+                            <span class="ms-2"><%= staff.nationality || 'N/A' %></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Contact Information</h4>
+                    
+                    <hr>
+                    
+                    <div class="text-start">
+                        <p class="text-muted mb-2"><strong>Emergency Contact:</strong> 
+                            <span class="ms-2"><%= staff.emergencyContactName || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Emergency Phone:</strong>
+                            <span class="ms-2"><%= staff.emergencyContactNumber || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-0"><strong>Address:</strong> 
+                            <span class="ms-2"><%= staff.address || 'N/A' %></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geographical Information -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Geographical Information</h4>
+                    
+                    <hr>
+                    
+                    <div class="text-start">
+                        <p class="text-muted mb-2"><strong>State of Origin:</strong> 
+                            <span class="ms-2"><%= staff.stateOfOrigin || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>LGA of Origin:</strong>
+                            <span class="ms-2"><%= staff.localGovernment || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Residential State:</strong> 
+                            <span class="ms-2"><%= staff.residentialState || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-0"><strong>Residential LGA:</strong> 
+                            <span class="ms-2"><%= staff.residentialLGA || 'N/A' %></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8">
+            <!-- Professional Information -->
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">Professional Information</h4>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Position</strong></label>
+                                <p class="text-muted"><%= staff.position || 'N/A' %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Department</strong></label>
+                                <p class="text-muted"><%= staff.department || 'N/A' %></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Joining Date</strong></label>
+                                <p class="text-muted"><%= staff.joiningDate ? moment(staff.joiningDate).format('MMMM Do, YYYY') : 'N/A' %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Years of Service</strong></label>
+                                <p class="text-muted">
+                                    <% if (staff.joiningDate) { %>
+                                        <%= moment().diff(moment(staff.joiningDate), 'years') %> years
+                                    <% } else { %>
+                                        N/A
+                                    <% } %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Employee ID</strong></label>
+                                <p class="text-muted">STF-<%= staff.id.toString().padStart(4, '0') %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Status</strong></label>
+                                <p class="text-muted">
+                                    <span class="badge bg-<%= staff.is_active ? 'success' : 'danger' %>">
+                                        <%= staff.is_active ? 'Active' : 'Inactive' %>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Responsibilities -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">Responsibilities</h4>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Student enrollment and registration
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Financial management and fee collection
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Facility management and maintenance
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Event planning and coordination
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Administrative support for faculty
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Inventory and supplies management
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <!-- Quick Actions -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">Quick Actions</h4>
+                    
+                    <div class="row">
+                        
+                        <div class="col-md-3">
+                            <a href="mailto:<%= staff.email %>" class="btn btn-outline-success w-100 mb-2">
+                                <i class="mdi mdi-email me-1"></i> Send Email
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="tel:<%= staff.phone %>" class="btn btn-outline-info w-100 mb-2">
+                                <i class="mdi mdi-phone me-1"></i> Call Staff
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © School Management System
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- END wrapper -->
+
+        <!-- Right Sidebar -->
+        <!-- (content remains the same) -->
+
+        <!-- bundle -->
+        <script src="/assets/js/vendor.min.js"></script>
+        <script src="/assets/js/app.min.js"></script>
+
+        <!-- third party js -->
+        <script src="/assets/js/vendor/Chart.bundle.min.js"></script>
+        <!-- third party js ends -->
+
+        <!-- demo app -->
+        <script src="/assets/js/pages/demo.profile.js"></script>
+        <!-- end demo js-->
+    </body>
+</html>

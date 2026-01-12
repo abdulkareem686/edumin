@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error | School Management System</title>
+    <link href="/assets/css/app.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --error-primary: #dc3545;
+            --error-secondary: #f8d7da;
+            --error-dark: #721c24;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .error-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .error-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .error-header {
+            background: linear-gradient(135deg, var(--error-primary), #c82333);
+            padding: 1.5rem;
+            position: relative;
+        }
+        
+        .error-header h4 {
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-header h4::before {
+            content: "⚠️";
+            margin-right: 12px;
+            font-size: 1.8rem;
+        }
+        
+        .error-body {
+            padding: 2rem;
+            background-color: white;
+        }
+        
+        .error-title {
+            color: var(--error-dark);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        
+        .error-message {
+            background-color: var(--error-secondary);
+            border-left: 4px solid var(--error-primary);
+            padding: 1rem;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .error-stack {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+        }
+        
+        .home-btn {
+            background: linear-gradient(135deg, var(--error-primary), #c82333);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .home-btn::before {
+            content: "←";
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .error-icon {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            opacity: 0.2;
+        }
+        
+        @media (max-width: 768px) {
+            .error-icon {
+                display: none;
+            }
+            
+            .error-header h4 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .error-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="card error-card">
+                    <div class="card-header error-header text-white">
+                        <h4>System Error</h4>
+                        <div class="error-icon">⚠️</div>
+                    </div>
+                    <div class="card-body error-body">
+                        <h3 class="card-title error-title">
+                            <%= message || 'An unexpected error occurred' %>
+                        </h3>
+                        
+                        <% if (error && error.message) { %>
+                            <div class="error-message">
+                                <strong>Details:</strong> <%= error.message %>
+                            </div>
+                        <% } %>
+                        
+                        <% if (error && error.stack && process.env.NODE_ENV !== 'production') { %>
+                            <h5 class="mt-4 mb-3">Technical Details:</h5>
+                            <pre class="error-stack"><code><%= error.stack %></code></pre>
+                        <% } %>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="/" class="btn home-btn">
+                                Return to Dashboard
+                            </a>
+                            
+                            <% if (error && error.code) { %>
+                                <span class="text-muted">Error Code: <%= error.code %></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                
+                <% if (process.env.NODE_ENV === 'development') { %>
+                    <div class="mt-4 text-center text-muted small">
+                        This error page is shown because you're in development mode.
+                        In production, users would see a simpler error message.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
