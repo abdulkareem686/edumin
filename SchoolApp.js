@@ -63,6 +63,71 @@ const storage = multer.diskStorage({
 });
 
 // ========== FIXED DATABASE CONFIGURATION ==========
+const express = require('express');
+const { Pool } = require('pg');
+const argon2 = require('argon2');
+const session = require('express-session');
+const path = require('path');
+const moment = require('moment');
+const multer = require('multer');
+const fs = require('fs');
+require('dotenv').config();
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(session({ 
+    secret: process.env.SESSION_SECRET || 'your-secret-key', 
+    resave: false, 
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    }
+}));
+
+// Set EJS as the templating engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views', 'school_app'));
+
+// Serve static files (CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Ensure upload directories exist
+const ensureUploadDirectories = () => {
+    const directories = [
+        path.join(__dirname, 'public/images/teachers'),
+        path.join(__dirname, 'public/images/staff'),
+        path.join(__dirname, 'public/images/library')
+    ];
+    
+    directories.forEach(dir => {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+    });
+};
+
+// Call this function to create directories
+ensureUploadDirectories();
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadPath = path.join(__dirname, 'public/images/teachers');
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+// ========== FIXED DATABASE CONFIGURATION ==========
 // PostgreSQL connection pool - Works for both local and Render
 let poolConfig;
 
@@ -97,13 +162,23 @@ Object.assign(poolConfig, {
 
 const pool = new Pool(poolConfig);
 
-// Test database connection on startup
-pool.connect((err, client, release) => {
+// ========== DATABASE INITIALIZATION ==========
+// Test database connection and initialize on startup
+pool.connect(async (err, client, release) => {
     if (err) {
         console.error('❌ Database connection error:', err.message);
     } else {
         console.log('✅ Database connected successfully');
         release();
+        
+        // Initialize database tables
+        try {
+            await initializeDatabase();
+            console.log('✅ Database tables initialized successfully');
+        } catch (error) {
+            console.error('⚠️ Database initialization warning:', error.message);
+            console.log('Server will start, but database may need manual initialization.');
+        }
     }
 });
 // ==================================================
@@ -636,7 +711,6 @@ async function initializeDatabase() {
         client.release();
     }
 }
-
 
 // Helper function to execute queries
 async function executeQuery(query, params = []) {
@@ -7600,6 +7674,12 @@ app.use((req, res) => {
         message: 'Page Not Found',
         error: { status: 404, message: 'The page you are looking for does not exist.' }
     });
+});
+
+// Initialize database on startup
+initializeDatabase().catch(err => {
+    console.error('Failed to initialize database:', err);
+    console.log('Server will continue running, but database operations may fail.');
 });
 
 const PORT = process.env.PORT || 3000;
