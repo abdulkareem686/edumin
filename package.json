@@ -4,6 +4,7 @@
     "body-parser": "^1.20.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "exceljs": "^4.4.0",
     "express": "^4.21.2",
@@ -16,6 +17,7 @@
     "mysql2": "^3.12.0",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.6",
-    "pdfkit": "^0.17.2"
+    "pdfkit": "^0.17.2",
+    "pg": "^8.16.3"
   }
 }
