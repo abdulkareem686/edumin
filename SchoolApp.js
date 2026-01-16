@@ -108,6 +108,536 @@ pool.connect((err, client, release) => {
 });
 // ==================================================
 
+// Database initialization function
+async function initializeDatabase() {
+    const client = await pool.connect();
+    
+    try {
+        await client.query('BEGIN');
+        
+        console.log('🔄 Initializing database tables...');
+        
+        // 1. School Info
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS school_info (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(200) NOT NULL,
+                email VARCHAR(100),
+                phone VARCHAR(20),
+                website VARCHAR(100),
+                address TEXT,
+                logo_path VARCHAR(255),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created school_info table');
+        
+        // 2. Users table
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                email VARCHAR(100) UNIQUE NOT NULL,
+                role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'teacher', 'student', 'staff')),
+                school_id INTEGER REFERENCES school_info(id),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created users table');
+        
+        // 3. Academic Years
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS academic_years (
+                id SERIAL PRIMARY KEY,
+                year_name VARCHAR(20) UNIQUE NOT NULL,
+                start_date DATE NOT NULL,
+                end_date DATE NOT NULL,
+                is_current BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created academic_years table');
+        
+        // 4. Academic Terms
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS academic_terms (
+                id SERIAL PRIMARY KEY,
+                academic_year_id INTEGER REFERENCES academic_years(id),
+                term_name VARCHAR(20) NOT NULL,
+                start_date DATE NOT NULL,
+                end_date DATE NOT NULL,
+                is_current BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(academic_year_id, term_name)
+            )
+        `);
+        console.log('✅ Created academic_terms table');
+        
+        // 5. Classes
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS classes (
+                id SERIAL PRIMARY KEY,
+                class_name VARCHAR(50) NOT NULL,
+                class_code VARCHAR(20) UNIQUE,
+                professor_id INTEGER,
+                professor_name VARCHAR(100),
+                maximum_students INTEGER,
+                level VARCHAR(20) CHECK (level IN ('KG', 'NURSERY', 'PRIMARY', 'JUNIOR SECONDARY', 'SENIOR SECONDARY')),
+                department VARCHAR(50),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created classes table');
+        
+        // 6. Students
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS students (
+                id SERIAL PRIMARY KEY,
+                admission_number VARCHAR(20) UNIQUE NOT NULL,
+                first_name VARCHAR(50) NOT NULL,
+                middle_name VARCHAR(50),
+                last_name VARCHAR(50) NOT NULL,
+                email VARCHAR(100) UNIQUE NOT NULL,
+                class_id INTEGER REFERENCES classes(id),
+                gender VARCHAR(10) CHECK (gender IN ('Male', 'Female', 'Other')),
+                date_of_birth DATE,
+                mobile_number VARCHAR(20),
+                parents_name VARCHAR(100),
+                parents_mobile_number VARCHAR(20),
+                nationality VARCHAR(50) DEFAULT 'Nigerian',
+                address TEXT,
+                state_of_origin VARCHAR(50),
+                local_government VARCHAR(50),
+                residential_state VARCHAR(50),
+                residential_lga VARCHAR(50),
+                department VARCHAR(50),
+                registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created students table');
+        
+        // 7. Teachers
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS teachers (
+                id SERIAL PRIMARY KEY,
+                first_name VARCHAR(50) NOT NULL,
+                last_name VARCHAR(50) NOT NULL,
+                email VARCHAR(100) UNIQUE NOT NULL,
+                password VARCHAR(255),
+                mobile_number VARCHAR(20),
+                gender VARCHAR(10),
+                designation VARCHAR(50),
+                department VARCHAR(50),
+                date_of_birth DATE,
+                joining_date DATE,
+                education TEXT,
+                nationality VARCHAR(50) DEFAULT 'Nigerian',
+                state_of_origin VARCHAR(50),
+                local_government VARCHAR(50),
+                residential_state VARCHAR(50),
+                residential_lga VARCHAR(50),
+                emergency_contact_name VARCHAR(100),
+                emergency_contact_number VARCHAR(20),
+                address TEXT,
+                image_path VARCHAR(255),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created teachers table');
+        
+        // 8. Subjects
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS subjects (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                subject_code VARCHAR(20) UNIQUE,
+                description TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created subjects table');
+        
+        // 9. Class Subjects (linking table)
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS class_subjects (
+                id SERIAL PRIMARY KEY,
+                class_id INTEGER REFERENCES classes(id),
+                subject_id INTEGER REFERENCES subjects(id),
+                teacher_id INTEGER REFERENCES teachers(id),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(class_id, subject_id)
+            )
+        `);
+        console.log('✅ Created class_subjects table');
+        
+        // 10. Student Scores
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS student_scores (
+                id SERIAL PRIMARY KEY,
+                student_id INTEGER REFERENCES students(id),
+                subject_id INTEGER REFERENCES subjects(id),
+                term VARCHAR(20) NOT NULL,
+                academic_year VARCHAR(20) NOT NULL,
+                test_score DECIMAL(5,2) CHECK (test_score >= 0 AND test_score <= 40),
+                exam_score DECIMAL(5,2) CHECK (exam_score >= 0 AND exam_score <= 60),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(student_id, subject_id, term, academic_year)
+            )
+        `);
+        console.log('✅ Created student_scores table');
+        
+        // 11. Fees
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS fees (
+                id SERIAL PRIMARY KEY,
+                student_id INTEGER REFERENCES students(id),
+                admission_number VARCHAR(20),
+                student_name VARCHAR(150) NOT NULL,
+                email VARCHAR(100),
+                class_name VARCHAR(50),
+                department VARCHAR(50),
+                fee_type VARCHAR(50) NOT NULL,
+                payment_type VARCHAR(20),
+                amount DECIMAL(10,2) NOT NULL,
+                bill_amount DECIMAL(10,2),
+                amount_paid DECIMAL(10,2) NOT NULL,
+                balance DECIMAL(10,2),
+                payment_date DATE NOT NULL,
+                receipt_number VARCHAR(50) UNIQUE,
+                academic_year VARCHAR(20) NOT NULL,
+                term VARCHAR(20) NOT NULL,
+                notes TEXT,
+                status VARCHAR(20) DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created fees table');
+        
+        // 12. Staff
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS staff (
+                id SERIAL PRIMARY KEY,
+                first_name VARCHAR(50) NOT NULL,
+                last_name VARCHAR(50) NOT NULL,
+                gender VARCHAR(10),
+                date_of_birth DATE,
+                nationality VARCHAR(50),
+                state_of_origin VARCHAR(50),
+                local_government VARCHAR(50),
+                residential_state VARCHAR(50),
+                residential_lga VARCHAR(50),
+                emergency_contact_name VARCHAR(100),
+                emergency_contact_number VARCHAR(20),
+                address TEXT,
+                email VARCHAR(100) UNIQUE NOT NULL,
+                position VARCHAR(50),
+                department VARCHAR(50),
+                phone VARCHAR(20),
+                joining_date DATE,
+                image_path VARCHAR(255),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created staff table');
+        
+        // 13. Library Books
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS library_books (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(200) NOT NULL,
+                author VARCHAR(100),
+                isbn VARCHAR(20),
+                quantity INTEGER DEFAULT 1,
+                category VARCHAR(50),
+                cover_path VARCHAR(255),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created library_books table');
+        
+        // 14. Calendar Events
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS calendar_events (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(200) NOT NULL,
+                description TEXT,
+                event_date DATE NOT NULL,
+                start_time TIME,
+                end_time TIME,
+                academic_year VARCHAR(20),
+                term VARCHAR(20),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created calendar_events table');
+        
+        // 15. Student Subjects (enrollment)
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS student_subjects (
+                id SERIAL PRIMARY KEY,
+                student_id INTEGER REFERENCES students(id),
+                subject_id INTEGER REFERENCES subjects(id),
+                enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(student_id, subject_id)
+            )
+        `);
+        console.log('✅ Created student_subjects table');
+        
+        // 16. Attendance Records
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS attendance_records (
+                id SERIAL PRIMARY KEY,
+                student_id INTEGER REFERENCES students(id),
+                date DATE NOT NULL,
+                morning_status VARCHAR(20) DEFAULT 'absent',
+                afternoon_status VARCHAR(20) DEFAULT 'absent',
+                remarks TEXT,
+                recorded_by INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(student_id, date)
+            )
+        `);
+        console.log('✅ Created attendance_records table');
+        
+        // 17. Activities Log
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS activities (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER,
+                action VARCHAR(100) NOT NULL,
+                details TEXT,
+                ip_address VARCHAR(45),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created activities table');
+        
+        // 18. Class Bills (Fee structures by class)
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS class_bills (
+                id SERIAL PRIMARY KEY,
+                class_id INTEGER REFERENCES classes(id),
+                class_name VARCHAR(50),
+                level VARCHAR(20),
+                department VARCHAR(50),
+                fee_type VARCHAR(50) NOT NULL,
+                amount DECIMAL(10,2) NOT NULL,
+                academic_year VARCHAR(20) NOT NULL,
+                term VARCHAR(20) NOT NULL,
+                description TEXT,
+                due_date DATE,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_by INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created class_bills table');
+        
+        // 19. Teacher Assignments
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS teacher_assignments (
+                id SERIAL PRIMARY KEY,
+                teacher_id INTEGER REFERENCES teachers(id),
+                class_id INTEGER REFERENCES classes(id),
+                subject_id INTEGER REFERENCES subjects(id),
+                academic_year VARCHAR(20),
+                assigned_date DATE DEFAULT CURRENT_DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(teacher_id, class_id, subject_id, academic_year)
+            )
+        `);
+        console.log('✅ Created teacher_assignments table');
+        
+        // 20. Salary Structures
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS salary_structures (
+                id SERIAL PRIMARY KEY,
+                position VARCHAR(100) NOT NULL,
+                level VARCHAR(50),
+                basic_salary DECIMAL(12,2) NOT NULL,
+                housing_allowance DECIMAL(10,2) DEFAULT 0,
+                transport_allowance DECIMAL(10,2) DEFAULT 0,
+                medical_allowance DECIMAL(10,2) DEFAULT 0,
+                other_allowance DECIMAL(10,2) DEFAULT 0,
+                tax_percentage DECIMAL(5,2) DEFAULT 0,
+                pension_percentage DECIMAL(5,2) DEFAULT 0,
+                is_active BOOLEAN DEFAULT TRUE,
+                description TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(position, level)
+            )
+        `);
+        console.log('✅ Created salary_structures table');
+        
+        // 21. Salary Payments
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS salary_payments (
+                id SERIAL PRIMARY KEY,
+                employee_id INTEGER NOT NULL,
+                employee_type VARCHAR(20) NOT NULL CHECK (employee_type IN ('teacher', 'staff')),
+                month VARCHAR(7) NOT NULL, -- Format: YYYY-MM
+                basic_salary DECIMAL(12,2) NOT NULL,
+                housing_allowance DECIMAL(10,2) DEFAULT 0,
+                transport_allowance DECIMAL(10,2) DEFAULT 0,
+                medical_allowance DECIMAL(10,2) DEFAULT 0,
+                other_allowance DECIMAL(10,2) DEFAULT 0,
+                gross_salary DECIMAL(12,2) NOT NULL,
+                tax_amount DECIMAL(10,2) DEFAULT 0,
+                pension_amount DECIMAL(10,2) DEFAULT 0,
+                net_salary DECIMAL(12,2) NOT NULL,
+                status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'paid', 'rejected')),
+                payment_date DATE,
+                payment_method VARCHAR(50),
+                notes TEXT,
+                created_by INTEGER,
+                approved_by INTEGER,
+                approved_at TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(employee_id, employee_type, month)
+            )
+        `);
+        console.log('✅ Created salary_payments table');
+        
+        // 22. Expenses
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS expenses (
+                id SERIAL PRIMARY KEY,
+                expense_date DATE NOT NULL,
+                category VARCHAR(100) NOT NULL,
+                description TEXT NOT NULL,
+                amount DECIMAL(12,2) NOT NULL,
+                payment_method VARCHAR(50),
+                vendor VARCHAR(200),
+                reference_number VARCHAR(100),
+                status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+                created_by INTEGER,
+                approved_by INTEGER,
+                approved_at TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created expenses table');
+        
+        // 23. Expense Categories
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS expense_categories (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL UNIQUE,
+                description TEXT,
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created expense_categories table');
+        
+        // 24. Salary Adjustments
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS salary_adjustments (
+                id SERIAL PRIMARY KEY,
+                employee_id INTEGER NOT NULL,
+                employee_type VARCHAR(20) NOT NULL CHECK (employee_type IN ('teacher', 'staff')),
+                adjustment_type VARCHAR(50) NOT NULL CHECK (adjustment_type IN ('bonus', 'deduction', 'allowance', 'other')),
+                amount DECIMAL(10,2) NOT NULL,
+                description TEXT,
+                effective_date DATE NOT NULL,
+                is_recurring BOOLEAN DEFAULT FALSE,
+                recurrence_months INTEGER DEFAULT 0,
+                status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'expired')),
+                created_by INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created salary_adjustments table');
+        
+        // 25. Promotion History
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS promotion_history (
+                id SERIAL PRIMARY KEY,
+                student_id INTEGER REFERENCES students(id),
+                from_class INTEGER REFERENCES classes(id),
+                to_class INTEGER REFERENCES classes(id),
+                academic_year VARCHAR(20) NOT NULL,
+                action VARCHAR(20) NOT NULL CHECK (action IN ('promoted', 'repeated', 'demoted')),
+                remarks TEXT,
+                created_by INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created promotion_history table');
+        
+        // 26. Book Lists
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS book_lists (
+                id SERIAL PRIMARY KEY,
+                academic_year VARCHAR(20) NOT NULL,
+                class_level VARCHAR(20) NOT NULL,
+                department VARCHAR(50),
+                subject VARCHAR(100) NOT NULL,
+                title VARCHAR(200) NOT NULL,
+                author VARCHAR(100),
+                publisher VARCHAR(100),
+                isbn VARCHAR(20),
+                price DECIMAL(8,2),
+                required BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('✅ Created book_lists table');
+        
+        // Create default admin user if not exists
+        const adminCheck = await client.query('SELECT id FROM users WHERE username = $1', ['admin']);
+        if (adminCheck.rows.length === 0) {
+            const hashedPassword = await argon2.hash('admin123');
+            await client.query(
+                'INSERT INTO users (username, password, email, role) VALUES ($1, $2, $3, $4)',
+                ['admin', hashedPassword, 'admin@school.com', 'admin']
+            );
+            console.log('✅ Default admin user created (username: admin, password: admin123)');
+        }
+        
+        // Insert default expense categories if none exist
+        const categoryCheck = await client.query('SELECT COUNT(*) FROM expense_categories');
+        if (parseInt(categoryCheck.rows[0].count) === 0) {
+            const defaultCategories = [
+                ['Utilities', 'Electricity, Water, Internet'],
+                ['Stationery', 'Office supplies, Books, Paper'],
+                ['Maintenance', 'Building and equipment repairs'],
+                ['Transportation', 'Vehicle fuel and maintenance'],
+                ['Training', 'Staff development and workshops'],
+                ['Events', 'School events and ceremonies'],
+                ['Sports', 'Sports equipment and activities'],
+                ['Laboratory', 'Science lab supplies'],
+                ['ICT', 'Computers, software, and IT services'],
+                ['Security', 'Security services and equipment']
+            ];
+            
+            for (const [name, description] of defaultCategories) {
+                await client.query(
+                    'INSERT INTO expense_categories (name, description) VALUES ($1, $2)',
+                    [name, description]
+                );
+            }
+            console.log('✅ Inserted default expense categories');
+        }
+        
+        await client.query('COMMIT');
+        console.log('🎉 All database tables created successfully');
+        
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('❌ Database initialization failed:', error.message);
+        console.error('Error details:', error);
+        throw error;
+    } finally {
+        client.release();
+    }
+}
+
+
 // Helper function to execute queries
 async function executeQuery(query, params = []) {
     const client = await pool.connect();
