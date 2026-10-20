@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Edit Class - edu admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="/images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="/vendor/bootstrap-select/dist/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        
+        <style>
+            .required-field::after {
+                content: " *";
+                color: red;
+            }
+            .form-section {
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+            .stats-card {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+            }
+            .stats-card i {
+                font-size: 2rem;
+                opacity: 0.8;
+            }
+            .class-info-badge {
+                background: #e9ecef;
+                padding: 15px;
+                border-radius: 8px;
+                border-left: 4px solid #007bff;
+            }
+        </style>
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+                    
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Classes</a></li>
+                                            <li class="breadcrumb-item active">Edit Class</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">Edit Class</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <!-- Error/Success Messages -->
+                        <% if (typeof error !== 'undefined' && error) { %>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <% } %>
+
+                        <% if (typeof success !== 'undefined' && success) { %>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill"></i> <%= success %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <% } %>
+
+                        <!-- Class Info Stats -->
+                        <% if (classData) { %>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="class-info-badge mb-3">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <h5><i class="bi bi-info-circle"></i> Class Information</h5>
+                                            <p class="mb-0"><strong>Created:</strong> <%= (typeof moment !== 'undefined' && classData.created_at && moment(classData.created_at).isValid()) ? moment(classData.created_at).format('DD MMM YYYY, h:mm A') : (classData.created_at || 'N/A') %></p>
+                                            <% if (classData.updated_at) { %>
+                                                <p class="mb-0"><strong>Last Updated:</strong> <%= (typeof moment !== 'undefined' && moment(classData.updated_at).isValid()) ? moment(classData.updated_at).format('DD MMM YYYY, h:mm A') : (classData.updated_at || 'N/A') %></p>
+                                            <% } %>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h5><i class="bi bi-people"></i> Student Statistics</h5>
+                                            <p class="mb-0"><strong>Current Students:</strong> <span class="badge bg-info" id="studentCount"><%= typeof studentCount !== 'undefined' ? studentCount : '0' %></span></p>
+                                            <p class="mb-0"><strong>Max Capacity:</strong> <span class="badge bg-warning"><%= classData.maximumStudents || 'Unlimited' %></span></p>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <a href="/all-classes" class="btn btn-secondary">
+                                                <i class="bi bi-arrow-left"></i> Back to Classes
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">
+                                            <i class="bi bi-pencil-square"></i> Edit Class Details
+                                        </h5>
+                                        
+                                        <form action="/edit-class/<%= classId %>" method="post" id="classForm">
+                                            <div class="row">
+                                                <div class="col-xl-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label required-field">Level</label>
+                                                        <select class="form-select" name="level" id="levelSelect" required>
+                                                            <option value="">-- Select Level --</option>
+                                                            <option value="KG" <%= (classData.level || '').toUpperCase() === 'KG' ? 'selected' : '' %>>KG</option>
+                                                            <option value="NURSERY" <%= (classData.level || '').toUpperCase() === 'NURSERY' ? 'selected' : '' %>>Nursery</option>
+                                                            <option value="PRIMARY" <%= (classData.level || '').toUpperCase() === 'PRIMARY' ? 'selected' : '' %>>Primary</option>
+                                                            <option value="JUNIOR SECONDARY" <%= (classData.level || '').toUpperCase() === 'JUNIOR SECONDARY' ? 'selected' : '' %>>Junior Secondary</option>
+                                                            <option value="SENIOR SECONDARY" <%= (classData.level || '').toUpperCase() === 'SENIOR SECONDARY' ? 'selected' : '' %>>Senior Secondary</option>
+                                                        </select>
+                                                        <small class="text-muted">Select the educational level</small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label required-field">Class Name</label>
+                                                        <input type="text" class="form-control" name="className" id="className"
+                                                               value="<%= classData.className || '' %>" required
+                                                               placeholder="e.g., Primary 1, JSS 2, SS 3">
+                                                        <small class="text-muted">Enter the full class name</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xl-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label required-field">Class Code</label>
+                                                        <input type="text" class="form-control" name="classCode" id="classCode"
+                                                               value="<%= classData.classCode || '' %>" required
+                                                               placeholder="e.g., PRI-1, JSS-2, SSS-3">
+                                                        <small class="text-muted">Unique identifier for the class</small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6">
+                                                    <div class="mb-3" id="departmentContainer" style="display: <%= (classData.level || '').toUpperCase() === 'SENIOR SECONDARY' ? 'block' : 'none' %>;">
+                                                        <label class="form-label required-field">Department</label>
+                                                        <select class="form-select" name="department" id="departmentSelect">
+                                                            <option value="">-- Select Department --</option>
+                                                            <option value="SCIENCE" <%= (classData.department || '').toUpperCase() === 'SCIENCE' ? 'selected' : '' %>>Science</option>
+                                                            <option value="COMMERCIAL" <%= (classData.department || '').toUpperCase() === 'COMMERCIAL' ? 'selected' : '' %>>Commercial</option>
+                                                            <option value="ART" <%= (classData.department || '').toUpperCase() === 'ART' || (classData.department || '').toUpperCase() === 'ARTS' ? 'selected' : '' %>>Art</option>
+                                                            <% if (typeof departments !== 'undefined' && departments && departments.length > 0) { %>
+                                                                <% departments.forEach(dept => { 
+                                                                    const deptVal = typeof dept === 'string' ? dept : dept.department;
+                                                                    if (deptVal && !['SCIENCE', 'COMMERCIAL', 'ART', 'ARTS'].includes(deptVal.toUpperCase())) { %>
+                                                                        <option value="<%= deptVal %>" <%= (classData.department || '').toUpperCase() === deptVal.toUpperCase() ? 'selected' : '' %>>
+                                                                            <%= deptVal %>
+                                                                        </option>
+                                                                    <% } %>
+                                                                <% }); %>
+                                                            <% } %>
+                                                        </select>
+                                                        <small class="text-muted">Required for Senior Secondary classes</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xl-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label required-field">Class Teacher</label>
+                                                        <select class="form-select" name="professorId" id="professorId" required>
+                                                            <option value="">-- Select Teacher --</option>
+                                                            <% if (typeof teachers !== 'undefined' && teachers && teachers.length) { %>
+                                                                <% teachers.forEach(teacher => { %>
+                                                                    <option value="<%= teacher.id %>" <%= String(classData.professorId || '') === String(teacher.id) ? 'selected' : '' %>>
+                                                                        <%= teacher.firstName %> <%= teacher.lastName %>
+                                                                        <% if (teacher.designation) { %> (<%= teacher.designation %>) <% } %>
+                                                                    </option>
+                                                                <% }); %>
+                                                            <% } else { %>
+                                                                <option value="" disabled>No teachers available</option>
+                                                            <% } %>
+                                                        </select>
+                                                        <small class="text-muted">Select the homeroom teacher</small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xl-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Maximum Students</label>
+                                                        <input type="number" class="form-control" name="maximumStudents" id="maximumStudents"
+                                                               value="<%= classData.maximumStudents || '' %>"
+                                                               placeholder="e.g., 40" min="1" max="1000">
+                                                        <small class="text-muted">Leave empty for no limit</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-4">
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-primary px-4">
+                                                        <i class="bi bi-save me-1"></i> Update Class
+                                                    </button>
+                                                    <a href="/all-classes" class="btn btn-light ms-2">
+                                                        <i class="bi bi-x-circle me-1"></i> Cancel
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Related Information -->
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">
+                                            <i class="bi bi-journal-bookmark-fill"></i> Subjects in this Class
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="subjectsList">
+                                            <p class="text-muted">Loading subjects...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">
+                                            <i class="bi bi-clock-history"></i> Recent Activity
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="recentActivity">
+                                            <p class="text-muted">Loading activity...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- container -->
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- END wrapper -->
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Settings</h5>
+            </div>
+            <div class="rightbar-content h-100" data-simplebar="">
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+
+                    <!-- Settings -->
+                    <h5 class="mt-3">Color Scheme</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+
+                    <!-- Width -->
+                    <h5 class="mt-4">Width</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+
+                    <!-- Left Sidebar-->
+                    <h5 class="mt-4">Left Sidebar</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                        <label class="form-check-label" for="default-check">Default</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                        <label class="form-check-label" for="light-check">Light</label>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                        <label class="form-check-label" for="dark-check">Dark</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked="">
+                        <label class="form-check-label" for="fixed-check">Fixed</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                        <label class="form-check-label" for="condensed-check">Condensed</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+                        <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                        <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm" class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a>
+                    </div>
+                </div> <!-- end padding-->
+            </div>
+        </div>
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+
+        <!-- bundle -->
+        <script src="/assets/js/vendor.min.js"></script>
+        <script src="/assets/js/app.min.js"></script>
+
+        <!-- plugin js -->
+        <script src="/assets/js/vendor/dropzone.min.js"></script>
+        <!-- init js -->
+        <script src="/assets/js/ui/component.fileupload.js"></script>
+        
+        <script>
+            // Show/hide department based on level selection
+            const levelSelect = document.getElementById('levelSelect');
+            const departmentContainer = document.getElementById('departmentContainer');
+            const departmentSelect = document.getElementById('departmentSelect');
+
+            if (levelSelect) {
+                levelSelect.addEventListener('change', function() {
+                    const isSeniorSecondary = this.value === 'SENIOR SECONDARY';
+                    if (departmentContainer) {
+                        departmentContainer.style.display = isSeniorSecondary ? 'block' : 'none';
+                    }
+                    if (departmentSelect) {
+                        departmentSelect.required = isSeniorSecondary;
+                        if (!isSeniorSecondary) {
+                            departmentSelect.value = '';
+                        }
+                    }
+                });
+            }
+
+            // Form validation
+            const classForm = document.getElementById('classForm');
+            if (classForm) {
+                classForm.addEventListener('submit', function(e) {
+                    const classNameInput = document.getElementById('className');
+                    const classCodeInput = document.getElementById('classCode');
+                    const lvlInput = document.getElementById('levelSelect');
+                    const profInput = document.querySelector('[name="professorId"]');
+                    
+                    const className = classNameInput ? classNameInput.value.trim() : '';
+                    const classCode = classCodeInput ? classCodeInput.value.trim() : '';
+                    const level = lvlInput ? lvlInput.value : '';
+                    const professorId = profInput ? profInput.value : '';
+                    
+                    if (!className || !classCode || !level || !professorId) {
+                        e.preventDefault();
+                        alert('Please fill in all required fields marked with *');
+                        return false;
+                    }
+                    
+                    if (level === 'SENIOR SECONDARY') {
+                        const deptInput = document.getElementById('departmentSelect');
+                        const department = deptInput ? deptInput.value : '';
+                        if (!department) {
+                            e.preventDefault();
+                            alert('Department is required for Senior Secondary classes');
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                });
+            }
+
+            // Load student count for this class
+            fetch('/api/student-count/<%= classId %>')
+                .then(response => response.json())
+                .then(data => {
+                    const countBadge = document.getElementById('studentCount');
+                    if (countBadge && typeof data.count !== 'undefined') {
+                        countBadge.textContent = data.count;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading student count:', error);
+                });
+
+            // Load subjects for this class
+            fetch('/api/class-subjects/<%= classId %>')
+                .then(response => response.json())
+                .then(data => {
+                    const subjectsList = document.getElementById('subjectsList');
+                    if (!subjectsList) return;
+                    if (data.subjects && data.subjects.length > 0) {
+                        let html = '<ul class="list-group list-group-flush">';
+                        data.subjects.forEach(subject => {
+                            const name = subject.name || subject.subjectName || 'Subject';
+                            const code = subject.code || subject.subjectCode || '';
+                            html += `<li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="fw-medium">${name}</span>
+                                ${code ? `<span class="badge bg-primary-lighten text-primary rounded-pill">${code}</span>` : ''}
+                            </li>`;
+                        });
+                        html += '</ul>';
+                        subjectsList.innerHTML = html;
+                    } else {
+                        subjectsList.innerHTML = '<p class="text-muted mb-0">No subjects assigned to this class yet.</p>';
+                    }
+                })
+                .catch(error => {
+                    const subjectsList = document.getElementById('subjectsList');
+                    if (subjectsList) {
+                        subjectsList.innerHTML = '<p class="text-muted mb-0">No subjects assigned yet.</p>';
+                    }
+                });
+
+            // Load recent activity
+            fetch('/api/class-activity/<%= classId %>')
+                .then(response => response.json())
+                .then(data => {
+                    const activityList = document.getElementById('recentActivity');
+                    if (!activityList) return;
+                    if (data.activities && data.activities.length > 0) {
+                        let html = '<div class="timeline">';
+                        data.activities.forEach(activity => {
+                            const timeStr = typeof moment !== 'undefined' ? moment(activity.created_at).fromNow() : (activity.created_at || '');
+                            html += `<div class="timeline-item pb-2">
+                                <small class="text-muted"><i class="bi bi-clock me-1"></i>${timeStr}</small>
+                                <p class="mb-0 text-dark">${activity.description || ''}</p>
+                            </div>`;
+                        });
+                        html += '</div>';
+                        activityList.innerHTML = html;
+                    } else {
+                        activityList.innerHTML = '<p class="text-muted mb-0">No recent activity recorded.</p>';
+                    }
+                })
+                .catch(error => {
+                    const activityList = document.getElementById('recentActivity');
+                    if (activityList) {
+                        activityList.innerHTML = '<p class="text-muted mb-0">No recent activity.</p>';
+                    }
+                });
+        </script>
+    </body>
+</html>

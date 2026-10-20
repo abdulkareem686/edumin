@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        <%= isEdit ? 'Edit' : 'Create' %> Class Bill - School Management System
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+            background-color: #f8f9fa;
+        }
+
+        .form-section-title {
+            color: #3b5de7;
+            border-bottom: 2px solid #3b5de7;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body class="loading"
+    data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+
+    <!-- Left Sidebar -->
+    <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <a href="/class-bills" class="btn btn-outline-secondary">Back to Bills</a>
+                                </div>
+                                <h4 class="page-title">
+                                    <%= isEdit ? 'Edit' : 'Create' %> Class Bill
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <% if (error) { %>
+                        <div class="alert alert-danger">
+                            <%= error %>
+                        </div>
+                        <% } %>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <form id="classBillForm" method="post" action="/save-class-bill">
+                                                <% if (isEdit) { %>
+                                                    <input type="hidden" name="billId" value="<%= billData.id %>">
+                                                    <% } %>
+
+                                                        <div class="form-section">
+                                                            <h5 class="form-section-title">Basic Information</h5>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="mb-3">
+                                                                        <label
+                                                                            class="form-label required-field">Class</label>
+                                                                        <select class="form-control" name="classId"
+                                                                            required>
+                                                                            <option value="">Select Class</option>
+                                                                            <% for(var i=0; i < classes.length; i++) {
+                                                                                %>
+                                                                                <option value="<%= classes[i].id %>" <%
+                                                                                    if(billData.class_id==classes[i].id)
+                                                                                    { %>selected<% } %>>
+                                                                                        <%= classes[i].className %>
+                                                                                </option>
+                                                                                <% } %>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label required-field">Fee
+                                                                            Type</label>
+                                                                        <select class="form-control" name="feeType"
+                                                                            required>
+                                                                            <option value="">Select Fee Type</option>
+                                                                            <% for(var i=0; i < feeTypes.length; i++) {
+                                                                                %>
+                                                                                <option value="<%= feeTypes[i] %>" <%
+                                                                                    if(billData.fee_type==feeTypes[i]) {
+                                                                                    %>selected<% } %>>
+                                                                                        <%= feeTypes[i] %>
+                                                                                </option>
+                                                                                <% } %>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-section">
+                                                            <h5 class="form-section-title">Financial Details</h5>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label required-field">Amount
+                                                                            (₦)</label>
+                                                                        <input type="number" class="form-control"
+                                                                            name="amount" step="0.01" min="0"
+                                                                            value="<%= billData.amount || '' %>"
+                                                                            required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="mb-3">
+                                                                        <label
+                                                                            class="form-label required-field">Academic
+                                                                            Year</label>
+                                                                        <select class="form-control" name="academicYear"
+                                                                            required>
+                                                                            <option value="">Select Academic Year
+                                                                            </option>
+                                                                            <% for(var i=0; i < academicYears.length;
+                                                                                i++) { %>
+                                                                                <option
+                                                                                    value="<%= academicYears[i].year_name %>"
+                                                                                    <%
+                                                                                    if(billData.academic_year==academicYears[i].year_name)
+                                                                                    { %>selected<% } %>>
+                                                                                        <%= academicYears[i].year_name
+                                                                                            %>
+                                                                                </option>
+                                                                                <% } %>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="mb-3">
+                                                                        <label
+                                                                            class="form-label required-field">Term</label>
+                                                                        <select class="form-control" name="term"
+                                                                            required>
+                                                                            <option value="">Select Term</option>
+                                                                            <% for(var i=0; i < terms.length; i++) { %>
+                                                                                <option
+                                                                                    value="<%= terms[i].term_name %>" <%
+                                                                                    if(billData.term==terms[i].term_name)
+                                                                                    { %>selected<% } %>>
+                                                                                        <%= terms[i].term_name %>
+                                                                                </option>
+                                                                                <% } %>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-section">
+                                                            <h5 class="form-section-title">Additional Information</h5>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Due Date</label>
+                                                                        <input type="date" class="form-control"
+                                                                            name="dueDate"
+                                                                            value="<%= billData.due_date || '' %>">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Description</label>
+                                                                        <textarea class="form-control"
+                                                                            name="description"
+                                                                            rows="3"><%= billData.description || '' %></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="text-end mt-4">
+                                                            <a href="/class-bills" class="btn btn-light me-2">Cancel</a>
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <%= isEdit ? 'Update' : 'Create' %> Bill
+                                                            </button>
+                                                        </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">© EduSuite</div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('classBillForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var form = this;
+            var formData = new FormData(form);
+
+            fetch('/save-class-bill', {
+                method: 'POST',
+                body: formData
+            })
+                .then(function (response) { return response.json(); })
+                .then(function (result) {
+                    if (result.success) {
+                        alert(result.message);
+                        window.location.href = '/class-bills';
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
+                })
+                .catch(function (error) {
+                    alert('Failed to save bill. Please try again.');
+                });
+        });
+    </script>
+
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+</body>
+
+</html>

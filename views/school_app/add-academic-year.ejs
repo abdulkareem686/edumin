@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>
+        <%= typeof isEdit !=='undefined' && isEdit ? 'Edit Academic Year' : 'Add Academic Year' %> - edu admin
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+    <meta content="Coderthemes" name="author">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.png">
+
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        .term-card {
+            border-left: 4px solid #3b5de7;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .term-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #3b5de7, #2a4cd0);
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: 500;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 93, 231, 0.3);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #3b5de7;
+            box-shadow: 0 0 0 0.2rem rgba(59, 93, 231, 0.25);
+        }
+
+        .notification-unread {
+            background-color: #e8f0fe;
+            border-left: 3px solid #3b5de7;
+        }
+
+        /* Toast notification styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .toast-notification {
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideInRight 0.5s ease;
+            min-width: 300px;
+        }
+        .toast-success { background: #10b981; }
+        .toast-error { background: #ef4444; }
+        .toast-warning { background: #f59e0b; }
+        .toast-info { background: #3b5de7; }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+
+<body class="loading"
+    data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+
+        <div class="content-page">
+            <div class="content">
+        <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+
+                <!-- Start Content-->
+                <div class="container-fluid">
+                    <!-- Page Heading -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="/academic-years">Academic Years</a></li>
+                                        <li class="breadcrumb-item active"><%= typeof isEdit !== 'undefined' && isEdit
+                                            ? 'Edit Academic Year' : 'Add Academic Year' %>
+                        </li>
+                        </ol>
+                </div>
+                <h4 class="page-title">
+                    <%= typeof isEdit !=='undefined' && isEdit ? 'Edit Academic Year' : 'Add Academic Year' %>
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"></h1>
+        <a href="/academic-years" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i> Back to List
+        </a>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Error Message -->
+    <% if (typeof error !=='undefined' && error) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <% } %>
+
+            <!-- Success Message -->
+            <% if (typeof success !=='undefined' && success) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <%= success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <% } %>
+
+                    <!-- Main Form -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                Academic Year Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST"
+                                action="<%= typeof isEdit !== 'undefined' && isEdit ? '/edit-academic-year/' + academicYearId : '/add-academic-year' %>"
+                                id="academicYearForm">
+                                <!-- Academic Year Details -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="year_name" class="form-label required-field">Academic Year
+                                            Name</label>
+                                        <input type="text" class="form-control" id="year_name" name="year_name"
+                                            value="<%= formData.year_name %>" required placeholder="e.g., 2023/2024">
+                                        <small class="text-muted">Example: 2023/2024, 2024/2025</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Status</label>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" id="is_current"
+                                                name="is_current" <%=formData.is_current ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="is_current">
+                                                <i class="bi bi-star-fill text-warning me-1"></i> Set as current
+                                                academic year
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Only one academic year can be current at a
+                                            time</small>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="start_date" class="form-label required-field">Start Date</label>
+                                        <input type="date" class="form-control" id="start_date" name="start_date"
+                                            value="<%= formData.start_date %>" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="end_date" class="form-label required-field">End Date</label>
+                                        <input type="date" class="form-control" id="end_date" name="end_date"
+                                            value="<%= formData.end_date %>" required>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <!-- First Term -->
+                                <div class="card term-card">
+                                    <div class="card-header bg-white">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="bi bi-calendar-week me-2"></i>First Term
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="first_term_start" class="form-label required-field">Start
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="first_term_start"
+                                                    name="first_term_start" value="<%= formData.first_term_start %>"
+                                                    required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="first_term_end" class="form-label required-field">End
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="first_term_end"
+                                                    name="first_term_end" value="<%= formData.first_term_end %>"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Second Term -->
+                                <div class="card term-card">
+                                    <div class="card-header bg-white">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="bi bi-calendar-week me-2"></i>Second Term
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="second_term_start" class="form-label required-field">Start
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="second_term_start"
+                                                    name="second_term_start" value="<%= formData.second_term_start %>"
+                                                    required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="second_term_end" class="form-label required-field">End
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="second_term_end"
+                                                    name="second_term_end" value="<%= formData.second_term_end %>"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Third Term -->
+                                <div class="card term-card">
+                                    <div class="card-header bg-white">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="bi bi-calendar-week me-2"></i>Third Term
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="third_term_start" class="form-label required-field">Start
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="third_term_start"
+                                                    name="third_term_start" value="<%= formData.third_term_start %>"
+                                                    required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="third_term_end" class="form-label required-field">End
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="third_term_end"
+                                                    name="third_term_end" value="<%= formData.third_term_end %>"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="row mt-4">
+                                    <div class="col-md-12 text-center">
+                                        <button type="submit" class="btn btn-save text-white" id="submitBtn">
+                                            <i class="bi bi-save me-2"></i>
+                                            <%= typeof isEdit !=='undefined' && isEdit ? 'Update Academic Year'
+                                                : 'Save Academic Year' %>
+                                        </button>
+                                        <a href="/academic-years" class="btn btn-secondary ms-2">
+                                            <i class="bi bi-x-circle me-2"></i> Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Information Box -->
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Note:</strong> Term dates must fall within the academic year dates. All dates are
+                        required for proper academic calendar management.
+                    </div>
+                    </div>
+                    <!-- end Content -->
+                    </div>
+
+                    <!-- Footer Start -->
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - School
+                                    Management System
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <a href="javascript: void(0);"
+                                        class="text-muted text-decoration-none small">About</a>
+                                    <span class="text-muted mx-1">|</span>
+                                    <a href="javascript: void(0);"
+                                        class="text-muted text-decoration-none small">Support</a>
+                                    <span class="text-muted mx-1">|</span>
+                                    <a href="javascript: void(0);" class="text-muted text-decoration-none small">Contact
+                                        Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- end Footer -->
+                    </div>
+                    <!-- End Page content -->
+                    </div>
+                    <!-- END wrapper -->
+
+                    <!-- SweetAlert2 JS -->
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <!-- bundle -->
+                    <script src="/assets/js/vendor.min.js"></script>
+                    <script src="/assets/js/app.min.js"></script>
+
+                    <script>
+                        // Toast notification function
+                        function showToast(message, type) {
+                            const container = document.getElementById('toastContainer');
+                            const toast = document.createElement('div');
+                            const icons = {
+                                success: 'bi bi-check-circle-fill',
+                                error: 'bi bi-exclamation-circle-fill',
+                                warning: 'bi bi-exclamation-triangle-fill',
+                                info: 'bi bi-info-circle-fill'
+                            };
+                            toast.className = 'toast-notification toast-' + type;
+                            toast.innerHTML = '<i class="' + (icons[type] || icons.info) + ' me-2"></i> ' + message;
+                            container.appendChild(toast);
+                            
+                            // Auto remove after 5 seconds
+                            setTimeout(function() {
+                                toast.style.animation = 'fadeOut 0.5s ease';
+                                setTimeout(function() {
+                                    toast.remove();
+                                }, 500);
+                            }, 5000);
+                        }
+
+                        // Date validation to ensure term dates are within academic year
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Check for success/error messages from server and show as popups
+                            <% if (typeof success !== 'undefined' && success) { %>
+                                showToast('<%= success %>', 'success');
+                            <% } %>
+                            <% if (typeof error !== 'undefined' && error) { %>
+                                showToast('<%= error %>', 'error');
+                            <% } %>
+
+                            const startDate = document.getElementById('start_date');
+                            const endDate = document.getElementById('end_date');
+
+                            const termStartDates = [
+                                document.getElementById('first_term_start'),
+                                document.getElementById('second_term_start'),
+                                document.getElementById('third_term_start')
+                            ];
+
+                            const termEndDates = [
+                                document.getElementById('first_term_end'),
+                                document.getElementById('second_term_end'),
+                                document.getElementById('third_term_end')
+                            ];
+
+                            function validateTermDates() {
+                                if (!startDate || !endDate || !startDate.value || !endDate.value) return true;
+
+                                const startVal = startDate.value;
+                                const endVal = endDate.value;
+                                let isValid = true;
+
+                                if (startVal > endVal) {
+                                    endDate.classList.add('is-invalid');
+                                    endDate.setCustomValidity('Academic year start date must be before end date');
+                                    isValid = false;
+                                } else {
+                                    endDate.classList.remove('is-invalid');
+                                    endDate.setCustomValidity('');
+                                }
+
+                                for (let i = 0; i < termStartDates.length; i++) {
+                                    const termStartInput = termStartDates[i];
+                                    const termEndInput = termEndDates[i];
+
+                                    if (termStartInput && termStartInput.value) {
+                                        if (termStartInput.value < startVal) {
+                                            termStartInput.classList.add('is-invalid');
+                                            termStartInput.setCustomValidity('Term start date cannot be before academic year start date');
+                                            isValid = false;
+                                        } else if (termStartInput.value > endVal) {
+                                            termStartInput.classList.add('is-invalid');
+                                            termStartInput.setCustomValidity('Term start date cannot be after academic year end date');
+                                            isValid = false;
+                                        } else {
+                                            termStartInput.classList.remove('is-invalid');
+                                            termStartInput.setCustomValidity('');
+                                        }
+                                    }
+
+                                    if (termEndInput && termEndInput.value) {
+                                        if (termEndInput.value > endVal) {
+                                            termEndInput.classList.add('is-invalid');
+                                            termEndInput.setCustomValidity('Term end date cannot be after academic year end date');
+                                            isValid = false;
+                                        } else if (termEndInput.value < startVal) {
+                                            termEndInput.classList.add('is-invalid');
+                                            termEndInput.setCustomValidity('Term end date cannot be before academic year start date');
+                                            isValid = false;
+                                        } else {
+                                            termEndInput.classList.remove('is-invalid');
+                                            termEndInput.setCustomValidity('');
+                                        }
+                                    }
+
+                                    if (termStartInput && termEndInput && termStartInput.value && termEndInput.value) {
+                                        if (termStartInput.value > termEndInput.value) {
+                                            termEndInput.classList.add('is-invalid');
+                                            termEndInput.setCustomValidity('Term end date must be after term start date');
+                                            isValid = false;
+                                        }
+                                    }
+                                }
+
+                                return isValid;
+                            }
+
+                            if (startDate) startDate.addEventListener('change', validateTermDates);
+                            if (endDate) endDate.addEventListener('change', validateTermDates);
+
+                            termStartDates.forEach(function (input) {
+                                if (input) {
+                                    input.addEventListener('change', validateTermDates);
+                                    input.addEventListener('input', validateTermDates);
+                                }
+                            });
+                            termEndDates.forEach(function (input) {
+                                if (input) {
+                                    input.addEventListener('change', validateTermDates);
+                                    input.addEventListener('input', validateTermDates);
+                                }
+                            });
+
+                            // Form submission with SweetAlert confirmation
+                            const form = document.getElementById('academicYearForm');
+                            const submitBtn = document.getElementById('submitBtn');
+                            
+                            if (form) {
+                                form.addEventListener('submit', function (e) {
+                                    e.preventDefault();
+
+                                    const yearName = document.getElementById('year_name').value.trim();
+                                    const startDateVal = document.getElementById('start_date').value;
+                                    const endDateVal = document.getElementById('end_date').value;
+
+                                    if (!yearName || !startDateVal || !endDateVal) {
+                                        Swal.fire({
+                                            title: 'Missing Fields',
+                                            text: 'Please fill in all required fields marked with *',
+                                            icon: 'error',
+                                            confirmButtonColor: '#3b5de7',
+                                            confirmButtonText: 'OK'
+                                        });
+                                        return;
+                                    }
+
+                                    // Run validation
+                                    validateTermDates();
+
+                                    // Check if any term dates are invalid
+                                    const invalidInputs = form.querySelectorAll('.is-invalid');
+                                    if (invalidInputs.length > 0) {
+                                        Swal.fire({
+                                            title: 'Invalid Dates',
+                                            text: 'Some term dates are outside the academic year range or end date is before start date. Please fix them before saving.',
+                                            icon: 'warning',
+                                            confirmButtonColor: '#3b5de7',
+                                            confirmButtonText: 'OK'
+                                        });
+                                        return;
+                                    }
+
+                                    const isEdit = <%= typeof isEdit !== 'undefined' && isEdit ? 'true' : 'false' %>;
+                                    const actionText = isEdit ? 'update' : 'save';
+                                    const titleText = isEdit ? 'Update Academic Year' : 'Save New Academic Year';
+                                    const confirmText = isEdit ? 'Yes, update it' : 'Yes, save it';
+
+                                    Swal.fire({
+                                        title: titleText,
+                                        text: 'Are you sure you want to ' + actionText + ' "' + yearName + '"?',
+                                        icon: 'question',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3b5de7',
+                                        cancelButtonColor: '#6c757d',
+                                        confirmButtonText: confirmText,
+                                        cancelButtonText: 'Cancel'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // Show loading state on button
+                                            if (submitBtn) {
+                                                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...';
+                                                submitBtn.disabled = true;
+                                            }
+                                            
+                                            // Submit the form
+                                            form.submit();
+                                        }
+                                    });
+                                });
+                            }
+
+                            // Auto-dismiss alerts after 5 seconds and show as toast
+                            setTimeout(function () {
+                                var alerts = document.querySelectorAll('.alert.alert-dismissible');
+                                for (var i = 0; i < alerts.length; i++) {
+                                    var alert = alerts[i];
+                                    var message = alert.textContent.trim();
+                                    var isSuccess = alert.classList.contains('alert-success');
+                                    var isError = alert.classList.contains('alert-danger');
+                                    if (isSuccess) {
+                                        showToast(message, 'success');
+                                    } else if (isError) {
+                                        showToast(message, 'error');
+                                    }
+                                    setTimeout(function (al) {
+                                        if (al) al.remove();
+                                    }, 4000, alert);
+                                }
+                            }, 100);
+                        });
+
+                        // Mark notification as read
+                        function markRead(notificationId) {
+                            fetch('/teacher/notifications/mark-read/' + notificationId, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' }
+                            }).then(function (response) {
+                                return response.json();
+                            }).then(function (data) {
+                                if (data.success) {
+                                    showToast('Notification marked as read', 'success');
+                                    location.reload();
+                                }
+                            }).catch(function (error) {
+                                console.error('Error:', error);
+                                showToast('Error marking notification as read', 'error');
+                            });
+                        }
+
+                        // Mark all notifications as read
+                        function markAllRead() {
+                            Swal.fire({
+                                title: 'Mark All as Read?',
+                                text: 'This will mark all your notifications as read.',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3b5de7',
+                                cancelButtonColor: '#6c757d',
+                                confirmButtonText: 'Yes, mark all as read',
+                                cancelButtonText: 'Cancel'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    fetch('/teacher/notifications/mark-all-read', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' }
+                                    }).then(function (response) {
+                                        return response.json();
+                                    }).then(function (data) {
+                                        if (data.success) {
+                                            showToast('All notifications marked as read', 'success');
+                                            location.reload();
+                                        }
+                                    }).catch(function (error) {
+                                        showToast('Error marking notifications as read', 'error');
+                                    });
+                                }
+                            });
+                        }
+                    </script>
+</body>
+
+</html>

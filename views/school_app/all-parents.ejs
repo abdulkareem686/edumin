@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>All Parents - School Management System</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+
+        <!-- third party css -->
+        <link href="assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
+        <!-- third party css end -->
+
+        <!-- App css -->
+        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        
+        <style>
+            .parent-card {
+                transition: all 0.3s;
+            }
+            .parent-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            .children-list {
+                font-size: 0.85rem;
+                color: #6c757d;
+            }
+            .children-list .badge {
+                font-size: 0.75rem;
+                margin: 2px;
+                white-space: normal !important;
+                word-wrap: break-word !important;
+                max-width: 200px !important;
+                display: inline-block !important;
+                line-height: 1.4 !important;
+                padding: 4px 8px !important;
+            }
+            .children-list .child-badge {
+                background-color: #e9ecef;
+                color: #495057;
+                font-size: 0.7rem;
+                margin: 1px;
+                padding: 2px 6px;
+                border-radius: 10px;
+                display: inline-block;
+                white-space: normal;
+                word-break: break-word;
+            }
+            .status-badge {
+                padding: 4px 8px;
+                border-radius: 20px;
+                font-size: 0.75rem;
+                font-weight: 500;
+            }
+            .status-active {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            .status-inactive {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+            .action-icons {
+                white-space: nowrap;
+            }
+            .action-icon {
+                font-size: 1.1rem;
+                margin: 0 3px;
+                transition: all 0.2s;
+            }
+            .action-icon:hover {
+                transform: scale(1.1);
+            }
+            .table-user a {
+                text-decoration: none;
+                color: #3f51b5;
+                font-weight: 500;
+            }
+            .table-user a:hover {
+                text-decoration: underline;
+            }
+            .linked-students {
+                max-width: 280px;
+                min-width: 150px;
+            }
+            .btn-sm-custom {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.75rem;
+            }
+            .dataTables_wrapper .dataTables_length select {
+                width: auto;
+                display: inline-block;
+                margin: 0 5px;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                margin-left: 0.5em;
+                display: inline-block;
+                width: auto;
+            }
+            .page-title-box .page-title-right .breadcrumb {
+                background: transparent;
+                padding: 0;
+            }
+            .export-buttons .btn {
+                margin-left: 5px;
+            }
+            /* Fix for child names display */
+            .child-names-container {
+                max-height: 60px;
+                overflow-y: auto;
+                padding: 2px 0;
+            }
+            .child-names-container::-webkit-scrollbar {
+                width: 3px;
+            }
+            .child-names-container::-webkit-scrollbar-thumb {
+                background: #ced4da;
+                border-radius: 3px;
+            }
+        </style>
+    
+    <style>
+        /* Enable smooth, guaranteed scrolling for all modal dialogs */
+        .modal-dialog-scrollable {
+            max-height: calc(100vh - 2rem) !important;
+        }
+        .modal-dialog-scrollable form.modal-content,
+        .modal-dialog-scrollable .modal-content {
+            max-height: calc(100vh - 2rem) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
+        .modal-dialog-scrollable .modal-body {
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            flex: 1 1 auto !important;
+            max-height: calc(100vh - 180px) !important;
+        }
+        .modal-dialog-scrollable .modal-header,
+        .modal-dialog-scrollable .modal-footer {
+            flex-shrink: 0 !important;
+        }
+    </style>
+
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+<!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+                    
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Parents</a></li>
+                                            <li class="breadcrumb-item active">All Parents</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">All Parents/Guardians</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <!-- Success/Error Messages -->
+                        <% if (typeof success !== 'undefined' && success) { %>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i> <%= success %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <% } %>
+                        
+                        <% if (typeof error !== 'undefined' && error) { %>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i> <%= error %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <% } %>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row mb-2">
+                                            <div class="col-sm-6">
+                                                <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addParentModal">
+                                                    <i class="mdi mdi-plus-circle me-2"></i> Add Parent
+                                                </button>
+                                                <a href="/send-notification" class="btn btn-info mb-2 ms-1">
+                                                    <i class="bi bi-bell me-2"></i> Send Notification
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <form class="d-flex justify-content-sm-end gap-2 mb-2" method="get" action="/all-parents">
+                                                    <input type="search" name="q" class="form-control" style="max-width:280px" placeholder="Search parents..." value="<%= typeof searchQ !== 'undefined' ? searchQ : '' %>">
+                                                    <button type="submit" class="btn btn-primary">Search</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                
+                                        <div class="table-responsive">
+                                            <table class="table table-centered table-striped dt-responsive nowrap w-100" id="parents-datatable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 20px;">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" class="form-check-input" id="customCheckAll">
+                                                                <label class="form-check-label" for="customCheckAll">&nbsp;</label>
+                                                            </div>
+                                                        </th>
+                                                        <th>ID</th>
+                                                        <th>Parent Name</th>
+                                                        <th>Contact Info</th>
+                                                        <th>Linked Children</th>
+                                                        <th>Relationship</th>
+                                                        <th>Status</th>
+                                                        <th style="width: 120px;">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% if (typeof parents !== 'undefined' && parents && parents.length > 0) { %>
+                                                        <% parents.forEach(function(parent) { 
+                                                            // Parse children names if it's a string
+                                                            var childrenNames = parent.children_names || '';
+                                                            var childrenCount = parent.children_count || 0;
+                                                            
+                                                            // If children_names is a string, split it
+                                                            var childrenList = [];
+                                                            if (typeof childrenNames === 'string' && childrenNames.trim() !== '') {
+                                                                childrenList = childrenNames.split(',').map(function(name) {
+                                                                    return name.trim();
+                                                                }).filter(function(name) { return name !== ''; });
+                                                            }
+                                                        %>
+                                                            <tr class="parent-row">
+                                                                <td>
+                                                                    <div class="form-check">
+                                                                        <input type="checkbox" class="form-check-input parent-checkbox" id="parentCheck<%= parent.id %>" value="<%= parent.id %>">
+                                                                        <label class="form-check-label" for="parentCheck<%= parent.id %>">&nbsp;</label>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span class="fw-semibold">#<%= parent.id %></span>
+                                                                </td>
+                                                                <td class="table-user">
+                                                                    <a href="/parent-profile/<%= parent.id %>" class="text-body fw-semibold">
+                                                                        <i class="bi bi-person-circle me-1"></i>
+                                                                        <%= parent.first_name %> <%= parent.last_name %>
+                                                                    </a>
+                                                                    <div class="small text-muted mt-1">
+                                                                        <i class="bi bi-briefcase"></i> <%= parent.occupation || 'Not specified' %>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <div>
+                                                                        <i class="bi bi-envelope me-1"></i>
+                                                                        <a href="mailto:<%= parent.email %>" class="text-decoration-none">
+                                                                            <strong><%= parent.email %></strong>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="mt-1">
+                                                                        <i class="bi bi-telephone me-1"></i>
+                                                                        <a href="tel:<%= parent.phone %>"><%= parent.phone %></a>
+                                                                    </div>
+                                                                    <% if (parent.emergency_contact) { %>
+                                                                        <div class="mt-1 small text-muted">
+                                                                            <i class="bi bi-shield-exclamation"></i> Emergency: <%= parent.emergency_contact %>
+                                                                        </div>
+                                                                    <% } %>
+                                                                </td>
+                                                                <td class="linked-students">
+                                                                    <% if (childrenList.length > 0) { %>
+                                                                        <div class="children-list">
+                                                                            <div class="d-flex align-items-center mb-1">
+                                                                                <i class="bi bi-people-fill text-primary me-1"></i>
+                                                                                <strong><%= childrenCount %> child<%= childrenCount > 1 ? 'ren' : '' %></strong>
+                                                                            </div>
+                                                                            
+                                                                        </div>
+                                                                    <% } else { %>
+                                                                        <span class="text-muted">
+                                                                            <i class="bi bi-exclamation-triangle"></i> No children linked
+                                                                        </span>
+                                                                        <div class="mt-1">
+                                                                            <button class="btn btn-sm btn-warning btn-sm-custom link-student-btn" data-parent-id="<%= parent.id %>" data-parent-name="<%= parent.first_name %> <%= parent.last_name %>">
+                                                                                <i class="bi bi-link"></i> Link Student
+                                                                            </button>
+                                                                        </div>
+                                                                    <% } %>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="badge bg-secondary">
+                                                                        <%= parent.relationship || 'Parent' %>
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    <span class="status-badge <%= parent.status === 'active' ? 'status-active' : 'status-inactive' %>">
+                                                                        <i class="bi <%= parent.status === 'active' ? 'bi-check-circle' : 'bi-x-circle' %> me-1"></i>
+                                                                        <%= parent.status === 'active' ? 'Active' : 'Inactive' %>
+                                                                    </span>
+                                                                </td>
+                                                                <td class="action-icons">
+                                                                    <a href="/edit-parent/<%= parent.id %>" class="action-icon text-primary" title="Edit Parent">
+                                                                        <i class="mdi mdi-square-edit-outline"></i>
+                                                                    </a>
+                                                                    <a href="/parent-profile/<%= parent.id %>" class="action-icon text-info" title="View Profile">
+                                                                        <i class="mdi mdi-account-details"></i>
+                                                                    </a>
+                                                                    <a href="/reset-parent-password/<%= parent.id %>" class="action-icon text-warning" title="Reset Password" onclick="return confirm('Reset password for <%= parent.first_name %> <%= parent.last_name %>? A temporary password will be generated.');">
+                                                                        <i class="mdi mdi-key"></i>
+                                                                    </a>
+                                                                    <a href="/send-notification?parentId=<%= parent.id %>" class="action-icon text-success" title="Send Notification">
+                                                                        <i class="mdi mdi-bell"></i>
+                                                                    </a>
+                                                                    <a href="/delete-parent/<%= parent.id %>" class="action-icon text-danger" title="Delete Parent" 
+                                                                       onclick="return confirm('Are you sure you want to delete parent <%= parent.first_name %> <%= parent.last_name %>? This action cannot be undone.');">
+                                                                        <i class="mdi mdi-delete"></i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="8" class="text-center py-4">
+                                                                <div class="text-muted">
+                                                                    <i class="bi bi-people display-4 d-block mb-3"></i>
+                                                                    <h5>No parents found</h5>
+                                                                    <p class="mb-0">Click the "Add Parent" button to create a new parent/guardian record.</p>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <%- include('partials/pager') %>
+                                    </div> <!-- end card-body-->
+                                </div> <!-- end card-->
+                            </div> <!-- end col -->
+                        </div>
+
+                        <!-- Enhanced Add Parent Modal -->
+                        <div class="modal fade" id="addParentModal" tabindex="-1" aria-labelledby="addParentModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+<form class="modal-content border-0 shadow" action="/add-parent" method="post" id="addParentModalForm">
+                                        <div class="modal-header bg-light py-3">
+                                            <div>
+                                                <h5 class="modal-title fw-bold text-primary mb-1" id="addParentModalLabel">
+                                                    <i class="bi bi-person-plus-fill me-2"></i>Register New Parent / Guardian
+                                                </h5>
+                                                <p class="text-muted small mb-0">Fill in the parent's credentials, contact details, and optionally link students.</p>
+                                            </div>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body p-4" style="overflow-y: auto; max-height: calc(85vh - 130px);">
+                                            <!-- Personal & Account Information -->
+                                            <div class="d-flex align-items-center mb-3">
+                                                <div class="rounded-circle bg-primary-subtle text-primary p-2 me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                                    <i class="bi bi-person-badge"></i>
+                                                </div>
+                                                <h6 class="mb-0 fw-semibold text-uppercase fs-13 text-muted">Personal & Account Information</h6>
+                                            </div>
+
+                                            <div class="row g-3 mb-4">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">First Name <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" name="firstName" placeholder="e.g. Ade" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Last Name <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" name="lastName" placeholder="e.g. Adeleke" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Email Address <span class="text-danger">*</span></label>
+                                                    <input type="email" class="form-control" name="email" placeholder="parent@example.com" required>
+                                                    <div class="form-text">Used for parent portal login and notifications.</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Phone Number <span class="text-danger">*</span></label>
+                                                    <input type="tel" class="form-control" name="phone" placeholder="e.g. 08012345678" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Login Password <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" name="password" id="parentModalPassword" value="password123" required>
+                                                        <button class="btn btn-outline-secondary" type="button" onclick="generateParentModalPassword()">
+                                                            <i class="bi bi-shuffle"></i> Generate
+                                                        </button>
+                                                    </div>
+                                                    <div class="form-text">Default: <code>password123</code> (Parent can change upon first login).</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Relationship to Student</label>
+                                                    <select class="form-select" name="relationship">
+                                                        <option value="Father" selected>Father</option>
+                                                        <option value="Mother">Mother</option>
+                                                        <option value="Guardian">Guardian</option>
+                                                        <option value="Grandparent">Grandparent</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Occupation</label>
+                                                    <input type="text" class="form-control" name="occupation" placeholder="e.g. Civil Servant, Business, Engineer">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Emergency Contact</label>
+                                                    <input type="text" class="form-control" name="emergencyContact" placeholder="Alternate phone or contact person">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label fw-medium">Residential Address</label>
+                                                    <textarea class="form-control" name="address" rows="2" placeholder="Full residential or street address"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <hr class="my-4 text-muted">
+
+                                            <!-- Link to Students Section -->
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="rounded-circle bg-info-subtle text-info p-2 me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                                    <i class="bi bi-people-fill"></i>
+                                                </div>
+                                                <h6 class="mb-0 fw-semibold text-uppercase fs-13 text-muted">Link Students (Optional)</h6>
+                                            </div>
+                                            <p class="text-muted small mb-3">You can link students right now, or link them later using the "Link Student" button in the table.</p>
+
+                                            <div class="card border bg-light-subtle mb-0">
+                                                <div class="card-body p-3">
+                                                    <label class="form-label fw-medium">Search Students to Link</label>
+                                                    <div class="input-group mb-2">
+                                                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                                        <input type="search" class="form-control" id="modalParentStudentSearchInput" placeholder="Type student name or admission number (at least 2 letters)..." autocomplete="off">
+                                                    </div>
+                                                    <div id="modalParentStudentSearchResults" class="list-group mb-2 shadow-sm" style="max-height: 180px; overflow-y: auto; display: none;"></div>
+                                                    
+                                                    <div class="mt-2">
+                                                        <span class="small fw-semibold text-muted d-block mb-1">Selected Students:</span>
+                                                        <div id="modalParentSelectedStudents" class="d-flex flex-wrap gap-1 min-vh-20">
+                                                            <span class="text-muted small fst-italic py-1" id="noStudentsSelectedHint">No students currently linked.</span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Hidden multi-select for form submission -->
+                                                    <select class="d-none" name="studentIds" multiple id="modalParentStudentSelect"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-light py-2">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                                <i class="bi bi-check-circle me-1"></i> Register Parent
+                                            </button>
+                                        </div>
+                                    </form>
+                            </div>
+                        </div>
+                        <!-- end row -->
+                        
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © abdulkareem
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+            <!-- End Page content -->
+        </div>
+        <!-- END wrapper -->
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Settings</h5>
+            </div>
+            <div class="rightbar-content h-100" data-simplebar="">
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize</strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+                    <h5 class="mt-3">Color Scheme</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+                    <h5 class="mt-4">Width</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+
+        <!-- Link Student Modal -->
+        <div class="modal fade" id="linkStudentModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Link Student to Parent</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" style="overflow-y: auto; max-height: calc(85vh - 130px);">
+                        <p>Link student to <strong id="parentNameDisplay"></strong></p>
+                        <form id="linkStudentForm">
+                            <input type="hidden" id="linkParentId" name="parentId">
+                            <div class="mb-3">
+                                <label class="form-label">Select Student</label>
+                                <select class="form-control" id="studentSelect" name="studentId" required>
+                                    <option value="">-- Select Student --</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Relationship</label>
+                                <select class="form-control" name="relationship">
+                                    <option value="Parent">Parent</option>
+                                    <option value="Guardian">Guardian</option>
+                                    <option value="Grandparent">Grandparent</option>
+                                    <option value="Sibling">Sibling</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="isPrimary" value="1" id="isPrimary">
+                                    <label class="form-check-label" for="isPrimary">Primary Contact</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="confirmLinkStudent">Link Student</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
+
+        <!-- third party js -->
+        <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
+        <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
+        <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
+        <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
+        <script src="assets/js/vendor/dataTables.checkboxes.min.js"></script>
+        
+        <!-- PapaParse for CSV export -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+        
+        
+    </body>
+    <script>
+            $(document).ready(function() {
+                // Initialize DataTable with pagination options
+                const table = $('#parents-datatable').DataTable({
+                    paging: false,
+                    searching: false,
+                    info: false,
+                    responsive: true,
+                    columnDefs: [
+                        { orderable: false, targets: [0, 7] },
+                        { searchable: false, targets: [0, 7] }
+                    ],
+                    order: [[1, 'asc']],
+                    language: {
+                        zeroRecords: "No matching parents found",
+                        emptyTable: "No parents available"
+                    }
+                });
+
+                // Custom page length selector styling
+                $('.dataTables_length select').addClass('form-select form-select-sm d-inline-block w-auto');
+                $('.dataTables_filter input').addClass('form-control form-control-sm');
+
+                // Select/Deselect all checkboxes
+                $('#customCheckAll').change(function() {
+                    const isChecked = $(this).prop('checked');
+                    $('.parent-checkbox').prop('checked', isChecked);
+                });
+
+                // Export selected parents
+                $('#exportSelectedBtn').click(function() {
+                    const selectedParents = [];
+                    $('.parent-checkbox:checked').each(function() {
+                        const parentId = $(this).val();
+                        const row = $(this).closest('tr');
+                        // Get child names from the row
+                        let childNames = '';
+                        const childBadges = row.find('td:eq(4) .child-badge');
+                        if (childBadges.length > 0) {
+                            childBadges.each(function() {
+                                childNames += $(this).text().trim() + ', ';
+                            });
+                            childNames = childNames.slice(0, -2);
+                        }
+                        
+                        selectedParents.push({
+                            id: parentId,
+                            name: row.find('td:eq(2) .text-body').text().trim(),
+                            email: row.find('td:eq(3) a strong').first().text().trim(),
+                            phone: row.find('td:eq(3) a:contains("0")').first().text().trim() || 'N/A',
+                            children: childNames || 'None',
+                            status: row.find('td:eq(6) span').text().trim(),
+                            relationship: row.find('td:eq(5) span').text().trim()
+                        });
+                    });
+                    
+                    if (selectedParents.length === 0) {
+                        alert('Please select at least one parent to export.');
+                        return;
+                    }
+                    
+                    exportToCSV(selectedParents, 'selected_parents_export');
+                });
+
+                // Export all parents
+                $('#exportAllBtn').click(function() {
+                    const allParents = [];
+                    $('.parent-row').each(function() {
+                        const row = $(this);
+                        // Get child names from the row
+                        let childNames = '';
+                        const childBadges = row.find('td:eq(4) .child-badge');
+                        if (childBadges.length > 0) {
+                            childBadges.each(function() {
+                                childNames += $(this).text().trim() + ', ';
+                            });
+                            childNames = childNames.slice(0, -2);
+                        }
+                        
+                        allParents.push({
+                            id: row.find('td:eq(1)').text().trim(),
+                            name: row.find('td:eq(2) .text-body').text().trim(),
+                            email: row.find('td:eq(3) a strong').first().text().trim(),
+                            phone: row.find('td:eq(3) a:contains("0")').first().text().trim() || 'N/A',
+                            children: childNames || 'None',
+                            status: row.find('td:eq(6) span').text().trim(),
+                            relationship: row.find('td:eq(5) span').text().trim()
+                        });
+                    });
+                    
+                    exportToCSV(allParents, 'all_parents_export');
+                });
+
+                // Export to CSV function
+                function exportToCSV(data, filename) {
+                    const csvData = data.map(parent => ({
+                        'ID': parent.id,
+                        'Parent Name': parent.name,
+                        'Email': parent.email,
+                        'Phone': parent.phone,
+                        'Linked Children': parent.children,
+                        'Relationship': parent.relationship,
+                        'Status': parent.status
+                    }));
+                    
+                    const csv = Papa.unparse(csvData);
+                    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.setAttribute('download', `${filename}.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                }
+
+                // Print functionality
+                $('#printBtn').click(function() {
+                    const printContents = $('.card-body').clone();
+                    printContents.find('.export-buttons').remove();
+                    printContents.find('.dataTables_length').remove();
+                    printContents.find('.dataTables_filter').remove();
+                    
+                    const originalTitle = document.title;
+                    document.title = 'Parents List Report';
+                    
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write(`
+                        <html>
+                            <head>
+                                <title>Parents List Report</title>
+                                <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+                                <style>
+                                    body { padding: 20px; }
+                                    table { width: 100%; border-collapse: collapse; }
+                                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                                    th { background-color: #f2f2f2; }
+                                    .child-badge { 
+                                        display: inline-block; 
+                                        background: #e9ecef; 
+                                        padding: 2px 6px; 
+                                        margin: 1px; 
+                                        border-radius: 10px;
+                                        font-size: 0.7rem;
+                                    }
+                                    @media print {
+                                        .no-print { display: none; }
+                                        body { margin: 0; padding: 15px; }
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <h2 class="text-center mb-4">Parents List Report</h2>
+                                <p class="text-muted">Generated on: ${new Date().toLocaleString()}</p>
+                                ${printContents.html()}
+                                <p class="text-muted mt-4">Total Parents: ${$('#totalRecords').text()}</p>
+                            </body>
+                        </html>
+                    `);
+                    printWindow.document.close();
+                    printWindow.print();
+                    document.title = originalTitle;
+                });
+
+                // Link student functionality
+                let currentParentId = null;
+                let currentParentName = null;
+                
+                $('.link-student-btn').click(function() {
+                    currentParentId = $(this).data('parent-id');
+                    currentParentName = $(this).data('parent-name');
+                    $('#parentNameDisplay').text(currentParentName);
+                    $('#linkParentId').val(currentParentId);
+                    
+                    // Load students for dropdown
+                    $.ajax({
+                        url: '/api/students-for-parent',
+                        method: 'GET',
+                        success: function(response) {
+                            if (response.success) {
+                                const studentSelect = $('#studentSelect');
+                                studentSelect.empty();
+                                studentSelect.append('<option value="">-- Select Student --</option>');
+                                if (response.students && response.students.length > 0) {
+                                    response.students.forEach(function(student) {
+                                        studentSelect.append(`<option value="${student.id}">${student.firstName} ${student.lastName} (${student.admission_number}) - ${student.className || 'No Class'}</option>`);
+                                    });
+                                } else {
+                                    studentSelect.append('<option value="" disabled>No students available</option>');
+                                }
+                                $('#linkStudentModal').modal('show');
+                            } else {
+                                alert('Failed to load students: ' + (response.error || 'Unknown error'));
+                            }
+                        },
+                        error: function(xhr) {
+                            alert('Error loading students: ' + (xhr.responseJSON?.error || 'Please try again'));
+                        }
+                    });
+                });
+                
+                $('#confirmLinkStudent').click(function() {
+                    const formData = $('#linkStudentForm').serialize();
+                    $.ajax({
+                        url: '/api/link-student-to-parent',
+                        method: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            if (response.success) {
+                                alert('Student linked successfully!');
+                                location.reload();
+                            } else {
+                                alert('Failed to link student: ' + (response.error || 'Unknown error'));
+                            }
+                        },
+                        error: function(xhr) {
+                            alert('Error linking student: ' + (xhr.responseJSON?.error || 'Please try again'));
+                        }
+                    });
+                });
+
+                // Preserve checkbox state across pagination
+                table.on('draw', function() {
+                    // Re-bind link student buttons after draw
+                    $('.link-student-btn').off('click').on('click', function() {
+                        currentParentId = $(this).data('parent-id');
+                        currentParentName = $(this).data('parent-name');
+                        $('#parentNameDisplay').text(currentParentName);
+                        $('#linkParentId').val(currentParentId);
+                        
+                        $.ajax({
+                            url: '/api/students-for-parent',
+                            method: 'GET',
+                            success: function(response) {
+                                if (response.success) {
+                                    const studentSelect = $('#studentSelect');
+                                    studentSelect.empty();
+                                    studentSelect.append('<option value="">-- Select Student --</option>');
+                                    response.students.forEach(function(student) {
+                                        studentSelect.append(`<option value="${student.id}">${student.firstName} ${student.lastName} (${student.admission_number})</option>`);
+                                    });
+                                    $('#linkStudentModal').modal('show');
+                                } else {
+                                    alert('Failed to load students');
+                                }
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+</html>

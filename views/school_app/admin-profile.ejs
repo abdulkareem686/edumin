@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Admin Profile - <%= admin.username %></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="Admin profile page" name="description">
+        <meta content="Coderthemes" name="author">
+        <link rel="shortcut icon" href="/images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="/vendor/bootstrap-select/dist/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+        <style>
+            .profile-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 15px;
+                padding: 2rem;
+                color: white;
+                margin-bottom: 2rem;
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+            }
+
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                background: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                transition: transform 0.3s ease;
+            }
+
+            .profile-avatar:hover {
+                transform: scale(1.05);
+            }
+
+            .profile-avatar i {
+                font-size: 4rem;
+                color: #667eea;
+            }
+
+            .profile-avatar .avatar-text {
+                font-size: 3.5rem;
+                font-weight: 700;
+                color: #667eea;
+            }
+
+            .quick-stat {
+                text-align: center;
+                padding: 1rem 0.5rem;
+                border-radius: 10px;
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(5px);
+                transition: transform 0.3s ease, background 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .quick-stat:hover {
+                transform: translateY(-3px);
+                background: rgba(255, 255, 255, 0.25);
+            }
+
+            .quick-stat .number {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: white;
+                line-height: 1.2;
+            }
+
+            .quick-stat .text-muted {
+                color: rgba(255, 255, 255, 0.85) !important;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .info-card {
+                border-radius: 12px;
+                transition: transform 0.3s, box-shadow 0.3s;
+                margin-bottom: 1.5rem;
+            }
+
+            .info-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .info-label {
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #6c757d;
+                margin-bottom: 0.5rem;
+            }
+
+            .info-value {
+                font-size: 1rem;
+                font-weight: 500;
+                color: #2c3e50;
+                word-break: break-word;
+            }
+
+            .activity-item {
+                border-left: 3px solid #667eea;
+                padding: 0.5rem 0 0.5rem 1rem;
+                margin-bottom: 0.75rem;
+                transition: background 0.3s ease;
+                border-radius: 0 8px 8px 0;
+            }
+
+            .activity-item:hover {
+                background: #f8f9ff;
+            }
+
+            .badge-role {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+                border-radius: 20px;
+            }
+
+            .stat-card {
+                background: white;
+                border-radius: 12px;
+                padding: 1.5rem;
+                text-align: center;
+                border: 1px solid #eef0f5;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            }
+
+            .stat-card .stat-number {
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: #667eea;
+                line-height: 1.2;
+            }
+
+            .stat-card .stat-label {
+                font-size: 0.85rem;
+                color: #6c757d;
+                margin-top: 0.25rem;
+            }
+
+            .stat-card .stat-icon {
+                font-size: 2rem;
+                color: #667eea;
+                opacity: 0.3;
+                margin-bottom: 0.5rem;
+            }
+
+            .quick-action-btn {
+                border-radius: 10px;
+                padding: 0.6rem 1rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                text-align: left;
+            }
+
+            .quick-action-btn:hover {
+                transform: translateX(5px);
+            }
+
+            .quick-action-btn i {
+                width: 20px;
+                text-align: center;
+                margin-right: 8px;
+            }
+
+            @media (max-width: 768px) {
+                .profile-header {
+                    padding: 1.5rem;
+                }
+                .quick-stat .number {
+                    font-size: 1.3rem;
+                }
+                .profile-avatar {
+                    width: 80px;
+                    height: 80px;
+                }
+                .profile-avatar i {
+                    font-size: 2.5rem;
+                }
+                .profile-avatar .avatar-text {
+                    font-size: 2.5rem;
+                }
+            }
+
+            .timeline-alt {
+                padding-left: 1rem;
+            }
+
+            .timeline-item {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 1rem;
+                position: relative;
+            }
+
+            .timeline-item:last-child {
+                margin-bottom: 0;
+            }
+
+            .timeline-item .timeline-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                margin-right: 1rem;
+                color: white;
+            }
+
+            .timeline-item .timeline-icon.bg-primary {
+                background: #667eea;
+            }
+
+            .timeline-item .timeline-icon.bg-success {
+                background: #34ce57;
+            }
+
+            .timeline-item .timeline-icon.bg-warning {
+                background: #ffc107;
+            }
+
+            .timeline-item .timeline-icon.bg-danger {
+                background: #ff6b6b;
+            }
+
+            .timeline-item .timeline-icon.bg-info {
+                background: #4fc3f7;
+            }
+
+            .timeline-item .timeline-item-content {
+                flex: 1;
+                padding-top: 0.15rem;
+            }
+
+            .timeline-item .timeline-item-content h5 {
+                font-size: 0.95rem;
+                margin-bottom: 0.15rem;
+            }
+
+            .timeline-item .timeline-item-content p {
+                font-size: 0.85rem;
+                margin-bottom: 0;
+            }
+
+            .info-warning {
+                background: #fff3cd;
+                color: #856404;
+                padding: 0.75rem;
+                border-radius: 8px;
+                font-size: 0.85rem;
+                text-align: center;
+                border: 1px solid #ffc107;
+            }
+        </style>
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <a href="/" class="btn btn-secondary btn-sm">
+                                            <i class="mdi mdi-arrow-left me-1"></i> Back to Dashboard
+                                        </a>
+                                    </div>
+                                    <h4 class="page-title">Admin Profile</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <!-- Enhanced Profile Header -->
+                        <div class="profile-header">
+                            <div class="row align-items-center">
+                                <div class="col-md-3 text-center">
+                                    <div class="profile-avatar">
+                                        <span class="avatar-text"><%= admin.username.charAt(0).toUpperCase() %></span>
+                                    </div>
+                                    <h4 class="text-white mb-1">
+                                        <%= admin.username %>
+                                    </h4>
+                                    <span class="badge bg-light text-dark badge-role">
+                                        <i class="mdi mdi-shield-account me-1"></i> <%= admin.role ? admin.role.toUpperCase() : 'ADMIN' %>
+                                    </span>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        <div class="col-md-3 col-6">
+                                            <div class="quick-stat">
+                                                <div class="number">
+                                                    <%= stats ? stats.studentCount : 0 %>
+                                                </div>
+                                                <div class="text-muted small">Students</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <div class="quick-stat">
+                                                <div class="number">
+                                                    <%= stats ? stats.teacherCount : 0 %>
+                                                </div>
+                                                <div class="text-muted small">Teachers</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <div class="quick-stat">
+                                                <div class="number">
+                                                    <%= stats ? stats.classCount : 0 %>
+                                                </div>
+                                                <div class="text-muted small">Classes</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <div class="quick-stat">
+                                                <div class="number">
+                                                    <%= admin.created_at ? moment(admin.created_at).format('YYYY') : 'N/A' %>
+                                                </div>
+                                                <div class="text-muted small">Member Since</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-xl-4">
+                                <!-- Admin Information -->
+                                <div class="card info-card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-3">
+                                            <i class="mdi mdi-account-circle me-1"></i> Account Information
+                                        </h4>
+                                        
+                                        <hr>
+
+                                        <div class="text-start">
+                                            <p class="text-muted mb-2">
+                                                <i class="mdi mdi-account me-1 text-primary"></i>
+                                                <strong>Username:</strong> 
+                                                <span class="ms-2"><%= admin.username %></span>
+                                            </p>
+
+                                            <p class="text-muted mb-2">
+                                                <i class="mdi mdi-email me-1 text-primary"></i>
+                                                <strong>Email:</strong> 
+                                                <span class="ms-2"><%= admin.email %></span>
+                                            </p>
+
+                                            <p class="text-muted mb-2">
+                                                <i class="mdi mdi-shield-account me-1 text-primary"></i>
+                                                <strong>Role:</strong>
+                                                <span class="ms-2"><span class="badge bg-primary"><%= admin.role ? admin.role.toUpperCase() : 'ADMIN' %></span></span>
+                                            </p>
+
+                                            <p class="text-muted mb-2">
+                                                <i class="mdi mdi-calendar me-1 text-primary"></i>
+                                                <strong>Account Created:</strong> 
+                                                <span class="ms-2"><%= admin.created_at ? moment(admin.created_at).format('MMMM Do, YYYY') : 'N/A' %></span>
+                                            </p>
+
+                                            <p class="text-muted mb-0">
+                                                <i class="mdi mdi-check-circle me-1 text-success"></i>
+                                                <strong>Account Status:</strong> 
+                                                <span class="ms-2"><span class="badge bg-success">Active</span></span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- School Information -->
+                                <div class="card info-card mt-3">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-3">
+                                            <i class="mdi mdi-school me-1"></i> School Information
+                                        </h4>
+                                        
+                                        <hr>
+
+                                        <% if (school) { %>
+                                            <div class="text-start">
+                                                <p class="text-muted mb-2">
+                                                    <i class="mdi mdi-domain me-1 text-primary"></i>
+                                                    <strong>School Name:</strong> 
+                                                    <span class="ms-2"><%= school.name %></span>
+                                                </p>
+
+                                                <p class="text-muted mb-2">
+                                                    <i class="mdi mdi-email me-1 text-primary"></i>
+                                                    <strong>Email:</strong> 
+                                                    <span class="ms-2"><%= school.email || 'N/A' %></span>
+                                                </p>
+
+                                                <p class="text-muted mb-2">
+                                                    <i class="mdi mdi-phone me-1 text-primary"></i>
+                                                    <strong>Phone:</strong> 
+                                                    <span class="ms-2"><%= school.phone || 'N/A' %></span>
+                                                </p>
+
+                                                <p class="text-muted mb-2">
+                                                    <i class="mdi mdi-web me-1 text-primary"></i>
+                                                    <strong>Website:</strong> 
+                                                    <span class="ms-2"><%= school.website || 'N/A' %></span>
+                                                </p>
+
+                                                <p class="text-muted mb-0">
+                                                    <i class="mdi mdi-map-marker me-1 text-primary"></i>
+                                                    <strong>Address:</strong> 
+                                                    <span class="ms-2"><%= school.address || 'N/A' %></span>
+                                                </p>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="text-center text-muted py-3">
+                                                <i class="mdi mdi-school-outline fs-1"></i>
+                                                <p class="mt-2 mb-0">No school information available</p>
+                                                <small class="text-muted">Please contact support to link your account to a school.</small>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Actions -->
+                                <div class="card info-card mt-3">
+                                    <div class="card-body">
+                                        <h4 class="header-title mt-0 mb-3">
+                                            <i class="mdi mdi-lightning-bolt me-1"></i> Quick Actions
+                                        </h4>
+                                        
+                                        <hr>
+
+                                        <div class="d-grid gap-2">
+                                            <a href="/add-student" class="btn btn-primary quick-action-btn">
+                                                <i class="mdi mdi-account-plus"></i> Add New Student
+                                            </a>
+                                            <a href="/add-teacher" class="btn btn-success quick-action-btn">
+                                                <i class="mdi mdi-account-plus"></i> Add New Teacher
+                                            </a>
+                                            <a href="/add-class" class="btn btn-info quick-action-btn">
+                                                <i class="mdi mdi-graduation-hat"></i> Add New Class
+                                            </a>
+                                            <a href="/add-parent" class="btn btn-warning quick-action-btn">
+                                                <i class="mdi mdi-account-multiple-plus"></i> Add New Parent
+                                            </a>
+                                            <a href="/add-event" class="btn btn-secondary quick-action-btn">
+                                                <i class="mdi mdi-calendar-plus"></i> Add Calendar Event
+                                            </a>
+                                            <a href="/admin/profile/edit" class="btn btn-outline-primary quick-action-btn">
+                                                <i class="mdi mdi-account-edit"></i> Edit Profile
+                                            </a>
+                                            <a href="/admin/change-password" class="btn btn-outline-warning quick-action-btn">
+                                                <i class="mdi mdi-lock-reset"></i> Change Password
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-8">
+                                <!-- Admin Details -->
+                                <div class="card info-card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-3">
+                                            <i class="mdi mdi-account-details me-1"></i> Administrator Details
+                                        </h4>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="info-label">Username</div>
+                                                <div class="info-value"><%= admin.username %></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="info-label">Email Address</div>
+                                                <div class="info-value"><%= admin.email %></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <div class="info-label">Role</div>
+                                                <div class="info-value">
+                                                    <span class="badge bg-primary"><%= admin.role ? admin.role.toUpperCase() : 'ADMIN' %></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="info-label">Member Since</div>
+                                                <div class="info-value"><%= admin.created_at ? moment(admin.created_at).format('MMMM Do, YYYY') : 'N/A' %></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <div class="info-label">School ID</div>
+                                                <div class="info-value"><%= admin.school_id || 'N/A' %></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="info-label">Admin ID</div>
+                                                <div class="info-value">#<%= admin.id %></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- System Statistics -->
+                                        <div class="row mt-4">
+                                            <div class="col-12">
+                                                <hr>
+                                                <h6 class="text-muted">System Statistics</h6>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="mdi mdi-account-group"></i>
+                                                    </div>
+                                                    <div class="stat-number"><%= stats ? stats.studentCount : '0' %></div>
+                                                    <div class="stat-label">Students</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="mdi mdi-account-tie"></i>
+                                                    </div>
+                                                    <div class="stat-number"><%= stats ? stats.teacherCount : '0' %></div>
+                                                    <div class="stat-label">Teachers</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="mdi mdi-graduation-hat"></i>
+                                                    </div>
+                                                    <div class="stat-number"><%= stats ? stats.classCount : '0' %></div>
+                                                    <div class="stat-label">Classes</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Activity Log -->
+                                <div class="card info-card mt-3">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-3">
+                                            <i class="mdi mdi-history me-1"></i> Recent Activity
+                                        </h4>
+                                        
+                                        <hr>
+
+                                        <% if (activities && activities.length > 0) { %>
+                                            <div class="timeline-alt">
+                                                <% for(var i = 0; i < Math.min(activities.length, 10); i++) { var activity = activities[i]; %>
+                                                    <div class="timeline-item">
+                                                        <div class="timeline-icon bg-<%= activity.type || 'primary' %>">
+                                                            <i class="mdi mdi-<%= activity.icon || 'account' %>"></i>
+                                                        </div>
+                                                        <div class="timeline-item-content">
+                                                            <div class="d-flex align-items-center justify-content-between">
+                                                                <h5 class="mb-0"><%= activity.title || 'Activity' %></h5>
+                                                                <small class="text-muted">
+                                                                    <%= activity.created_at ? moment(activity.created_at).fromNow() : 'Just now' %>
+                                                                </small>
+                                                            </div>
+                                                            <p class="mb-0 text-muted"><%= activity.message || 'No details available' %></p>
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="text-center text-muted py-3">
+                                                <i class="mdi mdi-inbox-outline fs-1"></i>
+                                                <p class="mt-2 mb-0">No recent activity found</p>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end container-fluid -->
+
+                    <!-- Footer Start -->
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <script>document.write(new Date().getFullYear())</script> © School Management System
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-md-end footer-links d-none d-md-block">
+                                        <a href="javascript: void(0);">About</a>
+                                        <a href="javascript: void(0);">Support</a>
+                                        <a href="javascript: void(0);">Contact Us</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- end Footer -->
+
+                </div>
+                <!-- end content -->
+            </div>
+            <!-- END content-page -->
+        </div>
+        <!-- END wrapper -->
+
+        <!-- bundle -->
+        <script src="/assets/js/vendor.min.js"></script>
+        <script src="/assets/js/app.min.js"></script>
+
+        <script>
+            // Notification functions
+            function markRead(notificationId) {
+                fetch('/api/admin/notifications/mark-read', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: notificationId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the notification item
+                        const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                        if (notificationItem) {
+                            notificationItem.classList.remove('notification-unread');
+                            notificationItem.style.opacity = '0.6';
+                        }
+                        // Update count
+                        updateNotificationCount();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            function markAllRead() {
+                fetch('/api/admin/notifications/mark-all-read', {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update all notifications
+                        document.querySelectorAll('.notification-item').forEach(item => {
+                            item.classList.remove('notification-unread');
+                            item.style.opacity = '0.6';
+                        });
+                        // Update count
+                        updateNotificationCount();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            function updateNotificationCount() {
+                fetch('/api/admin/notifications/unread-count')
+                .then(response => response.json())
+                .then(data => {
+                    const countElement = document.getElementById('notificationCount');
+                    if (countElement) {
+                        countElement.textContent = data.count || 0;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            // Auto-refresh notification count every 60 seconds
+            setInterval(updateNotificationCount, 60000);
+        </script>
+    </body>
+</html>

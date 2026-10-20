@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Edit Admin Profile</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <div class="wrapper">
+            <!-- Left Sidebar -->
+            <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <a href="/admin/profile" class="btn btn-secondary btn-sm">
+                                            <i class="mdi mdi-arrow-left me-1"></i> Back to Profile
+                                        </a>
+                                    </div>
+                                    <h4 class="page-title">Edit Admin Profile</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <!-- Alert Messages -->
+                        <% if (error) { %>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="mdi mdi-alert-circle me-1"></i> <%= error %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <% } %>
+
+                        <% if (success) { %>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="mdi mdi-check-circle me-1"></i> <%= success %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <% } %>
+
+                        <div class="row">
+                            <div class="col-xl-4">
+                                <!-- Profile Card -->
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="avatar-lg mx-auto mb-3">
+                                            <div class="avatar-lg bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; margin: 0 auto;">
+                                                <span class="display-4 text-white"><%= admin.username.charAt(0).toUpperCase() %></span>
+                                            </div>
+                                        </div>
+                                        <h4 class="mb-1"><%= admin.username %></h4>
+                                        <p class="text-muted"><%= admin.email %></p>
+                                        <span class="badge bg-primary"><%= admin.role ? admin.role.toUpperCase() : 'ADMIN' %></span>
+                                        <hr>
+                                        <div class="text-start">
+                                            <p class="text-muted mb-1"><strong>Member Since:</strong> <%= admin.created_at ? moment(admin.created_at).format('MMMM Do, YYYY') : 'N/A' %></p>
+                                            <p class="text-muted mb-0"><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-8">
+                                <!-- Edit Profile Form -->
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-3">
+                                            <i class="mdi mdi-account-edit me-1"></i> Edit Account Details
+                                        </h4>
+
+                                        <form action="/admin/profile/edit" method="POST">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="username" name="username" 
+                                                           value="<%= admin.username %>" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                                    <input type="email" class="form-control" id="email" name="email" 
+                                                           value="<%= admin.email %>" required>
+                                                </div>
+                                            </div>
+
+                                            <hr>
+
+                                            <h5 class="mt-3 mb-3"><i class="mdi mdi-school me-1"></i> School Information</h5>
+
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="schoolName" class="form-label">School Name</label>
+                                                    <input type="text" class="form-control" id="schoolName" name="schoolName" 
+                                                           value="<%= school ? school.name : '' %>">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="schoolEmail" class="form-label">School Email</label>
+                                                    <input type="email" class="form-control" id="schoolEmail" name="schoolEmail" 
+                                                           value="<%= school ? school.email : '' %>">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="schoolPhone" class="form-label">School Phone</label>
+                                                    <input type="text" class="form-control" id="schoolPhone" name="schoolPhone" 
+                                                           value="<%= school ? school.phone : '' %>">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="schoolWebsite" class="form-label">School Website</label>
+                                                    <input type="text" class="form-control" id="schoolWebsite" name="schoolWebsite" 
+                                                           value="<%= school ? school.website : '' %>">
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12 mb-3">
+                                                    <label for="schoolAddress" class="form-label">School Address</label>
+                                                    <textarea class="form-control" id="schoolAddress" name="schoolAddress" rows="2"><%= school ? school.address : '' %></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                                                <a href="/admin/profile" class="btn btn-secondary me-md-2">
+                                                    <i class="mdi mdi-close me-1"></i> Cancel
+                                                </a>
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="mdi mdi-content-save me-1"></i> Save Changes
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end container-fluid -->
+
+                    <!-- Footer -->
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <script>document.write(new Date().getFullYear())</script> © School Management System
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-md-end footer-links d-none d-md-block">
+                                        <a href="javascript: void(0);">About</a>
+                                        <a href="javascript: void(0);">Support</a>
+                                        <a href="javascript: void(0);">Contact Us</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+
+        <!-- bundle -->
+        <script src="/assets/js/vendor.min.js"></script>
+        <script src="/assets/js/app.min.js"></script>
+
+        <script>
+            // Notification functions
+            function markRead(notificationId) {
+                fetch('/api/admin/notifications/mark-read', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: notificationId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                        if (notificationItem) {
+                            notificationItem.classList.remove('notification-unread');
+                            notificationItem.style.opacity = '0.6';
+                        }
+                        updateNotificationCount();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            function markAllRead() {
+                fetch('/api/admin/notifications/mark-all-read', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelectorAll('.notification-item').forEach(item => {
+                            item.classList.remove('notification-unread');
+                            item.style.opacity = '0.6';
+                        });
+                        updateNotificationCount();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            function updateNotificationCount() {
+                fetch('/api/admin/notifications/unread-count')
+                .then(response => response.json())
+                .then(data => {
+                    const countElement = document.getElementById('notificationCount');
+                    if (countElement) {
+                        countElement.textContent = data.count || 0;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        </script>
+    </body>
+</html>

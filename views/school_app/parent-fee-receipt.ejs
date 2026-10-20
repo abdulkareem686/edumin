@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Fee Receipt - Parent Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .receipt-container {
+                margin: 0;
+                padding: 0;
+            }
+        }
+        .receipt-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .receipt-header {
+            text-align: center;
+            padding: 2rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .receipt-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .receipt-subtitle {
+            color: #6c757d;
+        }
+        .receipt-body {
+            padding: 2rem;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #e9ecef;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+        .info-value {
+            font-weight: 500;
+        }
+        .amount-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #e9ecef;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .status-paid {
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        .btn-print {
+            background: #3b5de7;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+        }
+        .btn-print:hover {
+            background: #2a4cd0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="receipt-container">
+            <div class="receipt-header">
+                <h2 class="receipt-title"><%= school.name %></h2>
+                <div class="receipt-subtitle"><%= school.address %></div>
+                <div class="receipt-subtitle"><%= school.email %> | <%= school.phone %></div>
+                <h4 class="mt-4">FEE PAYMENT RECEIPT</h4>
+                <div class="mt-2">
+                    <span class="status-paid">PAID</span>
+                </div>
+            </div>
+            
+            <div class="receipt-body">
+                <div class="info-row">
+                    <span class="info-label">Receipt Number:</span>
+                    <span class="info-value"><%= receipt.receiptNumber %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Payment Date:</span>
+                    <span class="info-value"><%= moment(receipt.paymentDate).format('DD MMMM, YYYY') %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Student Name:</span>
+                    <span class="info-value"><%= receipt.studentName %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Admission Number:</span>
+                    <span class="info-value"><%= receipt.admission_number || 'N/A' %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Class:</span>
+                    <span class="info-value"><%= receipt.className || 'N/A' %></span>
+                </div>
+                
+                <div class="mt-4">
+                    <h6>Payment Details</h6>
+                    <div class="amount-row">
+                        <span>Fee Type:</span>
+                        <span><strong><%= receipt.feeType %></strong></span>
+                    </div>
+                    <div class="amount-row">
+                        <span>Academic Year / Term:</span>
+                        <span><%= receipt.academicYear %> - <%= receipt.term %></span>
+                    </div>
+                    <div class="amount-row">
+                        <span>Payment Method:</span>
+                        <span><%= receipt.paymentType %></span>
+                    </div>
+                    <div class="total-row">
+                        <span>Amount Paid:</span>
+                        <span>₦<%= (receipt.amountPaid || receipt.amount).toLocaleString() %></span>
+                    </div>
+                    <% if (receipt.notes) { %>
+                    <div class="info-row mt-3">
+                        <span class="info-label">Notes:</span>
+                        <span class="info-value"><%= receipt.notes %></span>
+                    </div>
+                    <% } %>
+                </div>
+                
+                <div class="text-center mt-5 pt-3 no-print">
+                    <button class="btn-print" onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i> Print Receipt
+                    </button>
+                    <button class="btn btn-secondary ms-2" onclick="window.close()">
+                        <i class="bi bi-x-circle me-2"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/assets/js/vendor.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Sign In | EduSuite School Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="EduSuite - Complete Next-Gen School Management Platform" name="description" />
+    <link rel="shortcut icon" href="/assets/images/favicon.png">
+
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style" />
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style" />
+
+    <style>
+        .password-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body class="authentication-bg pb-0" data-layout-config='{"darkMode":false}'>
+
+    <div class="auth-fluid">
+        <!--Auth fluid left content -->
+        <div class="auth-fluid-form-box">
+            <div class="align-items-center d-flex h-100">
+                <div class="card-body">
+
+                    <!-- Logo -->
+                    <div class="auth-brand text-center text-lg-start">
+                        <a href="/" class="logo-dark">
+                            <span class="fw-bold fs-4 text-primary">
+                                <i class="mdi mdi-school"></i> EduSuite
+                            </span>
+                        </a>
+                        <a href="/" class="logo-light">
+                            <span class="fw-bold fs-4 text-white">
+                                <i class="mdi mdi-school"></i> EduSuite
+                            </span>
+                        </a>
+                    </div>
+
+                    <!-- title-->
+                    <h4 class="mt-0">Welcome Back</h4>
+                    <p class="text-muted mb-4">Sign in to access your school dashboard.</p>
+
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success">
+                            <i class="mdi mdi-check-circle-outline me-1"></i> <%= success %>
+                        </div>
+                    <% } %>
+
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger">
+                            <i class="mdi mdi-alert-outline me-1"></i> <%= error %>
+                        </div>
+                    <% } %>
+
+                    <!-- Login Form -->
+                    <form action="/login" method="post" id="loginForm" novalidate>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address *</label>
+                            <input class="form-control" type="email" id="email" name="email"
+                                   placeholder="Enter your email address" autocomplete="email" required>
+                            <div class="invalid-feedback" id="emailError">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="credential" class="form-label">Password *</label>
+                            <div class="input-group input-group-merge">
+                                <input class="form-control" type="password" id="credential" name="credential"
+                                       placeholder="Enter your password" autocomplete="current-password" required>
+                                <div class="input-group-text password-toggle" id="togglePasswordBtn"
+                                     title="Toggle visibility">
+                                    <i class="mdi mdi-eye-outline" id="toggleIcon"></i>
+                                </div>
+                            </div>
+                            <div class="text-danger small mt-1" id="credentialError" style="display: none;">
+                                Password is required to sign in.
+                            </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            <span class="text-muted small">
+                                <i class="mdi mdi-help-circle-outline"></i> Need help? Contact Admin
+                            </span>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid mb-0 text-center">
+                            <button class="btn btn-primary" type="submit" id="submitBtn">
+                                <span id="submitBtnText">
+                                    <i class="mdi mdi-login"></i> Sign In to Portal
+                                </span>
+                                <span id="submitBtnSpinner" class="spinner-border spinner-border-sm ms-2 d-none"
+                                      role="status"></span>
+                            </button>
+                        </div>
+                    </form>
+                    <!-- end form-->
+
+                    <!-- Footer-->
+                    <footer class="footer footer-alt">
+                        <p class="text-muted">
+                            Don't have a registered school account?
+                            <a href="/register" class="text-muted ms-1"><b>Register School Here</b></a>
+                        </p>
+                    </footer>
+
+                </div> <!-- end .card-body -->
+            </div> <!-- end .align-items-center.d-flex.h-100-->
+        </div>
+        <!-- end auth-fluid-form-box-->
+
+        <!-- Auth fluid right content -->
+        <div class="auth-fluid-right text-center">
+            <div class="auth-user-testimonial">
+                <h2 class="mb-3">School Management System</h2>
+                <p class="lead">
+                    <i class="mdi mdi-format-quote-open"></i>
+                    A complete solution for managing students, teachers, and administrative tasks.
+                    <i class="mdi mdi-format-quote-close"></i>
+                </p>
+                <p>
+                    - School Administration
+                </p>
+            </div> <!-- end auth-user-testimonial-->
+        </div>
+        <!-- end Auth fluid right content -->
+    </div>
+    <!-- end auth-fluid-->
+
+    <!-- bundle -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm       = document.getElementById('loginForm');
+            const emailInput      = document.getElementById('email');
+            const emailError      = document.getElementById('emailError');
+            const credentialInput = document.getElementById('credential');
+            const credentialError = document.getElementById('credentialError');
+            const toggleBtn       = document.getElementById('togglePasswordBtn');
+            const toggleIcon      = document.getElementById('toggleIcon');
+
+            function showError(input, errorEl, message) {
+                input.classList.add('is-invalid');
+                if (message) errorEl.textContent = message;
+                errorEl.style.display = 'block';
+            }
+
+            function clearError(input, errorEl) {
+                input.classList.remove('is-invalid');
+                errorEl.style.display = 'none';
+            }
+
+            // Password visibility toggle
+            toggleBtn.addEventListener('click', function () {
+                if (credentialInput.type === 'password') {
+                    credentialInput.type = 'text';
+                    toggleIcon.className = 'mdi mdi-eye-off-outline';
+                } else {
+                    credentialInput.type = 'password';
+                    toggleIcon.className = 'mdi mdi-eye-outline';
+                }
+            });
+
+            emailInput.addEventListener('input', function () {
+                clearError(emailInput, emailError);
+            });
+
+            credentialInput.addEventListener('input', function () {
+                clearError(credentialInput, credentialError);
+            });
+
+            loginForm.addEventListener('submit', function (e) {
+                let isValid = true;
+                const emailVal = emailInput.value.trim();
+                const credentialVal = credentialInput.value.trim();
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!emailVal) {
+                    showError(emailInput, emailError, 'Email address is required.');
+                    isValid = false;
+                } else if (!emailPattern.test(emailVal)) {
+                    showError(emailInput, emailError, 'Please enter a valid email address.');
+                    isValid = false;
+                } else {
+                    clearError(emailInput, emailError);
+                }
+
+                if (!credentialVal) {
+                    showError(credentialInput, credentialError, 'Password is required to sign in.');
+                    isValid = false;
+                } else {
+                    clearError(credentialInput, credentialError);
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    if (emailInput.classList.contains('is-invalid')) {
+                        emailInput.focus();
+                    } else {
+                        credentialInput.focus();
+                    }
+                    return;
+                }
+
+                // Loading state
+                document.getElementById('submitBtnText').classList.add('opacity-50');
+                document.getElementById('submitBtnSpinner').classList.remove('d-none');
+                document.getElementById('submitBtn').disabled = true;
+            });
+
+            emailInput.focus();
+        });
+    </script>
+
+</body>
+
+</html>

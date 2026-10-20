@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Result: <%= attempt.test_name %></title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .result-header { background: #f8f9fa; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .score-card { text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; margin-bottom: 20px; }
+        .percentage { font-size: 3em; font-weight: bold; }
+        .grade { font-size: 2em; margin: 10px 0; }
+        .stats { display: flex; justify-content: space-around; margin-top: 20px; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 1.5em; font-weight: bold; }
+        .stat-label { font-size: 0.9em; }
+        .questions-review { margin-top: 30px; }
+        .question-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .correct { border-left: 5px solid #28a745; }
+        .incorrect { border-left: 5px solid #dc3545; }
+        .not-answered { border-left: 5px solid #ffc107; }
+        .student-answer { margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+        .correct-answer { margin-top: 5px; padding: 10px; background: #d4edda; border-radius: 4px; color: #155724; }
+        .teacher-feedback { margin-top: 10px; padding: 10px; background: #cce5ff; border-radius: 4px; color: #004085; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <div class="result-header">
+        <h1><%= attempt.test_name %></h1>
+        <p>
+            <strong>Student:</strong> <%= attempt.firstName %> <%= attempt.lastName %> |
+            <strong>Class:</strong> <%= attempt.class_name %> |
+            <strong>Subject:</strong> <%= attempt.subject_name %> |
+            <strong>Submitted:</strong> <%= moment(attempt.submitted_at).format('MMM D, YYYY HH:mm') %>
+        </p>
+    </div>
+    
+    <div class="score-card">
+        <div class="percentage"><%= attempt.percentage_score %>%</div>
+        <div class="grade">Grade: <%= attempt.grade %></div>
+        <div class="marks">Marks: <%= attempt.total_marks_obtained %>/<%= attempt.total_marks %></div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value"><%= totalQuestions %></div>
+                <div class="stat-label">Total Questions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value"><%= attemptedQuestions %></div>
+                <div class="stat-label">Attempted</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value"><%= correctQuestions %></div>
+                <div class="stat-label">Correct</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value"><%= attempt.time_spent_minutes %></div>
+                <div class="stat-label">Minutes</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="questions-review">
+        <h2>Question Review</h2>
+        
+        <% questions.forEach((question, index) => { %>
+            <% 
+                let statusClass = '';
+                if (question.is_correct === true) {
+                    statusClass = 'correct';
+                } else if (question.is_correct === false) {
+                    statusClass = 'incorrect';
+                } else {
+                    statusClass = 'not-answered';
+                }
+            %>
+            
+            <div class="question-item <%= statusClass %>">
+                <div class="question-header">
+                    <strong>Question <%= index + 1 %> (<%= question.marks %> marks)</strong>
+                    <% if (question.is_correct === true) { %>
+                        <span style="color: green;">✓ Correct</span>
+                    <% } else if (question.is_correct === false) { %>
+                        <span style="color: red;">✗ Incorrect</span>
+                    <% } else { %>
+                        <span style="color: orange;">Not Answered</span>
+                    <% } %>
+                </div>
+                
+                <div class="question-text"><%= question.question_text %></div>
+                
+                <% if (question.question_type === 'multiple_choice') { %>
+                    <div class="options">
+                        <% if (question.option_a) { %>
+                            <div class="option <%= question.correct_answer === 'A' ? 'correct-answer' : '' %> 
+                                         <%= question.student_answer === 'A' ? 'student-answer' : '' %>">
+                                A. <%= question.option_a %>
+                            </div>
+                        <% } %>
+                        <% if (question.option_b) { %>
+                            <div class="option <%= question.correct_answer === 'B' ? 'correct-answer' : '' %>
+                                         <%= question.student_answer === 'B' ? 'student-answer' : '' %>">
+                                B. <%= question.option_b %>
+                            </div>
+                        <% } %>
+                        <% if (question.option_c) { %>
+                            <div class="option <%= question.correct_answer === 'C' ? 'correct-answer' : '' %>
+                                         <%= question.student_answer === 'C' ? 'student-answer' : '' %>">
+                                C. <%= question.option_c %>
+                            </div>
+                        <% } %>
+                        <% if (question.option_d) { %>
+                            <div class="option <%= question.correct_answer === 'D' ? 'correct-answer' : '' %>
+                                         <%= question.student_answer === 'D' ? 'student-answer' : '' %>">
+                                D. <%= question.option_d %>
+                            </div>
+                        <% } %>
+                        <% if (question.option_e) { %>
+                            <div class="option <%= question.correct_answer === 'E' ? 'correct-answer' : '' %>
+                                         <%= question.student_answer === 'E' ? 'student-answer' : '' %>">
+                                E. <%= question.option_e %>
+                            </div>
+                        <% } %>
+                    </div>
+                    
+                    <div class="answer-summary">
+                        <% if (question.student_answer) { %>
+                            <div class="student-answer">
+                                <strong>Your Answer:</strong> <%= question.student_answer %>
+                            </div>
+                        <% } else { %>
+                            <div class="student-answer" style="background: #fff3cd; color: #856404;">
+                                <strong>Not Answered</strong>
+                            </div>
+                        <% } %>
+                        
+                        <div class="correct-answer">
+                            <strong>Correct Answer:</strong> <%= question.correct_answer %>
+                        </div>
+                    </div>
+                    
+                <% } else if (question.question_type === 'true_false') { %>
+                    <div class="answer-summary">
+                        <% if (question.student_answer) { %>
+                            <div class="student-answer">
+                                <strong>Your Answer:</strong> <%= question.student_answer %>
+                            </div>
+                        <% } else { %>
+                            <div class="student-answer" style="background: #fff3cd; color: #856404;">
+                                <strong>Not Answered</strong>
+                            </div>
+                        <% } %>
+                        
+                        <div class="correct-answer">
+                            <strong>Correct Answer:</strong> <%= question.correct_answer %>
+                        </div>
+                    </div>
+                    
+                <% } else { %>
+                    <div class="answer-summary">
+                        <% if (question.text_answer) { %>
+                            <div class="student-answer">
+                                <strong>Your Answer:</strong><br>
+                                <%= question.text_answer %>
+                            </div>
+                        <% } else { %>
+                            <div class="student-answer" style="background: #fff3cd; color: #856404;">
+                                <strong>Not Answered</strong>
+                            </div>
+                        <% } %>
+                        
+                        <% if (question.correct_text_answer) { %>
+                            <div class="correct-answer">
+                                <strong>Expected Answer:</strong><br>
+                                <%= question.correct_text_answer %>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+                
+                <% if (question.teacher_feedback) { %>
+                    <div class="teacher-feedback">
+                        <strong>Teacher Feedback:</strong><br>
+                        <%= question.teacher_feedback %>
+                    </div>
+                <% } %>
+                
+                <div class="marks-awarded">
+                    <strong>Marks Awarded:</strong> <%= question.marks_awarded || 0 %>/<%= question.marks %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <a href="/cbt-dashboard" class="btn btn-primary">Back to Dashboard</a>
+        
+        <% if (isTeacher) { %>
+            <a href="/test-results/<%= attempt.test_id %>" class="btn btn-secondary">View All Results</a>
+        <% } %>
+    </div>
+</body>
+</html>

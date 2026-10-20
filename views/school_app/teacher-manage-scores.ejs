@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Manage Scores - Teacher Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        .score-card {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+        }
+        .stat-card {
+            background: #3b5de7;
+            color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .notification-unread {
+            background-color: #e8f0fe;
+            border-left: 3px solid #3b5de7;
+        }
+        .score-input {
+            width: 80px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.5rem;
+            transition: all 0.2s;
+        }
+        .score-input:focus {
+            border-color: #3b5de7;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59,93,231,0.25);
+        }
+        .score-input.invalid {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+        .grade-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .grade-A { background: #10b981; color: white; }
+        .grade-B { background: #34d399; color: white; }
+        .grade-C { background: #fbbf24; color: #1e293b; }
+        .grade-D { background: #f59e0b; color: white; }
+        .grade-E { background: #f97316; color: white; }
+        .grade-F { background: #ef4444; color: white; }
+        .btn-save {
+            background: linear-gradient(135deg, #3b5de7, #2a4cd0);
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            font-weight: 500;
+        }
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59,93,231,0.3);
+        }
+        .student-row:hover {
+            background-color: #f8fafd;
+        }
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+        .quick-score-btn {
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+        .quick-score-btn:hover {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- Left Sidebar -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/teacher-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/teacher-navbar') %>
+                <!-- end Topbar -->
+
+                <div class="container-fluid">
+                    <!-- Page Title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title">
+                                    <i class="mdi mdi-clipboard-list me-2"></i>Manage Student Scores
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Success Message -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i> <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Selection Form -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0"><i class="mdi mdi-filter me-2 text-primary"></i>Select Class & Subject</h6>
+                        </div>
+                        <div class="card-body">
+                            <form method="GET" action="/teacher/manage-scores" class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Class <span class="text-danger">*</span></label>
+                                    <select name="classId" class="form-select" required onchange="this.form.submit()">
+                                        <option value="">Select Class</option>
+                                        <% if (teacherClasses && teacherClasses.length > 0) { 
+                                            for(var i = 0; i < teacherClasses.length; i++) { 
+                                                var cls = teacherClasses[i]; %>
+                                                <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>>
+                                                    <%= cls.className %> <%= cls.department ? '(' + cls.department + ')' : '' %>
+                                                </option>
+                                        <% } 
+                                        } else { %>
+                                            <option value="">No classes assigned</option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Subject <span class="text-danger">*</span></label>
+                                    <select name="subjectId" class="form-select" required onchange="this.form.submit()" <%= !selectedClassId ? 'disabled' : '' %>>
+                                        <option value="">Select Subject</option>
+                                        <% if (classSubjects && classSubjects.length > 0) { 
+                                            for(var i = 0; i < classSubjects.length; i++) { 
+                                                var subj = classSubjects[i]; %>
+                                                <option value="<%= subj.id %>" <%= selectedSubjectId == subj.id ? 'selected' : '' %>>
+                                                    <%= subj.name %> (<%= subj.subject_code %>)
+                                                </option>
+                                        <% } 
+                                        } else if (selectedClassId) { %>
+                                            <option value="">No subjects assigned to this class</option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Term</label>
+                                    <select name="term" class="form-select" onchange="this.form.submit()">
+                                        <% if (terms && terms.length > 0) { 
+                                            for(var i = 0; i < terms.length; i++) { 
+                                                var termItem = terms[i]; %>
+                                                <option value="<%= termItem.term_name %>" <%= selectedTerm === termItem.term_name ? 'selected' : '' %>>
+                                                    <%= termItem.term_name %>
+                                                </option>
+                                        <% } 
+                                        } else { %>
+                                            <option value="First Term">First Term</option>
+                                            <option value="Second Term">Second Term</option>
+                                            <option value="Third Term">Third Term</option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Academic Year</label>
+                                    <select name="academicYear" class="form-select" onchange="this.form.submit()">
+                                        <% if (academicYears && academicYears.length > 0) { 
+                                            for(var i = 0; i < academicYears.length; i++) { 
+                                                var year = academicYears[i]; %>
+                                                <option value="<%= year.year_name %>" <%= selectedAcademicYear === year.year_name ? 'selected' : '' %>>
+                                                    <%= year.year_name %>
+                                                </option>
+                                        <% } 
+                                        } else { %>
+                                            <option value="2023-2024">2023-2024</option>
+                                            <option value="2024-2025">2024-2025</option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <% if (selectedClassId && selectedSubjectId && students && students.length > 0) { %>
+                        <!-- Subject Info Card -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h5 class="mb-1"><%= subjectInfo ? subjectInfo.name : 'Scores Entry' %></h5>
+                                        <p class="text-muted mb-0">
+                                            <%= subjectInfo ? subjectInfo.subject_code : '' %> 
+                                            <%= subjectInfo && subjectInfo.description ? ' - ' + subjectInfo.description : '' %>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4 text-md-end">
+                                        <span class="badge bg-info p-2"><i class="mdi mdi-calendar"></i> <%= selectedTerm %> <%= selectedAcademicYear %></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Statistics Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-number"><%= scoreStats.totalStudents %></div>
+                                    <div>Total Students</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card" style="background: #10b981;">
+                                    <div class="stat-number"><%= scoreStats.scoresEntered %></div>
+                                    <div>Scores Entered</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card" style="background: #f59e0b;">
+                                    <div class="stat-number"><%= scoreStats.completionRate %>%</div>
+                                    <div>Completion Rate</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card" style="background: #8b5cf6;">
+                                    <div class="stat-number"><%= scoreStats.averageScore %>%</div>
+                                    <div>Class Average</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Score Entry Progress</span>
+                                    <span class="fw-bold"><%= scoreStats.completionRate %>% Complete</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: <%= scoreStats.completionRate %>%"></div>
+                                </div>
+                                <div class="row text-center mt-3">
+                                    <div class="col-6">
+                                        <div class="small text-muted">Highest Score</div>
+                                        <div class="fw-bold text-success"><%= scoreStats.highestScore %>%</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="small text-muted">Lowest Score</div>
+                                        <div class="fw-bold text-danger"><%= scoreStats.lowestScore %>%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scores Entry Form -->
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0"><i class="mdi mdi-table me-2 text-primary"></i>Student Scores</h6>
+                                    <div>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick="fillAllPass()">
+                                            <i class="mdi mdi-check-all"></i> Fill All Pass (40/30)
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="saveAllScores()">
+                                            <i class="mdi mdi-content-save"></i> Save All Scores
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Admission No.</th>
+                                                <th>Student Name</th>
+                                                <th class="text-center">Test Score (40)</th>
+                                                <th class="text-center">Exam Score (60)</th>
+                                                <th class="text-center">Total (100)</th>
+                                                <th class="text-center">Grade</th>
+                                                <th class="text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for(var i = 0; i < students.length; i++) { 
+                                                var student = students[i];
+                                                var testScore = student.test_score || 0;
+                                                var examScore = student.exam_score || 0;
+                                                var totalScore = (parseFloat(testScore) + parseFloat(examScore)) || 0;
+                                                var grade = student.grade || (totalScore >= 80 ? 'A' : totalScore >= 70 ? 'B' : totalScore >= 60 ? 'C' : totalScore >= 50 ? 'D' : totalScore >= 40 ? 'E' : 'F');
+                                                var gradeClass = grade === 'A' ? 'grade-A' : grade === 'B' ? 'grade-B' : grade === 'C' ? 'grade-C' : grade === 'D' ? 'grade-D' : grade === 'E' ? 'grade-E' : 'grade-F';
+                                                var isComplete = totalScore > 0;
+                                            %>
+                                            <tr class="student-row" data-student-id="<%= student.id %>" data-student-name="<%= student.firstName %> <%= student.lastName %>">
+                                                <td><%= i + 1 %></td>
+                                                <td><%= student.admission_number || 'N/A' %></td>
+                                                <td><strong><%= student.firstName %> <%= student.middleName ? student.middleName + ' ' : '' %><%= student.lastName %></strong></td>
+                                                <td class="text-center">
+                                                    <input type="number" class="score-input test-score" value="<%= testScore %>" 
+                                                           min="0" max="40" step="0.5" 
+                                                           onchange="updateTotal(this, <%= student.id %>)"
+                                                           data-student="<%= student.id %>">
+                                                </td>
+                                                <td class="text-center">
+                                                    <input type="number" class="score-input exam-score" value="<%= examScore %>" 
+                                                           min="0" max="60" step="0.5" 
+                                                           onchange="updateTotal(this, <%= student.id %>)"
+                                                           data-student="<%= student.id %>">
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="total-score fw-bold" id="total-<%= student.id %>"><%= totalScore.toFixed(1) %></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="grade-badge <%= gradeClass %>" id="grade-<%= student.id %>"><%= grade %></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <% if (isComplete) { %>
+                                                        <span class="badge bg-success">Saved</span>
+                                                    <% } else { %>
+                                                        <span class="badge bg-warning">Pending</span>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">
+                                            <i class="mdi mdi-information-outline"></i> 
+                                            Test score max: 40 | Exam score max: 60
+                                        </small>
+                                    </div>
+                                    <button type="button" class="btn btn-save text-white" onclick="saveAllScores()">
+                                        <i class="mdi mdi-content-save me-2"></i> Save All Scores
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <% } else if (selectedClassId && selectedSubjectId && (!students || students.length === 0)) { %>
+                        <div class="alert alert-info text-center">
+                            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                            <h5>No Students Found</h5>
+                            <p>There are no students enrolled in this class.</p>
+                        </div>
+                    <% } else if (selectedClassId && !selectedSubjectId) { %>
+                        <div class="alert alert-info text-center">
+                            <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
+                            <h5>Select a Subject</h5>
+                            <p>Please select a subject to manage scores.</p>
+                        </div>
+                    <% } else if (!selectedClassId) { %>
+                        <div class="alert alert-info text-center">
+                            <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
+                            <h5>Select a Class</h5>
+                            <p>Please select a class and subject to manage student scores.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - Teacher Portal
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <a href="#" class="text-muted text-decoration-none small">Support</a>
+                            <span class="text-muted mx-1">|</span>
+                            <a href="#" class="text-muted text-decoration-none small">Privacy</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+    
+    <script>
+        // Store scores data
+        let scoresData = {};
+        
+        // Initialize scores data from existing values
+        document.querySelectorAll('.student-row').forEach(function(row) {
+            var studentId = row.getAttribute('data-student-id');
+            var testScore = parseFloat(row.querySelector('.test-score').value) || 0;
+            var examScore = parseFloat(row.querySelector('.exam-score').value) || 0;
+            scoresData[studentId] = { testScore: testScore, examScore: examScore };
+        });
+        
+        // Update total and grade when score changes
+        function updateTotal(input, studentId) {
+            var row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+            var testInput = row.querySelector('.test-score');
+            var examInput = row.querySelector('.exam-score');
+            var testScore = parseFloat(testInput.value) || 0;
+            var examScore = parseFloat(examInput.value) || 0;
+            
+            // Validate ranges
+            if (testScore < 0) testInput.value = 0;
+            if (testScore > 40) testInput.value = 40;
+            if (examScore < 0) examInput.value = 0;
+            if (examScore > 60) examInput.value = 60;
+            
+            testScore = parseFloat(testInput.value) || 0;
+            examScore = parseFloat(examInput.value) || 0;
+            
+            var total = testScore + examScore;
+            var grade = '';
+            var gradeClass = '';
+            
+            if (total >= 80) { grade = 'A'; gradeClass = 'grade-A'; }
+            else if (total >= 70) { grade = 'B'; gradeClass = 'grade-B'; }
+            else if (total >= 60) { grade = 'C'; gradeClass = 'grade-C'; }
+            else if (total >= 50) { grade = 'D'; gradeClass = 'grade-D'; }
+            else if (total >= 40) { grade = 'E'; gradeClass = 'grade-E'; }
+            else { grade = 'F'; gradeClass = 'grade-F'; }
+            
+            document.getElementById(`total-${studentId}`).textContent = total.toFixed(1);
+            var gradeSpan = document.getElementById(`grade-${studentId}`);
+            gradeSpan.textContent = grade;
+            gradeSpan.className = 'grade-badge ' + gradeClass;
+            
+            // Update stored data
+            scoresData[studentId] = { testScore: testScore, examScore: examScore };
+            
+            // Mark as unsaved
+            var statusSpan = row.querySelector('td:last-child span');
+            if (statusSpan) {
+                statusSpan.className = 'badge bg-warning';
+                statusSpan.textContent = 'Unsaved';
+            }
+        }
+        
+        // Fill all with pass marks (40 test, 30 exam = 70 total - B grade)
+        function fillAllPass() {
+            document.querySelectorAll('.student-row').forEach(function(row) {
+                var studentId = row.getAttribute('data-student-id');
+                var testInput = row.querySelector('.test-score');
+                var examInput = row.querySelector('.exam-score');
+                
+                testInput.value = 40;
+                examInput.value = 30;
+                updateTotal(null, studentId);
+            });
+            showToast('All scores set to Pass (Test: 40, Exam: 30, Total: 70)', 'info');
+        }
+        
+        // Save all scores
+        async function saveAllScores() {
+            var scores = [];
+            var classId = '<%= selectedClassId %>';
+            var subjectId = '<%= selectedSubjectId %>';
+            var term = '<%= selectedTerm %>';
+            var academicYear = '<%= selectedAcademicYear %>';
+            
+            for (var studentId in scoresData) {
+                var row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+                var studentName = row.getAttribute('data-student-name');
+                scores.push({
+                    studentId: studentId,
+                    studentName: studentName,
+                    testScore: scoresData[studentId].testScore,
+                    examScore: scoresData[studentId].examScore
+                });
+            }
+            
+            if (scores.length === 0) {
+                showToast('No scores to save', 'warning');
+                return;
+            }
+            
+            showLoading('Saving scores...');
+            
+            try {
+                var response = await fetch('/teacher/save-scores-bulk', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        classId: classId,
+                        subjectId: subjectId,
+                        term: term,
+                        academicYear: academicYear,
+                        scores: JSON.stringify(scores)
+                    })
+                });
+                
+                var result = await response.json();
+                hideLoading();
+                
+                if (result.success) {
+                    showToast(result.message || 'Scores saved successfully!', 'success');
+                    // Update status badges
+                    document.querySelectorAll('.student-row').forEach(function(row) {
+                        var statusSpan = row.querySelector('td:last-child span');
+                        if (statusSpan && statusSpan.textContent === 'Unsaved') {
+                            statusSpan.className = 'badge bg-success';
+                            statusSpan.textContent = 'Saved';
+                        }
+                    });
+                    // Reload after 1 second to update stats
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showToast(result.error || 'Failed to save scores', 'danger');
+                }
+            } catch (error) {
+                hideLoading();
+                showToast('Error saving scores: ' + error.message, 'danger');
+            }
+        }
+        
+        // Mark notification as read
+        function markNotificationRead(notificationId) {
+            fetch('/teacher/notifications/mark-read/' + notificationId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response) {
+                if (response.ok) {
+                    location.reload();
+                }
+            }).catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+        
+        // Mark all notifications as read
+        function markAllNotificationsRead() {
+            fetch('/teacher/notifications/mark-all-read', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response) {
+                if (response.ok) {
+                    location.reload();
+                }
+            }).catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+        
+        // Show loading indicator
+        function showLoading(message) {
+            var overlay = document.createElement('div');
+            overlay.id = 'loadingOverlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0,0,0,0.6)';
+            overlay.style.zIndex = '9999';
+            overlay.style.display = 'flex';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.flexDirection = 'column';
+            overlay.innerHTML = `
+                <div class="spinner-border text-light" style="width: 50px; height: 50px;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="text-light mt-3" style="font-weight: 500;">${message}</div>
+            `;
+            document.body.appendChild(overlay);
+        }
+        
+        function hideLoading() {
+            var overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.remove();
+        }
+        
+        // Show toast notification
+        function showToast(message, type) {
+            var container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                container.style.zIndex = '9999';
+                document.body.appendChild(container);
+            }
+            
+            var toast = document.createElement('div');
+            toast.className = 'toast align-items-center text-white bg-' + type + ' border-0 fade show';
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'info' ? 'info-circle' : 'exclamation-triangle'} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(function() { toast.remove(); }, 3000);
+        }
+        
+        // Auto-dismiss alerts
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            for (var i = 0; i < alerts.length; i++) {
+                setTimeout(function(alert) {
+                    if (alert) alert.remove();
+                }, 5000, alerts[i]);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

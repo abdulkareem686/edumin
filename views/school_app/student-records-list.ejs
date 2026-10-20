@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Student Records - School Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="School Management System" name="description">
+    <meta content="EduSuite" name="author">
+    <link rel="shortcut icon" href="/images/favicon.png">
+
+    <!-- third party css -->
+    <link href="/assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
+    
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        .page-header {
+            background: linear-gradient(135deg, #3b5de7 0%, #6a11cb 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(59, 93, 231, 0.2);
+        }
+        
+        .page-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            font-size: 1.75rem;
+        }
+        
+        .page-subtitle {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #3b5de7 0%, #4e54c8 100%);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .card-header h5 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-header h5 i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #2d3748;
+            font-weight: 600;
+            border-bottom: 2px solid #3b5de7;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        .table-hover tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: #f1f5f9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .student-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .student-id {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+        
+        .badge-level {
+            background: linear-gradient(135deg, #3b5de7 0%, #2575fc 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-department {
+            background: linear-gradient(135deg, #6a11cb 0%, #4e54c8 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-class {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .action-buttons .btn {
+            border-radius: 30px;
+            padding: 0.35rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b5de7 0%, #2575fc 100%);
+            border: none;
+            box-shadow: 0 4px 15px rgba(59, 93, 231, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2a4cd0 0%, #1c64e0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 93, 231, 0.4);
+        }
+        
+        .btn-outline-secondary {
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            border-radius: 30px;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: linear-gradient(135deg, #3b5de7 0%, #2575fc 100%);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid #3b5de7;
+            color: #3b5de7;
+            border-radius: 30px;
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #3b5de7 0%, #2575fc 100%);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .dataTables_wrapper .dataTables_length, 
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .dataTables_wrapper .dataTables_filter input {
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+        }
+        
+        .dataTables_wrapper .dataTables_length select {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 0.25rem 0.5rem;
+            margin: 0 0.5rem;
+        }
+        
+        .pagination {
+            gap: 0.25rem;
+        }
+        
+        .page-link {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            color: #3b5de7;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .page-link:hover {
+            background: linear-gradient(135deg, #3b5de7 0%, #2575fc 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+        
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #3b5de7 0%, #2575fc 100%);
+            border-color: transparent;
+            color: white;
+        }
+        
+        .dataTables_paginate .pagination {
+            justify-content: flex-end;
+        }
+        
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1rem;
+            }
+            .page-header {
+                padding: 1rem;
+            }
+            .page-title {
+                font-size: 1.25rem;
+            }
+            .action-buttons .btn {
+                padding: 0.25rem 0.75rem;
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media print {
+            .sidebar, .navbar-custom, .footer, .action-buttons, .page-header .btn {
+                display: none !important;
+            }
+            .card {
+                box-shadow: none;
+                border: 1px solid #dee2e6;
+            }
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        <!-- Start Page Content here -->
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+                
+                <!-- Start Content-->
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="#">Students</a></li>
+                                        <li class="breadcrumb-item active">Student Records</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Student Records</h4>
+                            </div>
+                        </div>
+                    </div>     
+                    <!-- end page title --> 
+
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            <!-- Page Header -->
+                            <div class="page-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h1 class="page-title"><i class="bi bi-list-alt me-2"></i>Student Records</h1>
+                                    <p class="page-subtitle mb-0">View and manage all student academic records</p>
+                                </div>
+                                <div>
+                                    <a href="/add-student" class="btn btn-primary me-2">
+                                        <i class="bi bi-person-plus me-1"></i> Add Student
+                                    </a>
+                                    <button class="btn btn-outline-light" onclick="window.print()">
+                                        <i class="bi bi-printer me-1"></i> Print
+                                    </button>
+                                </div>
+                            </div>
+
+                            <% if (error) { %>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong><i class="bi bi-exclamation-circle me-2"></i> Error:</strong> <%= error %>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            <% } %>
+
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                    <h5 class="mb-0"><i class="bi bi-list-alt me-2"></i>Student List</h5>
+                                    <form class="d-flex gap-2" method="get" action="/student-records">
+                                        <input type="search" name="q" class="form-control form-control-sm" placeholder="Search students..." value="<%= typeof searchQ !== 'undefined' ? searchQ : '' %>">
+                                        <button type="submit" class="btn btn-sm btn-primary">Search</button>
+                                    </form>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover" id="students-datatable">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Student Name</th>
+                                                    <th>Admission No.</th>
+                                                    <th>Class</th>
+                                                    <th>Level</th>
+                                                    <th>Department</th>
+                                                    <th class="text-center">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (students && students.length > 0) { 
+                                                    students.forEach((student, index) => { %>
+                                                    <tr>
+                                                        <td><%= index + 1 %></td>
+                                                        <td>
+                                                            <div class="student-name"><%= student.firstName %> <%= student.middleName ? student.middleName + ' ' : '' %><%= student.lastName %></div>
+                                                            <small class="student-id">ID: <%= student.id %></small>
+                                                        </td>
+                                                        <td><%= student.admission_number || 'N/A' %></td>
+                                                        <td><span class="badge-class"><%= student.className || 'Not Assigned' %></span></td>
+                                                        <td><span class="badge-level"><%= student.level || 'N/A' %></span></td>
+                                                        <td>
+                                                            <% if (student.department) { %>
+                                                                <span class="badge-department"><%= student.department %></span>
+                                                            <% } else { %>
+                                                                <span class="badge bg-secondary">N/A</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td class="text-center action-buttons">
+                                                            <a href="/student-records/<%= student.id %>" class="btn btn-primary btn-sm">
+                                                                <i class="bi bi-eye me-1"></i> View Records
+                                                            </a>
+                                                            <a href="/student-profile/<%= student.id %>" class="btn btn-outline-secondary btn-sm ms-1">
+                                                                <i class="bi bi-person-badge me-1"></i> Profile
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                <% }); 
+                                                } else { %>
+                                                    <tr>
+                                                        <td colspan="7" class="text-center text-muted py-5">
+                                                            <i class="bi bi-inbox fs-1"></i>
+                                                            <p class="mt-2 mb-0">No students found</p>
+                                                            <small>Click "Add Student" to create a new student record</small>
+                                                        </td>
+                                                    </tr>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <%- include('partials/pager') %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- container -->
+            </div> <!-- content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - School Management System
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+        </div>
+    </div>
+    <!-- END wrapper -->
+
+    <!-- Right Sidebar -->
+    <div class="end-bar">
+        <div class="rightbar-title">
+            <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                <i class="dripicons-cross noti-icon"></i>
+            </a>
+            <h5 class="m-0">Settings</h5>
+        </div>
+        <div class="rightbar-content h-100" data-simplebar="">
+            <div class="p-3">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Customize</strong> the overall color scheme, sidebar menu, etc.
+                </div>
+                <h5 class="mt-3">Color Scheme</h5>
+                <hr>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked>
+                    <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                    <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rightbar-overlay"></div>
+
+    <!-- bundle -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+    
+    <!-- third party js -->
+    <script src="/assets/js/vendor/jquery.dataTables.min.js"></script>
+    <script src="/assets/js/vendor/dataTables.bootstrap5.js"></script>
+    <script src="/assets/js/vendor/dataTables.responsive.min.js"></script>
+    <script src="/assets/js/vendor/responsive.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            var table = $('#students-datatable').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                responsive: true,
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                order: [[0, 'asc']],
+                language: {
+                    search: "Search:",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    infoEmpty: "Showing 0 to 0 of 0 entries",
+                    infoFiltered: "(filtered from _MAX_ total entries)",
+                    paginate: {
+                        first: "<i class='bi bi-chevron-double-left'></i>",
+                        previous: "<i class='bi bi-chevron-left'></i>",
+                        next: "<i class='bi bi-chevron-right'></i>",
+                        last: "<i class='bi bi-chevron-double-right'></i>"
+                    }
+                },
+                drawCallback: function() {
+                    $('.dataTables_paginate > .pagination').addClass('pagination-rounded');
+                }
+            });
+            
+            // Export functionality
+            $('#exportBtn').click(function() {
+                window.open('/export/students/csv', '_blank');
+            });
+            
+            // Add hover animation to table rows
+            $('#students-datatable tbody tr').hover(
+                function() {
+                    $(this).css('transform', 'translateY(-2px)');
+                    $(this).css('box-shadow', '0 4px 12px rgba(0,0,0,0.08)');
+                    $(this).css('z-index', '1');
+                    $(this).css('position', 'relative');
+                },
+                function() {
+                    $(this).css('transform', 'translateY(0)');
+                    $(this).css('box-shadow', 'none');
+                    $(this).css('z-index', '0');
+                }
+            );
+            
+            // Add click effect to buttons
+            $('.btn').mousedown(function() {
+                $(this).css('transform', 'scale(0.96)');
+            });
+            
+            $('.btn').mouseup(function() {
+                $(this).css('transform', 'scale(1)');
+            });
+            
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

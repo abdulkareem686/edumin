@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Link Student to Parent - School Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A fully featured school management system" name="description" />
+    <meta content="ThemeSelection" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+    <!-- Bootstrap Css -->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <!-- Select2 CSS for better dropdowns -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
+    <!-- DataTables CSS -->
+    <link href="assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css" />
+    <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+            background-color: #f8f9fa;
+        }
+        .form-section-title {
+            color: #3b5de7;
+            border-bottom: 2px solid #3b5de7;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .linked-card {
+            border-left: 3px solid #28a745;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        .linked-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .parent-card {
+            border-left: 3px solid #3b5de7;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .parent-card:hover, .student-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .student-card {
+            border-left: 3px solid #ffc107;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .badge-primary-custom {
+            background-color: #3b5de7;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .btn-sm-custom {
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        .quick-link-form {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .quick-link-form .form-label {
+            color: white;
+        }
+        .quick-link-form .form-control, 
+        .quick-link-form .form-select {
+            background-color: rgba(255,255,255,0.9);
+            border: none;
+        }
+        .existing-links-table td {
+            vertical-align: middle;
+        }
+        .btn-unlink {
+            transition: all 0.2s;
+        }
+        .btn-unlink:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+                
+                <!-- Start Content-->
+                <div class="container-fluid">
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Parents</a></li>
+                                        <li class="breadcrumb-item active">Link Student to Parent</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Link Student to Parent/Guardian</h4>
+                            </div>
+                        </div>
+                    </div>     
+                    <!-- end page title --> 
+
+                    <!-- Success/Error Messages -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i> <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+                    
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Quick Link Form -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card quick-link-form">
+                                <div class="card-body">
+                                    <h5 class="card-title text-white mb-3">
+                                        <i class="bi bi-link me-2"></i>Quick Link - Parent to Student
+                                    </h5>
+                                    <form action="/link-student-parent" method="post" id="linkForm">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="mb-3">
+                                                    <label class="form-label required-field">Select Parent</label>
+                                                    <select class="form-control select2-parent" name="parentId" id="parentSelect" required>
+                                                        <option value="">-- Select Parent --</option>
+                                                        <% if (typeof parents !== 'undefined' && parents && parents.length > 0) { %>
+                                                            <% parents.forEach(parent => { %>
+                                                                <option value="<%= parent.id %>">
+                                                                    <%= parent.first_name %> <%= parent.last_name %> - <%= parent.email %>
+                                                                </option>
+                                                            <% }); %>
+                                                        <% } %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="mb-3">
+                                                    <label class="form-label required-field">Select Student</label>
+                                                    <select class="form-control select2-student" name="studentId" id="studentSelect" required>
+                                                        <option value="">-- Select Student --</option>
+                                                        <% if (typeof students !== 'undefined' && students && students.length > 0) { %>
+                                                            <% students.forEach(student => { %>
+                                                                <option value="<%= student.id %>">
+                                                                    <%= student.firstName %> <%= student.middleName ? student.middleName + ' ' : '' %><%= student.lastName %> - <%= student.admission_number %> (<%= student.className || 'No Class' %>)
+                                                                </option>
+                                                            <% }); %>
+                                                        <% } %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Relationship</label>
+                                                    <select class="form-control" name="relationship">
+                                                        <option value="Parent">Parent</option>
+                                                        <option value="Guardian">Guardian</option>
+                                                        <option value="Grandparent">Grandparent</option>
+                                                        <option value="Sibling">Sibling</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="isPrimary" value="1" id="isPrimary">
+                                                        <label class="form-check-label text-white" for="isPrimary">
+                                                            <i class="bi bi-star-fill"></i> Set as Primary Contact
+                                                        </label>
+                                                        <small class="d-block text-white-50">Primary contact will receive priority notifications</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 text-end">
+                                                <button type="submit" class="btn btn-light">
+                                                    <i class="bi bi-link me-1"></i> Link Student to Parent
+                                                </button>
+                                                <button type="reset" class="btn btn-outline-light ms-2">
+                                                    <i class="bi bi-arrow-repeat me-1"></i> Reset
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Existing Links Section -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <i class="bi bi-diagram-3 me-2"></i>Existing Parent-Student Links
+                                    </h5>
+                                    <p class="text-muted">All current parent-student relationships in the system.</p>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-centered table-striped dt-responsive nowrap w-100" id="existing-links-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Parent Name</th>
+                                                    <th>Parent Contact</th>
+                                                    <th>Student Name</th>
+                                                    <th>Student Details</th>
+                                                    <th>Relationship</th>
+                                                    <th>Primary</th>
+                                                    <th>Linked Date</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if (typeof existingLinks !== 'undefined' && existingLinks && existingLinks.length > 0) { %>
+                                                    <% existingLinks.forEach(link => { %>
+                                                        <tr id="link-row-<%= link.parent_id %>-<%= link.student_id %>">
+                                                            <td>
+                                                                <strong><%= link.parent_first %> <%= link.parent_last %></strong>
+                                                            </td>
+                                                            <td>
+                                                                <small class="text-muted">
+                                                                    <% 
+                                                                        const parent = parents.find(p => p.id === link.parent_id);
+                                                                        if (parent) { 
+                                                                    %>
+                                                                        <%= parent.email %><br>
+                                                                        <%= parent.phone %>
+                                                                    <% } else { %>
+                                                                        N/A
+                                                                    <% } %>
+                                                                </small>
+                                                            </td>
+                                                            <td>
+                                                                <strong><%= link.student_first %> <%= link.student_last %></strong>
+                                                            </td>
+                                                            <td>
+                                                                <small class="text-muted">
+                                                                    <% 
+                                                                        const student = students.find(s => s.id === link.student_id);
+                                                                        if (student) { 
+                                                                    %>
+                                                                        Admission: <%= student.admission_number %><br>
+                                                                        Class: <%= student.className || 'Not Assigned' %>
+                                                                    <% } else { %>
+                                                                        N/A
+                                                                    <% } %>
+                                                                </small>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-info"><%= link.relationship %></span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <% if (link.is_primary) { %>
+                                                                    <span class="badge bg-success">
+                                                                        <i class="bi bi-star-fill"></i> Primary
+                                                                    </span>
+                                                                <% } else { %>
+                                                                    <span class="badge bg-secondary">Secondary</span>
+                                                                <% } %>
+                                                            </td>
+                                                            <td>
+                                                                <%= moment(link.created_at).format('DD MMM YYYY') %>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-sm btn-danger btn-unlink" 
+                                                                        data-parent-id="<%= link.parent_id %>" 
+                                                                        data-student-id="<%= link.student_id %>"
+                                                                        data-parent-name="<%= link.parent_first %> <%= link.parent_last %>"
+                                                                        data-student-name="<%= link.student_first %> <%= link.student_last %>">
+                                                                    <i class="bi bi-unlink"></i> Unlink
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    <% }); %>
+                                                <% } else { %>
+                                                    <tr>
+                                                        <td colspan="8" class="text-center py-4">
+                                                            <div class="text-muted">
+                                                                <i class="bi bi-diagram-3 display-4 d-block mb-3"></i>
+                                                                <h5>No parent-student links found</h5>
+                                                                <p class="mb-0">Use the form above to link parents to their children.</p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Actions Section -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <i class="bi bi-tools me-2"></i>Bulk Actions
+                                    </h5>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <select class="form-control" id="bulkParentSelect">
+                                                <option value="">Select Parent</option>
+                                                <% if (typeof parents !== 'undefined' && parents) { %>
+                                                    <% parents.forEach(parent => { %>
+                                                        <option value="<%= parent.id %>"><%= parent.first_name %> <%= parent.last_name %></option>
+                                                    <% }); %>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="form-control" id="bulkStudentSelect" multiple size="5">
+                                                <option value="" disabled>Select multiple students (Ctrl+Click)</option>
+                                                <% if (typeof students !== 'undefined' && students) { %>
+                                                    <% students.forEach(student => { %>
+                                                        <option value="<%= student.id %>">
+                                                            <%= student.firstName %> <%= student.middleName ? student.middleName + ' ' : '' %><%= student.lastName %> - <%= student.admission_number %>
+                                                        </option>
+                                                    <% }); %>
+                                                <% } %>
+                                            </select>
+                                            <small class="text-muted">Hold Ctrl to select multiple students</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-primary w-100" id="bulkLinkBtn">
+                                                <i class="bi bi-link"></i> Link Selected Students to Parent
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- container -->
+            </div> <!-- content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> © edu admin
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+        </div>
+        <!-- End Page content -->
+    </div>
+    <!-- END wrapper -->
+
+    <!-- Right Sidebar -->
+    <div class="end-bar">
+        <div class="rightbar-title">
+            <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                <i class="dripicons-cross noti-icon"></i>
+            </a>
+            <h5 class="m-0">Settings</h5>
+        </div>
+        <div class="rightbar-content h-100" data-simplebar="">
+            <div class="p-3">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Customize</strong> the overall color scheme, sidebar menu, etc.
+                </div>
+                <h5 class="mt-3">Color Scheme</h5>
+                <hr class="mt-1">
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                    <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                    <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rightbar-overlay"></div>
+    <!-- /End-bar -->
+
+    <!-- bundle -->
+    <script src="assets/js/vendor.min.js"></script>
+    <script src="assets/js/app.min.js"></script>
+
+    <!-- jQuery and Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
+    <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
+    <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
+    <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for better dropdowns
+            $('.select2-parent').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '-- Select Parent --',
+                allowClear: true
+            });
+
+            $('.select2-student').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '-- Select Student --',
+                allowClear: true
+            });
+
+            // Initialize DataTable for existing links
+            const table = $('#existing-links-table').DataTable({
+                responsive: true,
+                order: [[0, 'asc']],
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                language: {
+                    paginate: {
+                        previous: "<i class='mdi mdi-chevron-left'>",
+                        next: "<i class='mdi mdi-chevron-right'>"
+                    },
+                    search: "Search links:",
+                    lengthMenu: "Show _MENU_ links per page"
+                },
+                drawCallback: function() {
+                    $('.dataTables_paginate > .pagination').addClass('pagination-rounded');
+                }
+            });
+
+            // Unlink functionality
+            $('.btn-unlink').click(function() {
+                const parentId = $(this).data('parent-id');
+                const studentId = $(this).data('student-id');
+                const parentName = $(this).data('parent-name');
+                const studentName = $(this).data('student-name');
+                
+                if (confirm(`Are you sure you want to unlink ${studentName} from ${parentName}?`)) {
+                    $.ajax({
+                        url: '/unlink-student-parent',
+                        method: 'POST',
+                        data: {
+                            parentId: parentId,
+                            studentId: studentId
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Remove the row from the table
+                                table.row($(`#link-row-${parentId}-${studentId}`)).remove().draw();
+                                showNotification('success', response.message);
+                            } else {
+                                showNotification('error', response.error || 'Failed to unlink');
+                            }
+                        },
+                        error: function(xhr) {
+                            showNotification('error', 'Error unlinking student: ' + (xhr.responseJSON?.error || 'Please try again'));
+                        }
+                    });
+                }
+            });
+
+            // Bulk link functionality
+            $('#bulkLinkBtn').click(function() {
+                const parentId = $('#bulkParentSelect').val();
+                const studentIds = $('#bulkStudentSelect').val();
+                
+                if (!parentId) {
+                    showNotification('error', 'Please select a parent');
+                    return;
+                }
+                
+                if (!studentIds || studentIds.length === 0) {
+                    showNotification('error', 'Please select at least one student');
+                    return;
+                }
+                
+                if (confirm(`Link ${studentIds.length} student(s) to the selected parent?`)) {
+                    let successCount = 0;
+                    let errorCount = 0;
+                    
+                    studentIds.forEach(studentId => {
+                        $.ajax({
+                            url: '/link-student-parent',
+                            method: 'POST',
+                            data: {
+                                parentId: parentId,
+                                studentId: studentId,
+                                relationship: 'Parent',
+                                isPrimary: 0
+                            },
+                            async: false,
+                            success: function(response) {
+                                if (response.success) {
+                                    successCount++;
+                                } else {
+                                    errorCount++;
+                                }
+                            },
+                            error: function() {
+                                errorCount++;
+                            }
+                        });
+                    });
+                    
+                    showNotification('info', `Linked ${successCount} students successfully. ${errorCount} failed.`);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                }
+            });
+
+            // Filter students based on parent selection
+            $('#parentSelect').on('change', function() {
+                const parentId = $(this).val();
+                if (parentId) {
+                    // Load unlinked students for this parent
+                    $.ajax({
+                        url: `/api/unlinked-students/${parentId}`,
+                        method: 'GET',
+                        success: function(response) {
+                            if (response.success && response.students) {
+                                const studentSelect = $('#studentSelect');
+                                studentSelect.empty();
+                                studentSelect.append('<option value="">-- Select Student --</option>');
+                                
+                                if (response.students.length === 0) {
+                                    studentSelect.append('<option value="" disabled>All students already linked to this parent</option>');
+                                } else {
+                                    response.students.forEach(student => {
+                                        studentSelect.append(`<option value="${student.id}">${student.firstName} ${student.lastName} - ${student.admission_number} (${student.className || 'No Class'})</option>`);
+                                    });
+                                }
+                                
+                                // Refresh Select2
+                                $('.select2-student').trigger('change');
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Show notification function
+            function showNotification(type, message) {
+                const alertClass = type === 'success' ? 'alert-success' : (type === 'error' ? 'alert-danger' : 'alert-info');
+                const icon = type === 'success' ? 'check-circle-fill' : (type === 'error' ? 'exclamation-triangle-fill' : 'info-circle-fill');
+                
+                const alert = $(`
+                    <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                        <i class="bi bi-${icon} me-2"></i> ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+                
+                $('.container-fluid').prepend(alert);
+                
+                setTimeout(() => {
+                    alert.alert('close');
+                }, 5000);
+            }
+
+            // Form validation
+            $('#linkForm').on('submit', function(e) {
+                const parentId = $('#parentSelect').val();
+                const studentId = $('#studentSelect').val();
+                
+                if (!parentId || !studentId) {
+                    e.preventDefault();
+                    showNotification('error', 'Please select both a parent and a student');
+                    return false;
+                }
+                
+                return true;
+            });
+
+            // Reset form
+            $('button[type="reset"]').click(function(e) {
+                if (!confirm('Are you sure you want to reset the form?')) {
+                    e.preventDefault();
+                    return false;
+                }
+                setTimeout(() => {
+                    $('.select2-parent, .select2-student').val(null).trigger('change');
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

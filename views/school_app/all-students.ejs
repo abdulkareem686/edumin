@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>edu admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+
+        <!-- third party css -->
+        <link href="assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
+        <!-- third party css end -->
+
+        <!-- App css -->
+        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+        <style>
+            /* ---------- Modal scrolling (guaranteed) ---------- */
+            .modal-dialog-scrollable {
+                max-height: calc(100vh - 2rem) !important;
+            }
+            .modal-dialog-scrollable form.modal-content,
+            .modal-dialog-scrollable .modal-content {
+                max-height: calc(100vh - 2rem) !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
+            }
+            .modal-dialog-scrollable .modal-body {
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+                flex: 1 1 auto !important;
+                max-height: calc(100vh - 180px) !important;
+            }
+            .modal-dialog-scrollable .modal-header,
+            .modal-dialog-scrollable .modal-footer {
+                flex-shrink: 0 !important;
+            }
+
+            /* ---------- Student table ---------- */
+            .class-display {
+                font-weight: 500;
+                color: #3f51b5;
+            }
+            .department-badge {
+                font-size: 0.85em;
+                background-color: #e3f2fd;
+                color: #1976d2;
+                padding: 2px 6px;
+                border-radius: 4px;
+                margin-left: 4px;
+            }
+            .action-icon {
+                font-size: 1.2rem;
+                text-decoration: none;
+            }
+            .table-user a {
+                text-decoration: none;
+                color: #3f51b5;
+            }
+            .table-user a:hover {
+                text-decoration: underline;
+            }
+
+            /* ---------- Add Student modal ---------- */
+            .required-field::after {
+                content: " *";
+                color: #e63946;
+            }
+            #addStudentModal .modal-body {
+                background-color: #f8fafc;
+            }
+            #addStudentModal .card-header .card-title {
+                font-size: 1rem;
+                letter-spacing: .2px;
+            }
+            .typeahead-results {
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            }
+            .search-result-item {
+                border-bottom: 1px solid #f1f5f9;
+                transition: background-color 0.15s ease-in-out;
+            }
+            .search-result-item:last-child {
+                border-bottom: none;
+            }
+            .search-result-item:hover {
+                background-color: #f8fafc;
+                cursor: pointer;
+            }
+            .selected-badge {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: #e0f2fe;
+                color: #0369a1;
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.375rem;
+                border: 1px solid #bae6fd;
+                font-weight: 500;
+            }
+        </style>
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+
+            <!-- ========== Left Sidebar Start ========== -->
+            <%- include('partials/admin-sidebar') %>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Topbar -->
+                    <%- include('partials/admin-navbar') %>
+                    <!-- end Topbar -->
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Students</a></li>
+                                            <li class="breadcrumb-item active">All Students</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">All Students</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <% } %>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <div class="row mb-2">
+                                            <div class="col-sm-4">
+                                                <button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                                                    <i class="mdi mdi-plus-circle me-2"></i> Add Student
+                                                </button>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <form class="d-flex justify-content-sm-end gap-2 mb-2" id="studentSearchForm" method="get" action="/all-students">
+                                                    <div class="position-relative" style="max-width:340px; width:100%;">
+                                                        <input type="search" id="studentTableSearch" name="q" class="form-control pe-4" 
+                                                               placeholder="Type to search anything on table..." 
+                                                               value="<%= typeof searchQ !== 'undefined' ? searchQ : '' %>"
+                                                               autocomplete="off">
+                                                        <span id="studentSearchClear" class="position-absolute end-0 top-50 translate-middle-y me-2 text-muted" 
+                                                              style="cursor: pointer; display: none;" title="Clear search">
+                                                            <i class="mdi mdi-close-circle font-16"></i>
+                                                        </span>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary" title="Search all database records">
+                                                        <i class="mdi mdi-magnify me-1"></i>Search
+                                                    </button>
+                                                </form>
+                                                <div id="liveSearchStatus" class="text-end text-muted small mt-1" style="display: none;"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-centered table-striped dt-responsive nowrap w-100" id="products-datatable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 20px;">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" class="form-check-input" id="customCheck1">
+                                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
+                                                            </div>
+                                                        </th>
+                                                        <th>Admission No.</th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Gender</th>
+                                                        <th>Date of birth</th>
+                                                        <th>Class</th>
+                                                        <th style="width: 130px;">Action</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <% students.forEach(function(student) { %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="form-check">
+                                                                <input type="checkbox" class="form-check-input" id="customCheck<%= student.id %>">
+                                                                <label class="form-check-label" for="customCheck<%= student.id %>">&nbsp;</label>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/student-profile/<%= student.id %>" class="text-body fw-semibold">
+                                                                <%= student.admission_number %>
+                                                            </a>
+                                                        </td>
+                                                        <td class="table-user">
+                                                            <a href="/student-profile/<%= student.id %>" class="text-body fw-semibold">
+                                                                <%= student.firstName %> <%= student.middleName %> <%= student.lastName %>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a href="mailto:<%= student.email %>"><strong><%= student.email %></strong></a>
+                                                        </td>
+                                                        <td>
+                                                            <%= student.gender || 'N/A' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : 'N/A' %>
+                                                        </td>
+                                                        <td>
+                                                            <% if (student.className) { %>
+                                                                <span class="class-display">
+                                                                    <%= student.className %>
+                                                                    <% if (student.classDepartment) { %>
+                                                                        <span class="department-badge">(<%= student.classDepartment %>)</span>
+                                                                    <% } %>
+                                                                </span>
+                                                            <% } else { %>
+                                                                <span class="text-muted">N/A</span>
+                                                            <% } %>
+                                                        </td>
+                                                        <td class="text-nowrap">
+                                                            <a href="/add-fees/<%= student.id %>" class="action-icon text-success me-2" title="Record fee payment">
+                                                                <i class="mdi mdi-cash-multiple"></i>
+                                                            </a>
+                                                            <a href="/edit-student/<%= student.id %>" class="action-icon text-primary me-2" title="Edit student">
+                                                                <i class="mdi mdi-square-edit-outline"></i>
+                                                            </a>
+                                                            <a href="/delete-student/<%= student.id %>" class="action-icon text-danger" title="Delete student"
+                                                               onclick="return confirm('Are you sure you want to delete this student?')">
+                                                                <i class="mdi mdi-delete"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- end table-responsive -->
+
+                                        <%- include('partials/pager') %>
+
+                                        <!-- ============================================================= -->
+                                        <!-- Add Student Modal                                             -->
+                                        <!-- ============================================================= -->
+                                        <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                                <form class="modal-content border-0 shadow-lg" action="/save-student" method="post" id="addStudentModalForm" autocomplete="off">
+
+                                                    <!-- Modal header -->
+                                                    <div class="modal-header bg-primary text-white">
+                                                        <h5 class="modal-title d-flex align-items-center text-white" id="addStudentModalLabel">
+                                                            <i class="bi bi-person-plus-fill me-2 fs-4"></i> Add New Student
+                                                        </h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+
+                                                    <!-- Modal body -->
+                                                    <div class="modal-body p-4">
+
+                                                        <div class="alert alert-info d-flex align-items-center mb-4 py-2 px-3 border-0 shadow-sm" style="background:#e0f2fe;color:#0369a1;">
+                                                            <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                                                            <div><strong>Notice:</strong> Admission Number will be generated automatically upon successful registration.</div>
+                                                        </div>
+
+                                                        <!-- ============ Section 1: Personal Information ============ -->
+                                                        <div class="card border-0 shadow-sm mb-4">
+                                                            <div class="card-header bg-white py-3 border-bottom">
+                                                                <h5 class="card-title mb-0 text-primary d-flex align-items-center">
+                                                                    <i class="bi bi-person-circle me-2"></i> Personal Information
+                                                                </h5>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="row g-3">
+                                                                    <div class="col-md-4">
+                                                                        <label class="form-label required-field fw-semibold">Surname</label>
+                                                                        <input type="text" class="form-control" name="firstName" required placeholder="Student's Surname">
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label class="form-label fw-semibold">Middle Name</label>
+                                                                        <input type="text" class="form-control" name="middleName" placeholder="Middle Name (Optional)">
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label class="form-label required-field fw-semibold">Last Name</label>
+                                                                        <input type="text" class="form-control" name="lastName" required placeholder="Last Name">
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label required-field fw-semibold">Email</label>
+                                                                        <input type="email" class="form-control" name="email" required placeholder="student@example.com">
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <label class="form-label fw-semibold">Gender</label>
+                                                                        <select class="form-select" name="gender">
+                                                                            <option value="">-- Select Gender --</option>
+                                                                            <option value="Male">Male</option>
+                                                                            <option value="Female">Female</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <label class="form-label fw-semibold">Date of Birth</label>
+                                                                        <input type="date" class="form-control" name="dateOfBirth">
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label fw-semibold">Nationality</label>
+                                                                        <select class="form-select" name="nationality">
+                                                                            <option value="">-- Select Nationality --</option>
+                                                                            <option value="Nigerian" selected>Nigerian</option>
+                                                                            <option value="Other">Other</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label fw-semibold">Mobile Number</label>
+                                                                        <input type="tel" class="form-control" name="mobileNumber" placeholder="e.g. 08012345678">
+                                                                    </div>
+
+                                                                    <div class="col-12">
+                                                                        <label class="form-label fw-semibold">Residential Address</label>
+                                                                        <textarea class="form-control" name="address" rows="2" placeholder="Full residential address"></textarea>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Origin & Residence Geography -->
+                                                                <div class="row g-3 mt-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class="p-3 bg-light rounded border h-100">
+                                                                            <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-geo-alt me-1"></i> State of Origin</h6>
+                                                                            <div class="row g-2">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label small text-muted">State</label>
+                                                                                    <select class="form-select student-state-origin" name="stateOfOrigin" id="studentModalStateOfOrigin">
+                                                                                        <option value="">-- Select State --</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label small text-muted">LGA</label>
+                                                                                    <select class="form-select student-lga-origin" name="localGovernment" id="studentModalLocalGovernment">
+                                                                                        <option value="">-- Select LGA --</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-6">
+                                                                        <div class="p-3 bg-light rounded border h-100">
+                                                                            <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-house me-1"></i> Residential Information</h6>
+                                                                            <div class="row g-2">
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label small text-muted">State</label>
+                                                                                    <select class="form-select student-state-residence" name="residentialState" id="studentModalResidentialState">
+                                                                                        <option value="">-- Select State --</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <label class="form-label small text-muted">LGA</label>
+                                                                                    <select class="form-select student-lga-residence" name="residentialLGA" id="studentModalResidentialLGA">
+                                                                                        <option value="">-- Select LGA --</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- ============ Section 2: Academic Information ============ -->
+                                                        <div class="card border-0 shadow-sm mb-4">
+                                                            <div class="card-header bg-white py-3 border-bottom">
+                                                                <h5 class="card-title mb-0 text-primary d-flex align-items-center">
+                                                                    <i class="bi bi-book me-2"></i> Academic Information
+                                                                </h5>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="row g-3">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label required-field fw-semibold">Select Class</label>
+                                                                        <select class="form-select" name="classId" id="studentModalClassSelect" required>
+                                                                            <option value="">-- Select Class --</option>
+                                                                            <% if (typeof classes !== 'undefined' && classes.length) { %>
+                                                                                <% classes.forEach(function(cls) { %>
+                                                                                    <option value="<%= cls.id %>"
+                                                                                            data-level="<%= cls.level %>"
+                                                                                            data-department="<%= cls.department || '' %>">
+                                                                                        <%= cls.className %><% if (cls.department) { %> (<%= cls.department %>)<% } else if (cls.level) { %> - <%= cls.level %><% } %>
+                                                                                    </option>
+                                                                                <% }); %>
+                                                                            <% } else { %>
+                                                                                <option value="" disabled>No classes available</option>
+                                                                            <% } %>
+                                                                        </select>
+                                                                        <small id="studentModalDepartmentDisplay" class="text-primary mt-1 d-block fw-semibold"></small>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label fw-semibold">Admission Number</label>
+                                                                        <input type="text" class="form-control bg-light" value="Auto-generated on submission" disabled readonly>
+                                                                        <small class="text-muted">A unique admission number is created automatically</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- ============ Section 3: Parent / Guardian ============ -->
+                                                        <div class="card border-0 shadow-sm mb-2">
+                                                            <div class="card-header bg-white py-3 border-bottom">
+                                                                <h5 class="card-title mb-0 text-primary d-flex align-items-center">
+                                                                    <i class="bi bi-people me-2"></i> Parent / Guardian Information
+                                                                </h5>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="alert alert-light border d-flex align-items-center mb-3 py-2 px-3">
+                                                                    <i class="bi bi-info-circle text-primary me-2"></i>
+                                                                    <span class="small text-muted">You can either link the student to an already registered parent or register a new parent right now.</span>
+                                                                </div>
+
+                                                                <ul class="nav nav-pills nav-justified mb-3" id="studentModalParentTab" role="tablist">
+                                                                    <li class="nav-item" role="presentation">
+                                                                        <button class="nav-link active py-2" id="student-modal-existing-tab" data-bs-toggle="pill" data-bs-target="#studentModalExistingParentPane" type="button" role="tab" aria-controls="studentModalExistingParentPane" aria-selected="true">
+                                                                            <i class="bi bi-search me-1"></i> Link Existing Parent
+                                                                        </button>
+                                                                    </li>
+                                                                    <li class="nav-item" role="presentation">
+                                                                        <button class="nav-link py-2" id="student-modal-new-tab" data-bs-toggle="pill" data-bs-target="#studentModalNewParentPane" type="button" role="tab" aria-controls="studentModalNewParentPane" aria-selected="false">
+                                                                            <i class="bi bi-person-plus me-1"></i> Register New Parent
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+
+                                                                <div class="tab-content" id="studentModalParentTabContent">
+
+                                                                    <!-- Tab 1: Link Existing Parent -->
+                                                                    <div class="tab-pane fade show active p-3 bg-light rounded border" id="studentModalExistingParentPane" role="tabpanel" aria-labelledby="student-modal-existing-tab">
+                                                                        <label class="form-label fw-semibold">Search Existing Parent</label>
+                                                                        <div class="position-relative">
+                                                                            <div class="input-group">
+                                                                                <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                                                                                <input type="text" class="form-control" id="studentModalParentSearch" placeholder="Type parent name, email, or phone number..." autocomplete="off">
+                                                                                <button class="btn btn-outline-secondary" type="button" id="studentModalClearSearchBtn">Clear</button>
+                                                                            </div>
+                                                                            <div class="spinner-border spinner-border-sm text-primary position-absolute top-50 end-0 translate-middle-y me-3" id="studentModalParentLoading" style="display:none; z-index:10;"></div>
+                                                                            <div class="typeahead-results mt-1 shadow rounded border bg-white" id="studentModalParentResults" style="display:none; position:absolute; width:100%; z-index:1055; max-height:200px; overflow-y:auto;"></div>
+                                                                        </div>
+                                                                        <small class="text-muted d-block mt-1">Type at least 2 characters to search</small>
+
+                                                                        <div id="studentModalSelectedParentDisplay" class="selected-badge mt-3" style="display:none;">
+                                                                            <span class="selected-info"><i class="bi bi-person-check-fill me-1"></i> <span></span></span>
+                                                                            <button type="button" class="btn btn-sm btn-link text-danger text-decoration-none p-0 ms-2 js-clear-parent">
+                                                                                <i class="bi bi-x-circle me-1"></i> Remove
+                                                                            </button>
+                                                                        </div>
+                                                                        <input type="hidden" name="existingParentId" id="studentModalExistingParentId" value="">
+                                                                    </div>
+
+                                                                    <!-- Tab 2: Register New Parent -->
+                                                                    <div class="tab-pane fade p-3 bg-white rounded border border-primary-subtle" id="studentModalNewParentPane" role="tabpanel" aria-labelledby="student-modal-new-tab">
+                                                                        <div class="row g-3">
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Parent First Name</label>
+                                                                                <input type="text" class="form-control" name="parentFirstName" id="studentModalParentFirstName" placeholder="First Name">
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Parent Last Name</label>
+                                                                                <input type="text" class="form-control" name="parentLastName" id="studentModalParentLastName" placeholder="Last Name">
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Parent Email</label>
+                                                                                <input type="email" class="form-control" name="parentEmail" id="studentModalParentEmail" placeholder="parent@example.com">
+                                                                                <small class="text-muted">Parent will use this email to log in</small>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Parent Phone Number</label>
+                                                                                <input type="tel" class="form-control" name="parentPhone" id="studentModalParentPhone" placeholder="08012345678">
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Password</label>
+                                                                                <div class="input-group">
+                                                                                    <input type="text" class="form-control" name="parentPassword" id="studentModalParentPassword" value="password123">
+                                                                                    <button class="btn btn-outline-secondary" type="button" id="studentModalGeneratePasswordBtn">
+                                                                                        <i class="bi bi-shuffle"></i> Generate
+                                                                                    </button>
+                                                                                </div>
+                                                                                <small class="text-muted">Default: password123</small>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Relationship to Student</label>
+                                                                                <select class="form-select" name="parentRelationship" id="studentModalParentRelationship">
+                                                                                    <option value="Father">Father</option>
+                                                                                    <option value="Mother">Mother</option>
+                                                                                    <option value="Guardian">Guardian</option>
+                                                                                    <option value="Grandparent">Grandparent</option>
+                                                                                    <option value="Other">Other</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Occupation</label>
+                                                                                <input type="text" class="form-control" name="parentOccupation" placeholder="e.g. Engineer, Business">
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <label class="form-label fw-semibold">Emergency Contact Phone</label>
+                                                                                <input type="tel" class="form-control" name="parentEmergencyContact" placeholder="Alternate phone">
+                                                                            </div>
+                                                                            <div class="col-12">
+                                                                                <label class="form-label fw-semibold">Parent Address</label>
+                                                                                <textarea class="form-control" name="parentAddress" rows="2" placeholder="Full residential address"></textarea>
+                                                                            </div>
+                                                                            <div class="col-12">
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox" name="setAsPrimary" value="1" id="studentModalSetAsPrimary" checked>
+                                                                                    <label class="form-check-label fw-semibold" for="studentModalSetAsPrimary">
+                                                                                        <i class="bi bi-star-fill text-warning me-1"></i> Set this parent as primary contact
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- end tab-content -->
+                                                            </div>
+                                                        </div>
+                                                        <!-- end Section 3 -->
+
+                                                    </div>
+                                                    <!-- end modal-body -->
+
+                                                    <!-- Modal footer -->
+                                                    <div class="modal-footer bg-light border-top">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            <i class="bi bi-x-circle me-1"></i> Cancel
+                                                        </button>
+                                                        <button type="reset" class="btn btn-outline-secondary ms-1" id="addStudentResetBtn">
+                                                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary px-4">
+                                                            <i class="bi bi-check-circle me-1"></i> Save Student
+                                                        </button>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <!-- end Add Student Modal -->
+
+                                    </div> <!-- end card-body-->
+                                </div> <!-- end card-->
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row -->
+
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © abdulkareem
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+        </div>
+        <!-- END wrapper -->
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Settings</h5>
+            </div>
+
+            <div class="rightbar-content h-100" data-simplebar="">
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+
+                    <!-- Settings -->
+                    <h5 class="mt-3">Color Scheme</h5>
+                    <hr class="mt-1">
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+
+                    <!-- Width -->
+                    <h5 class="mt-4">Width</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+
+                    <!-- Left Sidebar -->
+                    <h5 class="mt-4">Left Sidebar</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                        <label class="form-check-label" for="default-check">Default</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                        <label class="form-check-label" for="light-check">Light</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                        <label class="form-check-label" for="dark-check">Dark</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked="">
+                        <label class="form-check-label" for="fixed-check">Fixed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                        <label class="form-check-label" for="condensed-check">Condensed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+                        <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                        <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm" class="btn btn-danger mt-3" target="_blank">
+                            <i class="mdi mdi-basket me-1"></i> Purchase Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+
+        <!-- ============================================================== -->
+        <!-- Scripts                                                        -->
+        <!-- ============================================================== -->
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
+
+        <!-- third party js -->
+        <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
+        <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
+        <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
+        <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
+        <script src="assets/js/vendor/dataTables.checkboxes.min.js"></script>
+        <!-- third party js ends -->
+
+        <script>
+            /* ---------------------------------------------------------
+             * DataTable init (must run AFTER jQuery + DataTables load)
+             * --------------------------------------------------------- */
+            $(document).ready(function () {
+                var $table = $('#products-datatable');
+                if (!$table.length) return;
+
+                var dt = null;
+                try {
+                    dt = $table.DataTable({
+                        paging: false,
+                        searching: true, // Enable search across all columns!
+                        dom: 'rt', // Hide default search input, use our top bar
+                        info: false,
+                        columnDefs: [
+                            { orderable: false, targets: [0, 7] },
+                            { searchable: false, targets: [0, 7] }, // skip checkbox & actions
+                            { searchable: true, targets: [1, 2, 3, 4, 5, 6] }
+                        ],
+                        order: [[1, 'asc']],
+                        language: {
+                            zeroRecords: '<div class="text-center py-4 text-muted">' +
+                                         '<i class="mdi mdi-account-search-outline fs-1 d-block mb-1 text-secondary"></i>' +
+                                         '<p class="mb-0 fw-semibold">No matching students found on this page</p>' +
+                                         '<small class="text-muted">Press Search or Enter to search the entire database</small>' +
+                                         '</div>'
+                        }
+                    });
+                } catch (e) {
+                    console.warn('DataTables init warning, using fallback live filter:', e);
+                }
+
+                var $searchInput = $('#studentTableSearch');
+                var $searchClear = $('#studentSearchClear');
+                var $searchStatus = $('#liveSearchStatus');
+                var totalInitialRows = $table.find('tbody tr:not(#noStudentSearchMatchRow)').length;
+
+                function updateClearBtn() {
+                    if ($searchInput.val().trim().length > 0) {
+                        $searchClear.show();
+                    } else {
+                        $searchClear.hide();
+                    }
+                }
+
+                function filterRowsManually(val) {
+                    var terms = val.toLowerCase().trim().split(/\s+/).filter(Boolean);
+                    var matched = 0;
+                    $table.find('tbody tr:not(#noStudentSearchMatchRow)').each(function () {
+                        var $tr = $(this);
+                        var rowText = '';
+                        $tr.find('td').each(function (idx) {
+                            if (idx > 0 && idx < 7) {
+                                rowText += ' ' + $(this).text();
+                            }
+                        });
+                        rowText = rowText.toLowerCase();
+                        var isMatch = terms.every(function (t) {
+                            return rowText.indexOf(t) !== -1;
+                        });
+                        if (isMatch) {
+                            $tr.show();
+                            matched++;
+                        } else {
+                            $tr.hide();
+                        }
+                    });
+
+                    var $noMatch = $('#noStudentSearchMatchRow');
+                    if (terms.length > 0 && matched === 0) {
+                        if (!$noMatch.length) {
+                            $table.find('tbody').append(
+                                '<tr id="noStudentSearchMatchRow">' +
+                                '<td colspan="8" class="text-center py-4 text-muted">' +
+                                '<i class="mdi mdi-account-search-outline fs-1 d-block mb-1 text-secondary"></i>' +
+                                '<p class="mb-0 fw-semibold">No matching students found on this page</p>' +
+                                '<small class="text-muted">Press Search or Enter to search the entire database</small>' +
+                                '</td></tr>'
+                            );
+                        } else {
+                            $noMatch.show();
+                        }
+                    } else if ($noMatch.length) {
+                        $noMatch.hide();
+                    }
+                    return matched;
+                }
+
+                function performSearch() {
+                    var val = $searchInput.val();
+                    updateClearBtn();
+
+                    var matchedCount = 0;
+                    if (dt) {
+                        dt.search(val).draw();
+                        var info = dt.page.info();
+                        matchedCount = info.recordsDisplay;
+                    } else {
+                        matchedCount = filterRowsManually(val);
+                    }
+
+                    if (val.trim().length > 0) {
+                        $searchStatus.html(
+                            '<i class="mdi mdi-filter-check-outline me-1 text-primary"></i>' +
+                            'Showing <strong>' + matchedCount + '</strong> of <strong>' + totalInitialRows + '</strong> students on this page'
+                        ).show();
+                    } else {
+                        $searchStatus.hide();
+                    }
+                }
+
+                // Instant live filtering as user types
+                $searchInput.on('input keyup search paste', performSearch);
+
+                $searchClear.on('click', function () {
+                    $searchInput.val('').focus();
+                    performSearch();
+                });
+
+                if ($searchInput.val().trim().length > 0) {
+                    performSearch();
+                }
+            });
+        </script>
+
+        <script>
+            /* ---------------------------------------------------------
+             * Add Student Modal
+             * --------------------------------------------------------- */
+            document.addEventListener('DOMContentLoaded', function () {
+
+                /* ---------- Nigerian States / LGAs ---------- */
+                const nigerianStates = {
+                    "Abia": ["Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala Ngwa North", "Isiala Ngwa South", "Isuikwuato", "Obi Ngwa", "Ohafia", "Osisioma", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu Nneochi"],
+                    "Adamawa": ["Demsa", "Fufure", "Ganye", "Gayuk", "Gombi", "Grie", "Hong", "Jada", "Lamurde", "Madagali", "Maiha", "Mayo Belwa", "Michika", "Mubi North", "Mubi South", "Numan", "Shelleng", "Song", "Toungo", "Yola North", "Yola South"],
+                    "Akwa Ibom": ["Abak", "Eastern Obolo", "Eket", "Esit Eket", "Essien Udim", "Etim Ekpo", "Etinan", "Ibeno", "Ibesikpo Asutan", "Ibiono-Ibom", "Ika", "Ikono", "Ikot Abasi", "Ikot Ekpene", "Ini", "Itu", "Mbo", "Mkpat-Enin", "Nsit-Atai", "Nsit-Ibom", "Nsit-Ubium", "Obot Akara", "Okobo", "Onna", "Oron", "Oruk Anam", "Udung-Uko", "Ukanafun", "Uruan", "Urue-Offong/Oruko", "Uyo"],
+                    "Anambra": ["Aguata", "Anambra East", "Anambra West", "Anaocha", "Awka North", "Awka South", "Ayamelum", "Dunukofia", "Ekwusigo", "Idemili North", "Idemili South", "Ihiala", "Njikoka", "Nnewi North", "Nnewi South", "Ogbaru", "Onitsha North", "Onitsha South", "Orumba North", "Orumba South", "Oyi"],
+                    "Bauchi": ["Alkaleri", "Bauchi", "Bogoro", "Damban", "Darazo", "Dass", "Gamawa", "Ganjuwa", "Giade", "Itas/Gadau", "Jama'are", "Katagum", "Kirfi", "Misau", "Ningi", "Shira", "Tafawa Balewa", "Toro", "Warji", "Zaki"],
+                    "Bayelsa": ["Brass", "Ekeremor", "Kolokuma/Opokuma", "Nembe", "Ogbia", "Sagbama", "Southern Ijaw", "Yenagoa"],
+                    "Benue": ["Ado", "Agatu", "Apa", "Buruku", "Gboko", "Guma", "Gwer East", "Gwer West", "Katsina-Ala", "Konshisha", "Kwande", "Logo", "Makurdi", "Obi", "Ogbadibo", "Ohimini", "Oju", "Okpokwu", "Oturkpo", "Tarka", "Ukum", "Ushongo", "Vandeikya"],
+                    "Borno": ["Abadam", "Askira/Uba", "Bama", "Bayo", "Biase", "Chibok", "Damboa", "Dikwa", "Gubio", "Guzamala", "Gwoza", "Hawul", "Jere", "Kaga", "Kala/Balge", "Konduga", "Kukawa", "Kwaya Kusar", "Mafa", "Magumeri", "Maiduguri", "Marte", "Mobbar", "Monguno", "Ngala", "Nganzai", "Shani"],
+                    "Cross River": ["Abi", "Akamkpa", "Akpabuyo", "Bakassi", "Bekwarra", "Biase", "Boki", "Calabar Municipal", "Calabar South", "Etung", "Ikom", "Obanliku", "Obubra", "Obudu", "Odukpani", "Ogoja", "Yakuur", "Yala"],
+                    "Delta": ["Aniocha North", "Aniocha South", "Bomadi", "Burutu", "Ethiope East", "Ethiope West", "Ika North East", "Ika South", "Isoko North", "Isoko South", "Ndokwa East", "Ndokwa West", "Okpe", "Oshimili North", "Oshimili South", "Patani", "Sapele", "Udu", "Ughelli North", "Ughelli South", "Ukwuani", "Uvwie", "Warri North", "Warri South", "Warri South West"],
+                    "Ebonyi": ["Abakaliki", "Afikpo North", "Afikpo South", "Ebonyi", "Ezza North", "Ezza South", "Ikwo", "Ishielu", "Ivo", "Izzi", "Ohaozara", "Ohaukwu", "Onicha"],
+                    "Edo": ["Akoko-Edo", "Egor", "Esan Central", "Esan North-East", "Esan South-East", "Esan West", "Etsako Central", "Etsako East", "Etsako West", "Igueben", "Ikpoba Okha", "Orhionmwon", "Oredo", "Ovia North-East", "Ovia South-West", "Owan East", "Owan West", "Uhunmwonde"],
+                    "Ekiti": ["Ado Ekiti", "Efon", "Ekiti East", "Ekiti South-West", "Ekiti West", "Emure", "Gbonyin", "Ido Osi", "Ijero", "Ikere", "Ikole", "Ilejemeje", "Irepodun/Ifelodun", "Ise/Orun", "Moba", "Oye"],
+                    "Enugu": ["Aninri", "Awgu", "Enugu East", "Enugu North", "Enugu South", "Ezeagu", "Igbo Etiti", "Igbo Eze North", "Igbo Eze South", "Isi Uzo", "Nkanu East", "Nkanu West", "Nsukka", "Oji River", "Udenu", "Udi", "Uzo Uwani"],
+                    "FCT": ["Abaji", "Bwari", "Gwagwalada", "Kuje", "Kwali", "Municipal Area Council"],
+                    "Gombe": ["Akko", "Balanga", "Billiri", "Dukku", "Funakaye", "Gombe", "Kaltungo", "Kwami", "Nafada", "Shongom", "Yamaltu/Deba"],
+                    "Imo": ["Aboh Mbaise", "Ahiazu Mbaise", "Ehime Mbano", "Ezinihitte", "Ideato North", "Ideato South", "Ihitte/Uboma", "Ikeduru", "Isiala Mbano", "Isu", "Mbaitoli", "Ngor Okpala", "Njaba", "Nkwerre", "Nwangele", "Obowo", "Oguta", "Ohaji/Egbema", "Okigwe", "Orlu", "Orsu", "Oru East", "Oru West", "Owerri Municipal", "Owerri North", "Owerri West", "Unuimo"],
+                    "Jigawa": ["Auyo", "Babura", "Biriniwa", "Birnin Kudu", "Buji", "Dutse", "Gagarawa", "Garki", "Gumel", "Guri", "Gwaram", "Gwiwa", "Hadejia", "Jahun", "Kafin Hausa", "Kazaure", "Kiri Kasama", "Kiyawa", "Kaugama", "Maigatari", "Malam Madori", "Miga", "Ringim", "Roni", "Sule Tankarkar", "Taura", "Yankwashi"],
+                    "Kaduna": ["Birnin Gwari", "Chikun", "Giwa", "Igabi", "Ikara", "Jaba", "Jema'a", "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru", "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"],
+                    "Kano": ["Ajingi", "Albasu", "Bagwai", "Bebeji", "Bichi", "Bunkure", "Dala", "Dambatta", "Dawakin Kudu", "Dawakin Tofa", "Doguwa", "Fagge", "Gabasawa", "Garko", "Garun Mallam", "Gaya", "Gezawa", "Gwale", "Gwarzo", "Kabo", "Kano Municipal", "Karaye", "Kibiya", "Kiru", "Kumbotso", "Kunchi", "Kura", "Madobi", "Makoda", "Minjibir", "Nasarawa", "Rano", "Rimin Gado", "Rogo", "Shanono", "Sumaila", "Takai", "Tarauni", "Tofa", "Tsanyawa", "Tudun Wada", "Ungogo", "Warawa", "Wudil"],
+                    "Katsina": ["Bakori", "Batagarawa", "Batsari", "Baure", "Bindawa", "Charanchi", "Dandume", "Danja", "Dan Musa", "Daura", "Dutsi", "Dutsin Ma", "Faskari", "Funtua", "Ingawa", "Jibia", "Kafur", "Kaita", "Kankara", "Kankia", "Katsina", "Kurfi", "Kusada", "Mai'Adua", "Malumfashi", "Mani", "Mashi", "Matazu", "Musawa", "Rimi", "Sabuwa", "Safana", "Sandamu", "Zango"],
+                    "Kebbi": ["Aleiro", "Arewa Dandi", "Argungu", "Augie", "Bagudo", "Birnin Kebbi", "Bunza", "Dandi", "Fakai", "Gwandu", "Jega", "Kalgo", "Koko/Besse", "Maiyama", "Ngaski", "Sakaba", "Shanga", "Suru", "Wasagu/Danko", "Yauri", "Zuru"],
+                    "Kogi": ["Adavi", "Ajaokuta", "Ankpa", "Bassa", "Dekina", "Ibaji", "Idah", "Igalamela Odolu", "Ijumu", "Kabba/Bunu", "Kogi", "Lokoja", "Mopa Muro", "Ofu", "Ogori/Magongo", "Okehi", "Okene", "Olamaboro", "Omala", "Yagba East", "Yagba West"],
+                    "Kwara": ["Asa", "Baruten", "Edu", "Ekiti", "Ifelodun", "Ilorin East", "Ilorin South", "Ilorin West", "Irepodun", "Isin", "Kaiama", "Moro", "Offa", "Oke Ero", "Oyun", "Pategi"],
+                    "Lagos": ["Agege", "Ajeromi-Ifelodun", "Alimosho", "Amuwo-Odofin", "Apapa", "Badagry", "Epe", "Eti Osa", "Ibeju-Lekki", "Ifako-Ijaiye", "Ikeja", "Ikorodu", "Kosofe", "Lagos Island", "Lagos Mainland", "Mushin", "Ojo", "Oshodi-Isolo", "Shomolu", "Surulere"],
+                    "Nasarawa": ["Akwanga", "Awe", "Doma", "Karu", "Keana", "Keffi", "Kokona", "Lafia", "Nasarawa", "Nasarawa Egon", "Obi", "Toto", "Wamba"],
+                    "Niger": ["Agaie", "Agwara", "Bida", "Borgu", "Bosso", "Chanchaga", "Edati", "Gbako", "Gurara", "Katcha", "Kontagora", "Lapai", "Lavun", "Magama", "Mariga", "Mashegu", "Mokwa", "Moya", "Paikoro", "Rafi", "Rijau", "Shiroro", "Suleja", "Tafa", "Wushishi"],
+                    "Ogun": ["Abeokuta North", "Abeokuta South", "Ado-Odo/Ota", "Egbado North", "Egbado South", "Ewekoro", "Ifo", "Ijebu East", "Ijebu North", "Ijebu North East", "Ijebu Ode", "Ikenne", "Imeko Afon", "Ipokia", "Obafemi Owode", "Odeda", "Odogbolu", "Ogun Waterside", "Remo North", "Shagamu", "Yewa North", "Yewa South"],
+                    "Ondo": ["Akoko North-East", "Akoko North-West", "Akoko South-East", "Akoko South-West", "Akure North", "Akure South", "Ese Odo", "Idanre", "Ifedore", "Ilaje", "Ile Oluji/Okeigbo", "Irele", "Odigbo", "Okitipupa", "Ondo East", "Ondo West", "Ose", "Owo"],
+                    "Osun": ["Aiyedade", "Aiyedire", "Atakunmosa East", "Atakunmosa West", "Boluwaduro", "Boripe", "Ede North", "Ede South", "Egbedore", "Ejigbo", "Ife Central", "Ife East", "Ife North", "Ife South", "Ifedayo", "Ila", "Ilesa East", "Ilesa West", "Irepodun", "Irewole", "Isokan", "Iwo", "Obokun", "Odo Otin", "Ola Oluwa", "Olorunda", "Oriade", "Orolu", "Osogbo"],
+                    "Oyo": ["Afijio", "Akinyele", "Atiba", "Atisbo", "Egbeda", "Ibadan North", "Ibadan North-East", "Ibadan North-West", "Ibadan South-East", "Ibadan South-West", "Ibarapa Central", "Ibarapa East", "Ibarapa North", "Ido", "Irepo", "Iseyin", "Itesiwaju", "Iwajowa", "Kajola", "Lagelu", "Ogbomosho North", "Ogbomosho South", "Ogo Oluwa", "Olorunsogo", "Oluyole", "Ona Ara", "Orelope", "Ori Ire", "Oyo East", "Oyo West", "Saki East", "Saki West", "Surulere"],
+                    "Plateau": ["Barkin Ladi", "Bassa", "Bokkos", "Jos East", "Jos North", "Jos South", "Kanam", "Kanke", "Langtang North", "Langtang South", "Mangu", "Mikang", "Pankshin", "Qua'an Pan", "Riyom", "Shendam", "Wase"],
+                    "Rivers": ["Abua/Odual", "Ahoada East", "Ahoada West", "Akuku-Toru", "Andoni", "Asari-Toru", "Bonny", "Degema", "Eleme", "Emuoha", "Etche", "Gokana", "Ikwerre", "Khana", "Obio/Akpor", "Ogba/Egbema/Ndoni", "Ogu/Bolo", "Okrika", "Omuma", "Opobo/Nkoro", "Oyigbo", "Port Harcourt", "Tai"],
+                    "Sokoto": ["Binji", "Bodinga", "Dange Shuni", "Gada", "Goronyo", "Gudu", "Gwadabawa", "Illela", "Isa", "Kebbe", "Kware", "Rabah", "Sabon Birni", "Shagari", "Silame", "Sokoto North", "Sokoto South", "Tambuwal", "Tangaza", "Tureta", "Wamako", "Wurno", "Yabo"],
+                    "Taraba": ["Ardo Kola", "Bali", "Donga", "Gashaka", "Gassol", "Ibi", "Jalingo", "Karim Lamido", "Kurmi", "Lau", "Sardauna", "Takum", "Ussa", "Wukari", "Yorro", "Zing"],
+                    "Yobe": ["Bade", "Bursari", "Damaturu", "Fika", "Fune", "Geidam", "Gujba", "Gulani", "Jakusko", "Karasuwa", "Machina", "Nangere", "Nguru", "Potiskum", "Tarmuwa", "Yunusari", "Yusufari"],
+                    "Zamfara": ["Anka", "Bakura", "Birnin Magaji/Kiyaw", "Bukkuyum", "Bungudu", "Gummi", "Gusau", "Kaura Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Chafe", "Zurmi"]
+                };
+
+                const stateOriginSelect    = document.getElementById('studentModalStateOfOrigin');
+                const lgaOriginSelect      = document.getElementById('studentModalLocalGovernment');
+                const stateResidenceSelect = document.getElementById('studentModalResidentialState');
+                const lgaResidenceSelect   = document.getElementById('studentModalResidentialLGA');
+
+                function populateStates() {
+                    const sortedStates = Object.keys(nigerianStates).sort();
+                    sortedStates.forEach(function (state) {
+                        if (stateOriginSelect) {
+                            const opt1 = document.createElement('option');
+                            opt1.value = state;
+                            opt1.textContent = state;
+                            stateOriginSelect.appendChild(opt1);
+                        }
+                        if (stateResidenceSelect) {
+                            const opt2 = document.createElement('option');
+                            opt2.value = state;
+                            opt2.textContent = state;
+                            stateResidenceSelect.appendChild(opt2);
+                        }
+                    });
+                }
+
+                function updateLgas(stateSelect, lgaSelect) {
+                    if (!stateSelect || !lgaSelect) return;
+                    while (lgaSelect.options.length > 1) {
+                        lgaSelect.remove(1);
+                    }
+                    const state = stateSelect.value;
+                    if (state && nigerianStates[state]) {
+                        nigerianStates[state].slice().sort().forEach(function (lga) {
+                            const opt = document.createElement('option');
+                            opt.value = lga;
+                            opt.textContent = lga;
+                            lgaSelect.appendChild(opt);
+                        });
+                    }
+                }
+
+                if (stateOriginSelect) {
+                    stateOriginSelect.addEventListener('change', function () {
+                        updateLgas(stateOriginSelect, lgaOriginSelect);
+                    });
+                }
+                if (stateResidenceSelect) {
+                    stateResidenceSelect.addEventListener('change', function () {
+                        updateLgas(stateResidenceSelect, lgaResidenceSelect);
+                    });
+                }
+                populateStates();
+
+                /* ---------- Class → department hint ---------- */
+                const classSelect = document.getElementById('studentModalClassSelect');
+                const deptDisplay = document.getElementById('studentModalDepartmentDisplay');
+
+                function refreshDepartmentHint() {
+                    if (!classSelect || !deptDisplay) return;
+                    const opt = classSelect.options[classSelect.selectedIndex];
+                    const dept = opt ? opt.getAttribute('data-department') : '';
+                    deptDisplay.textContent = dept ? ('Department: ' + dept) : '';
+                }
+
+                if (classSelect) {
+                    classSelect.addEventListener('change', refreshDepartmentHint);
+                }
+
+                /* ---------- Parent typeahead search ---------- */
+                const searchInput = document.getElementById('studentModalParentSearch');
+                const resultsDiv  = document.getElementById('studentModalParentResults');
+                const loadingDiv  = document.getElementById('studentModalParentLoading');
+                let debounceTimer;
+
+                function hideResults() {
+                    if (resultsDiv) {
+                        resultsDiv.style.display = 'none';
+                        resultsDiv.innerHTML = '';
+                    }
+                }
+
+                function selectParent(id, name, email, phone) {
+                    const idInput     = document.getElementById('studentModalExistingParentId');
+                    const badgeDisplay = document.getElementById('studentModalSelectedParentDisplay');
+
+                    if (idInput) idInput.value = id;
+                    if (badgeDisplay) {
+                        const span = badgeDisplay.querySelector('.selected-info span');
+                        if (span) span.textContent = name + ' (' + (email || phone || 'Selected') + ')';
+                        badgeDisplay.style.display = 'flex';
+                    }
+                    if (searchInput) searchInput.value = name;
+                    hideResults();
+                }
+
+                function clearParentSelection() {
+                    const idInput      = document.getElementById('studentModalExistingParentId');
+                    const badgeDisplay = document.getElementById('studentModalSelectedParentDisplay');
+
+                    if (idInput) idInput.value = '';
+                    if (badgeDisplay) badgeDisplay.style.display = 'none';
+                    if (searchInput) searchInput.value = '';
+                    hideResults();
+                }
+
+                /* Expose for inline handlers (kept for backwards compatibility) */
+                window.clearStudentModalParentSelection = clearParentSelection;
+                window.selectStudentModalParent = selectParent;
+
+                /* Bind the "Clear" / "Remove" buttons the safe way */
+                const clearBtn = document.getElementById('studentModalClearSearchBtn');
+                if (clearBtn) clearBtn.addEventListener('click', clearParentSelection);
+
+                document.querySelectorAll('.js-clear-parent').forEach(function (btn) {
+                    btn.addEventListener('click', clearParentSelection);
+                });
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', function () {
+                        clearTimeout(debounceTimer);
+                        const query = this.value.trim();
+
+                        if (query.length < 2) {
+                            hideResults();
+                            return;
+                        }
+
+                        debounceTimer = setTimeout(function () {
+                            if (loadingDiv) loadingDiv.style.display = 'inline-block';
+
+                            fetch('/api/search-parents?search=' + encodeURIComponent(query))
+                                .then(function (res) { return res.json(); })
+                                .then(function (data) {
+                                    if (loadingDiv) loadingDiv.style.display = 'none';
+                                    if (!resultsDiv) return;
+
+                                    if (data.success && data.results && data.results.length > 0) {
+                                        let html = '';
+                                        data.results.forEach(function (parent) {
+                                            const fullName = ((parent.first_name || '') + ' ' + (parent.last_name || '')).trim();
+                                            html += ''
+                                                + '<div class="search-result-item p-2 border-bottom" '
+                                                +      'data-id="' + parent.id + '" '
+                                                +      'data-name="' + fullName.replace(/"/g, '&quot;') + '" '
+                                                +      'data-email="' + (parent.email || '') + '" '
+                                                +      'data-phone="' + (parent.phone || '') + '">'
+                                                +   '<div class="d-flex justify-content-between align-items-center">'
+                                                +     '<div>'
+                                                +       '<strong class="text-dark">' + fullName + '</strong>'
+                                                +       '<div class="small text-muted">' + (parent.email || '') + ' | ' + (parent.phone || 'No phone') + '</div>'
+                                                +     '</div>'
+                                                +     '<button type="button" class="btn btn-sm btn-outline-primary select-parent-btn">Select</button>'
+                                                +   '</div>'
+                                                + '</div>';
+                                        });
+                                        resultsDiv.innerHTML = html;
+                                        resultsDiv.style.display = 'block';
+
+                                        resultsDiv.querySelectorAll('.search-result-item').forEach(function (item) {
+                                            item.addEventListener('click', function () {
+                                                selectParent(this.dataset.id, this.dataset.name, this.dataset.email, this.dataset.phone);
+                                            });
+                                        });
+                                    } else {
+                                        resultsDiv.innerHTML = '<div class="p-3 text-center text-muted small">No parents found. Switch to "Register New Parent" tab to create one.</div>';
+                                        resultsDiv.style.display = 'block';
+                                    }
+                                })
+                                .catch(function () {
+                                    if (loadingDiv) loadingDiv.style.display = 'none';
+                                    if (resultsDiv) {
+                                        resultsDiv.innerHTML = '<div class="p-3 text-center text-danger small">Error searching parents.</div>';
+                                        resultsDiv.style.display = 'block';
+                                    }
+                                });
+                        }, 300);
+                    });
+
+                    /* Close the dropdown when clicking outside the pane */
+                    document.addEventListener('click', function (e) {
+                        if (resultsDiv && !e.target.closest('#studentModalExistingParentPane')) {
+                            resultsDiv.style.display = 'none';
+                        }
+                    });
+                }
+
+                /* ---------- Password generator ---------- */
+                function generateParentPassword() {
+                    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                    let pass = '';
+                    for (let i = 0; i < 10; i++) {
+                        pass += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    const pwdInput = document.getElementById('studentModalParentPassword');
+                    if (pwdInput) pwdInput.value = pass;
+                }
+
+                window.generateStudentModalParentPassword = generateParentPassword;
+                const genBtn = document.getElementById('studentModalGeneratePasswordBtn');
+                if (genBtn) genBtn.addEventListener('click', generateParentPassword);
+
+                /* ---------- Tab switching clears the opposite selection ---------- */
+                const existingTab = document.getElementById('student-modal-existing-tab');
+                const newTab      = document.getElementById('student-modal-new-tab');
+
+                if (existingTab) {
+                    existingTab.addEventListener('shown.bs.tab', function () {
+                        /* Switching to "link existing" → clear the new-parent form */
+                        const pane = document.getElementById('studentModalNewParentPane');
+                        if (pane) {
+                            pane.querySelectorAll('input, select, textarea').forEach(function (el) {
+                                if (el.type === 'checkbox') {
+                                    el.checked = el.id === 'studentModalSetAsPrimary';
+                                } else if (el.id === 'studentModalParentPassword') {
+                                    el.value = 'password123';
+                                } else if (el.tagName === 'SELECT') {
+                                    el.selectedIndex = 0;
+                                } else {
+                                    el.value = '';
+                                }
+                            });
+                        }
+                    });
+                }
+
+                if (newTab) {
+                    newTab.addEventListener('shown.bs.tab', function () {
+                        /* Switching to "register new" → clear the linked parent */
+                        clearParentSelection();
+                    });
+                }
+
+                /* ---------- Modal submit validation ---------- */
+                const studentModalForm = document.getElementById('addStudentModalForm');
+                if (studentModalForm) {
+                    studentModalForm.addEventListener('submit', function (e) {
+                        const isNewTabActive = newTab && newTab.classList.contains('active');
+                        const existingIdInput = document.getElementById('studentModalExistingParentId');
+                        const existingId = existingIdInput ? existingIdInput.value : '';
+
+                        if (isNewTabActive) {
+                            const pFirst = (document.getElementById('studentModalParentFirstName') || {}).value || '';
+                            const pLast  = (document.getElementById('studentModalParentLastName')  || {}).value || '';
+                            const pEmail = (document.getElementById('studentModalParentEmail')   || {}).value || '';
+                            const pPhone = (document.getElementById('studentModalParentPhone')   || {}).value || '';
+
+                            const anyFilled = pFirst.trim() || pLast.trim() || pEmail.trim() || pPhone.trim();
+
+                            if (anyFilled) {
+                                if (!pFirst.trim() || !pLast.trim() || !pEmail.trim() || !pPhone.trim()) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    alert('Please fill in all required parent details (First Name, Last Name, Email and Phone), or switch to "Link Existing Parent".');
+                                    return false;
+                                }
+                            }
+                        } else {
+                            /* Existing-parent tab: if nothing selected and nothing typed, that's fine (no parent linked) */
+                            if (!existingId) {
+                                /* optional: warn the user, but allow submission */
+                            }
+                        }
+                        return true;
+                    });
+                }
+
+                /* ---------- Reset modal state when it closes ---------- */
+                const modalEl = document.getElementById('addStudentModal');
+                if (modalEl) {
+                    modalEl.addEventListener('hidden.bs.modal', function () {
+                        if (studentModalForm) studentModalForm.reset();
+
+                        clearParentSelection();
+                        hideResults();
+
+                        /* Reset state/LGA dropdowns */
+                        if (stateOriginSelect) stateOriginSelect.value = '';
+                        if (stateResidenceSelect) stateResidenceSelect.value = '';
+                        if (lgaOriginSelect) {
+                            while (lgaOriginSelect.options.length > 1) lgaOriginSelect.remove(1);
+                            lgaOriginSelect.selectedIndex = 0;
+                        }
+                        if (lgaResidenceSelect) {
+                            while (lgaResidenceSelect.options.length > 1) lgaResidenceSelect.remove(1);
+                            lgaResidenceSelect.selectedIndex = 0;
+                        }
+
+                        /* Reset the password field to its default */
+                        const pwdInput = document.getElementById('studentModalParentPassword');
+                        if (pwdInput) pwdInput.value = 'password123';
+
+                        /* Return to the "Link Existing Parent" tab */
+                        if (existingTab && window.bootstrap && bootstrap.Tab) {
+                            bootstrap.Tab.getOrCreateInstance(existingTab).show();
+                        }
+
+                        refreshDepartmentHint();
+                    });
+
+                    /* Ensure the department hint reflects the current class on open */
+                    modalEl.addEventListener('shown.bs.modal', function () {
+                        refreshDepartmentHint();
+                    });
+                }
+
+                /* Make sure the table checkbox header toggles all row checkboxes */
+                const checkAll = document.getElementById('customCheck1');
+                if (checkAll) {
+                    checkAll.addEventListener('change', function () {
+                        document.querySelectorAll('#products-datatable tbody .form-check-input').forEach(function (cb) {
+                            cb.checked = checkAll.checked;
+                        });
+                    });
+                }
+            });
+        </script>
+    </body>
+</html>

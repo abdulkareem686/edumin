@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Term - School Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #4e54c8;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ef 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px 0;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
+        }
+        
+        .page-title {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .page-subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: white;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-select {
+            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5809b5 0%, #1c64e0 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.4);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .option-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-box {
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .info-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-text {
+            color: #64748b;
+            margin-bottom: 0;
+        }
+        
+        .academic-icon {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .page-header {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <!-- Page Header -->
+                <div class="page-header text-center">
+                    <h1 class="page-title"><i class="fas fa-calendar-alt me-2"></i>Select Academic Term</h1>
+                    <p class="page-subtitle">Choose an academic year and term to view student records</p>
+                </div>
+
+                <% if (error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong><i class="fas fa-exclamation-circle me-2"></i>Error:</strong> <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+
+                <!-- Selection Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Selection Criteria</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/student-records/<%= studentId %>" method="GET">
+                            <div class="row">
+                                <div class="col-md-6 option-group">
+                                    <div class="academic-icon">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <label for="academicYear" class="form-label">Academic Year</label>
+                                    <select class="form-select" id="academicYear" name="academicYear" required>
+                                        <option value="">Select Academic Year</option>
+                                        <% academicYears.forEach(year => { %>
+                                            <option value="<%= year.year_name %>"><%= year.year_name %></option>
+                                        <% }); %>
+                                    </select>
+                                    <div class="form-text">Select the academic year for the records</div>
+                                </div>
+                                
+                                <div class="col-md-6 option-group">
+                                    <div class="academic-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <label for="term" class="form-label">Term</label>
+                                    <select class="form-select" id="term" name="term" required>
+                                        <option value="">Select Term</option>
+                                        <% terms.forEach(term => { %>
+                                            <option value="<%= term.term_name %>"><%= term.term_name %></option>
+                                        <% }); %>
+                                        <option value="session">Session Summary</option>
+                                    </select>
+                                    <div class="form-text">Select a term or view session summary</div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i> View Records
+                            </button>
+                        </form>
+                        
+                        <!-- Information Box -->
+                        <div class="info-box">
+                            <h6 class="info-title"><i class="fas fa-info-circle me-2"></i>Information</h6>
+                            <p class="info-text">
+                                Select an academic year and term to view the student's academic records. 
+                                Choose "Session Summary" to view an overview of all terms in the selected academic year.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Add animation to form elements
+            $('.form-select').focus(function() {
+                $(this).parent().css('transform', 'translateY(-5px)');
+                $(this).parent().css('transition', 'all 0.3s ease');
+            });
+            
+            $('.form-select').blur(function() {
+                $(this).parent().css('transform', 'translateY(0)');
+            });
+            
+            // Add confirmation before submitting if session is selected
+            $('#term').change(function() {
+                if ($(this).val() === 'session') {
+                    $(this).css('border-left', '4px solid #6a11cb');
+                } else {
+                    $(this).css('border-left', '2px solid #e2e8f0');
+                }
+            });
+            
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').alert('close');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

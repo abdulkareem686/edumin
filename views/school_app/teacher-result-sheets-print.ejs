@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Result Sheet - <%= subjectInfo ? subjectInfo.name : '' %> - <%= classInfo ? classInfo.className : '' %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @media print {
+            body { margin: 0; padding: 0; }
+            .no-print { display: none; }
+            .page-break { page-break-before: always; }
+            .result-table { border-collapse: collapse; width: 100%; }
+            .result-table th, .result-table td { border: 1px solid #ddd; padding: 8px; }
+            .result-table th { background-color: #f2f2f2; text-align: center; }
+            .grade-A { background-color: #10b981; color: white; }
+            .grade-B { background-color: #34d399; color: white; }
+            .grade-C { background-color: #fbbf24; color: black; }
+            .grade-D { background-color: #f59e0b; color: white; }
+            .grade-E { background-color: #f97316; color: white; }
+            .grade-F { background-color: #ef4444; color: white; }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .school-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .school-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .school-address {
+            font-size: 12px;
+            color: #666;
+        }
+        .result-title {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .result-title h4 {
+            margin: 5px 0;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .result-table th, .result-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .result-table th {
+            background-color: #f2f2f2;
+            text-align: center;
+            font-weight: bold;
+        }
+        .result-table td {
+            text-align: center;
+        }
+        .grade-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .grade-A { background-color: #10b981; color: white; }
+        .grade-B { background-color: #34d399; color: white; }
+        .grade-C { background-color: #fbbf24; color: black; }
+        .grade-D { background-color: #f59e0b; color: white; }
+        .grade-E { background-color: #f97316; color: white; }
+        .grade-F { background-color: #ef4444; color: white; }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+        }
+        .signature {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-line {
+            width: 200px;
+            text-align: center;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print" style="text-align: center; margin-bottom: 20px;">
+        <button onclick="window.print()" class="btn btn-primary">Print Result Sheet</button>
+        <button onclick="window.close()" class="btn btn-secondary">Close</button>
+    </div>
+    
+    <div class="school-header">
+        <div class="school-name"><%= school ? school.name : 'Excel College' %></div>
+        <div class="school-address"><%= school ? school.address : '12 Education Road, Lagos, Nigeria' %></div>
+        <div class="school-address"><%= school ? school.email + ' | ' + school.phone : 'info@excelcollege.edu.ng | +234 812 345 6789' %></div>
+    </div>
+    
+    <div class="result-title">
+        <h4>RESULT SHEET</h4>
+        <h5><%= subjectInfo ? subjectInfo.name : '' %> (<%= subjectInfo ? subjectInfo.subject_code : '' %>)</h5>
+        <h5>Class: <%= classInfo ? classInfo.className : '' %> | Term: <%= term %> | Academic Year: <%= academicYear %></h5>
+    </div>
+    
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th>S/N</th>
+                <th>Admission No.</th>
+                <th>Student Name</th>
+                <th>Gender</th>
+                <th>Test (40)</th>
+                <th>Exam (60)</th>
+                <th>Total (100)</th>
+                <th>Grade</th>
+                <th>Position</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(var i = 0; i < students.length; i++) { 
+                var student = students[i]; 
+                var totalScore = student.totalScore || 0;
+                var grade = getGrade(totalScore);
+                var gradeClass = getGradeClass(grade);
+            %>
+            <tr>
+                <td><%= i + 1 %></td>
+                <td><%= student.admission_number || 'N/A' %></td>
+                <td style="text-align: left;"><%= student.fullName %></td>
+                <td><%= student.gender || 'N/A' %></td>
+                <td><%= student.test_score || 0 %></td>
+                <td><%= student.exam_score || 0 %></td>
+                <td><strong><%= totalScore.toFixed(1) %></strong></td>
+                <td><span class="grade-badge <%= gradeClass %>"><%= grade %></span></td>
+                <td><%= student.rank %><%= student.rank === 1 ? 'st' : student.rank === 2 ? 'nd' : student.rank === 3 ? 'rd' : 'th' %></td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+    
+    <div class="signature">
+        <div class="signature-line">
+            Class Teacher's Signature
+        </div>
+        <div class="signature-line">
+            Principal's Signature
+        </div>
+        <div class="signature-line">
+            Parent's Signature
+        </div>
+    </div>
+    
+    <div class="footer">
+        Generated on: <%= moment().format('MMMM D, YYYY h:mm A') %> | www.edusuite.com
+    </div>
+    
+    <script>
+        window.onload = function() {
+            // Auto-print option (uncomment if needed)
+            // setTimeout(function() { window.print(); }, 1000);
+        }
+    </script>
+</body>
+</html>

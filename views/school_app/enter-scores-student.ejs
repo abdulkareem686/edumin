@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Score Entry - <%= studentFirstName %> <%= studentLastName %> | EduSuite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+    <!-- third party css -->
+    <link href="/assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
+    
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        /* ===== GLOBAL STYLES ===== */
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 0.5rem;
+            background-color: #f8f9fa;
+        }
+        .form-section-title {
+            color: #3b5de7;
+            border-bottom: 2px solid #3b5de7;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .option-icon {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3b5de7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .quick-action-btn {
+            flex: 1;
+            background: #f8f9fa;
+            border: 1px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .quick-action-btn:hover {
+            background: #e9ecef;
+            border-color: #3b5de7;
+        }
+        .quick-action-icon {
+            font-size: 1.5rem;
+            color: #3b5de7;
+            margin-bottom: 0.5rem;
+        }
+        .form-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* ===== SCORE ENTRY SPECIFIC STYLES ===== */
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #eef2f8;
+        }
+        .page-title {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .page-subtitle {
+            color: #5f6c80;
+        }
+        .student-info-banner {
+            background: white;
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #eef2f8;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .alert-info-clean {
+            background-color: #f8fafc;
+            border-left: 3px solid #3b5de7;
+            color: #1e2a3e;
+            border-radius: 10px;
+            border: 1px solid #e9edf2;
+        }
+        .score-card {
+            border-radius: 12px;
+            border: 1px solid #eef2f8;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            margin-bottom: 30px;
+        }
+        .score-card .card-header {
+            background: white;
+            border-bottom: 1px solid #edf2f9;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .score-table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 900px;
+        }
+        .score-table thead th {
+            background: #f8fafd;
+            color: #1e2a3e;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 1rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .score-table tbody td {
+            padding: 1rem 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf2f7;
+            color: #1e2a3e;
+            font-weight: 500;
+            transition: background 0.2s ease;
+            text-align: center;
+        }
+        .score-table tbody tr:hover td {
+            background-color: #fafbff;
+        }
+        .subject-name {
+            font-weight: 600;
+            color: #3b5de7;
+            text-align: left !important;
+        }
+        .score-input {
+            width: 90px;
+            border-radius: 8px;
+            border: 1px solid #dce3ec;
+            padding: 0.45rem 0.6rem;
+            text-align: center;
+            font-weight: 500;
+            background: #fff;
+            transition: 0.2s;
+        }
+        .score-input:focus {
+            border-color: #3b5de7;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59,93,231,0.1);
+        }
+        .score-input.is-invalid {
+            border-color: #e74c3c;
+            background-color: #fff6f5;
+        }
+        .total-score {
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 8px;
+            display: inline-block;
+            min-width: 65px;
+            text-align: center;
+            background: #f1f5f9;
+        }
+        .grade-badge {
+            background: #f1f5f9;
+            border-radius: 30px;
+            padding: 0.25rem 0.85rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2c3e66;
+            display: inline-block;
+            text-align: center;
+            min-width: 65px;
+        }
+        .grade-A { background: #10b981; color: white; }
+        .grade-B { background: #34d399; color: white; }
+        .grade-C { background: #fbbf24; color: #1e293b; }
+        .grade-D { background: #f59e0b; color: white; }
+        .grade-E { background: #f97316; color: white; }
+        .grade-F { background: #ef4444; color: white; }
+        .btn-save-score {
+            background: #10b981;
+            border: none;
+            border-radius: 30px;
+            padding: 0.3rem 1.2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-save-score:hover {
+            background: #059669;
+        }
+        .btn-submit-all {
+            background: #3b5de7;
+            border: none;
+            border-radius: 30px;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: white;
+        }
+        .btn-submit-all:hover {
+            background: #2c4ed0;
+        }
+        .class-badge {
+            background: #eef2ff;
+            border-radius: 30px;
+            padding: 0.25rem 0.9rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .save-indicator {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            display: none;
+            z-index: 1000;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .score-range-hint {
+            font-size: 0.7rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+        @media (max-width: 768px) {
+            .page-header { padding: 1rem; }
+            .score-input { width: 70px; font-size: 0.8rem; }
+            .btn-save-score { padding: 0.2rem 0.8rem; }
+        }
+        .footer {
+            background: white;
+            border-top: 1px solid #edf2f9;
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/app-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/app-navbar') %>
+                <!-- end Topbar -->
+                
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title">
+                                    <i class="mdi mdi-clipboard-list me-2"></i>Enter Student Scores
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Page Header -->
+                    <div class="page-header d-flex flex-wrap justify-content-between align-items-center">
+                        <div>
+                            <h4 class="page-title mb-1"><i class="bi bi-pencil-square me-2"></i>Score Entry Editor</h4>
+                            <p class="page-subtitle mb-0">Enter test (0-40) and exam (0-60) scores for selected student</p>
+                        </div>
+                        <div class="mt-2 mt-sm-0">
+                            <a href="/enter-scores?classId=<%= classId %>&term=<%= term %>&academicYear=<%= academicYear %>" class="btn btn-outline-secondary rounded-pill shadow-sm btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i> Back to Student List
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Academic Info Banner -->
+                    <div class="alert alert-info-clean mb-4 shadow-sm">
+                        <div class="row align-items-center">
+                            <div class="col-md-4"><strong><i class="bi bi-building"></i> Class:</strong> <%= className || 'N/A' %></div>
+                            <div class="col-md-4"><strong><i class="bi bi-diagram-3"></i> Level:</strong> <%= typeof classLevel !== 'undefined' ? classLevel : 'N/A' %></div>
+                            <% if (typeof classDepartment !== 'undefined' && classDepartment) { %>
+                            <div class="col-md-4"><strong><i class="bi bi-tag"></i> Department:</strong> <%= classDepartment %></div>
+                            <% } %>
+                            <div class="col-md-4"><strong><i class="bi bi-calendar"></i> <%= termName %> - <%= yearName %></strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Student Details Card -->
+                    <div class="student-info-banner">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-light rounded-circle p-2">
+                                <i class="bi bi-person-circle fs-2 text-primary"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-semibold">
+                                    <%= studentFirstName %> 
+                                    <%= typeof studentMiddleName !== 'undefined' && studentMiddleName ? studentMiddleName + ' ' : '' %> 
+                                    <%= studentLastName %>
+                                </h5>
+                                <div class="text-muted small">
+                                    Admission: <%= admissionNumber %> | Student ID: <%= studentId %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 mt-sm-0">
+                            <span class="class-badge"><i class="bi bi-mortarboard"></i> <%= className %></span>
+                            <span class="class-badge ms-2"><i class="bi bi-bookmark-check"></i> <%= termName %></span>
+                        </div>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show"><%= success %><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+                    <% } %>
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show"><%= error %><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+                    <% } %>
+
+                    <!-- Score Entry Table -->
+                    <div class="card score-card">
+                        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-table me-2 text-primary"></i> <strong>Examination Scores</strong>
+                                <span class="badge bg-light text-dark ms-2 border"><%= subjects ? subjects.length : 0 %> Subjects</span>
+                            </div>
+                            <div>
+                                <button type="button" id="saveAllScoresBtn" class="btn-submit-all shadow-sm">
+                                    <i class="bi bi-save2 me-1"></i> Save All Changes
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0 score-table-container">
+                            <table class="score-table" id="scoresEditorTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Subject Name</th>
+                                        <th>Code</th>
+                                        <th>Test Score (0-40)</th>
+                                        <th>Exam Score (0-60)</th>
+                                        <th>Total (100)</th>
+                                        <th>Grade</th>
+                                        <th style="width: 90px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scoresTableBody">
+                                    <% if (subjects && subjects.length > 0) { 
+                                        subjects.forEach((subject, index) => { 
+                                            const testScore = parseFloat(subject.test_score) || 0;
+                                            const examScore = parseFloat(subject.exam_score) || 0;
+                                            const totalScore = testScore + examScore;
+                                            
+                                            let grade = 'F';
+                                            let gradeClass = 'grade-F';
+                                            if (totalScore >= 80) { 
+                                                grade = 'A'; 
+                                                gradeClass = 'grade-A'; 
+                                            } else if (totalScore >= 70) { 
+                                                grade = 'B'; 
+                                                gradeClass = 'grade-B'; 
+                                            } else if (totalScore >= 60) { 
+                                                grade = 'C'; 
+                                                gradeClass = 'grade-C'; 
+                                            } else if (totalScore >= 50) { 
+                                                grade = 'D'; 
+                                                gradeClass = 'grade-D'; 
+                                            } else if (totalScore >= 40) { 
+                                                grade = 'E'; 
+                                                gradeClass = 'grade-E'; 
+                                            }
+                                    %>
+                                    <tr data-subject-id="<%= subject.id %>">
+                                        <td class="text-center"><%= index + 1 %></td>
+                                        <td class="subject-name">
+                                            <i class="bi bi-journal-bookmark-fill me-1"></i> <%= subject.name %>
+                                        </td>
+                                        <td class="text-center"><%= subject.subject_code || 'N/A' %></td>
+                                        <td class="text-center">
+                                            <input type="number" class="score-input test-score-input" 
+                                                   data-subject-id="<%= subject.id %>" 
+                                                   data-type="test"
+                                                   data-max="40" 
+                                                   value="<%= testScore %>" 
+                                                   step="0.5" 
+                                                   min="0" 
+                                                   max="40" 
+                                                   placeholder="0-40">
+                                            <div class="score-range-hint">/40</div>
+                                         </td>
+                                        <td class="text-center">
+                                            <input type="number" class="score-input exam-score-input" 
+                                                   data-subject-id="<%= subject.id %>" 
+                                                   data-type="exam"
+                                                   data-max="60" 
+                                                   value="<%= examScore %>" 
+                                                   step="0.5" 
+                                                   min="0" 
+                                                   max="60" 
+                                                   placeholder="0-60">
+                                            <div class="score-range-hint">/60</div>
+                                         </td>
+                                        <td class="text-center">
+                                            <span class="total-score <%= gradeClass %>" id="total-<%= subject.id %>">
+                                                <%= totalScore.toFixed(1) %>
+                                            </span>
+                                         </td>
+                                        <td class="text-center">
+                                            <span class="grade-badge <%= gradeClass %>" id="grade-<%= subject.id %>">
+                                                <%= grade %>
+                                            </span>
+                                         </td>
+                                        <td class="text-center">
+                                            <button class="btn-save-score save-row-btn" data-subject-id="<%= subject.id %>">
+                                                <i class="bi bi-check-lg"></i> Save
+                                            </button>
+                                         </td>
+                                    </tr>
+                                    <% }); 
+                                    } else { %>
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted py-4">
+                                            <i class="bi bi-book-x fs-1"></i>
+                                            <p class="mt-2 mb-0">No subjects found for this student's class</p>
+                                            <small>Please ensure subjects are assigned to the class</small>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-2">
+                        <div class="col-12 text-muted small text-center">
+                            <i class="bi bi-info-circle"></i> Test scores (0-40) + Exam scores (0-60) = Total (100). Grades are auto-calculated.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher & Management Comments -->
+            <div class="card score-card mt-4">
+                <div class="card-header bg-white">
+                    <i class="bi bi-chat-left-quote me-2 text-primary"></i>
+                    <strong>Report Card Comments</strong>
+                    <span class="badge bg-light text-dark ms-2 border"><%= termName %></span>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">
+                        These comments appear on the student's report card for this term.
+                        Session comments appear on the full-session report card. Comments stay with this class if the student is promoted.
+                    </p>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="teacherComment">
+                                <i class="bi bi-person-badge me-1"></i> Teacher Comment (<%= termName %>)
+                            </label>
+                            <textarea id="teacherComment" class="form-control" rows="4"
+                                placeholder="Enter class teacher's comment for this term..."><%= typeof teacherComment !== 'undefined' ? teacherComment : '' %></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="managementComment">
+                                <i class="bi bi-building me-1"></i> Management Comment (<%= termName %>)
+                            </label>
+                            <textarea id="managementComment" class="form-control" rows="4"
+                                <%= (typeof role !== 'undefined' && role === 'teacher') ? 'readonly' : '' %>
+                                placeholder="<%= (typeof role !== 'undefined' && role === 'teacher') ? 'Only admin/management can enter this comment' : 'Enter management/principal comment for this term...' %>"><%= typeof managementComment !== 'undefined' ? managementComment : '' %></textarea>
+                            <% if (typeof role !== 'undefined' && role === 'teacher') { %>
+                                <div class="form-text">Teachers can view this field; only admin can edit it.</div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h6 class="fw-semibold mb-3">
+                        <i class="bi bi-calendar3 me-1 text-success"></i> Session Report Card Comments
+                        <span class="badge bg-success-subtle text-success border ms-1">Full Session</span>
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="sessionTeacherComment">
+                                Teacher Comment (Session)
+                            </label>
+                            <textarea id="sessionTeacherComment" class="form-control" rows="3"
+                                placeholder="Enter class teacher's session comment..."><%= typeof sessionTeacherComment !== 'undefined' ? sessionTeacherComment : '' %></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="sessionManagementComment">
+                                Management Comment (Session)
+                            </label>
+                            <textarea id="sessionManagementComment" class="form-control" rows="3"
+                                <%= (typeof role !== 'undefined' && role === 'teacher') ? 'readonly' : '' %>
+                                placeholder="<%= (typeof role !== 'undefined' && role === 'teacher') ? 'Only admin/management can enter this comment' : 'Enter management session comment...' %>"><%= typeof sessionManagementComment !== 'undefined' ? sessionManagementComment : '' %></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex flex-wrap gap-2 align-items-center">
+                        <button type="button" id="saveCommentsBtn" class="btn btn-primary">
+                            <i class="bi bi-save2 me-1"></i> Save Comments
+                        </button>
+                        <span id="commentsSaveStatus" class="text-muted small"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6"><script>document.write(new Date().getFullYear())</script> © EduSuite - Score Management Module</div>
+                        <div class="col-md-6 text-md-end"><a href="#" class="text-muted small">Support</a></div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <div id="saveIndicator" class="save-indicator">
+        <i class="bi bi-check-circle me-1"></i> Score saved successfully!
+    </div>
+
+    <!-- bundle -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+
+    <!-- third party js -->
+    <script src="/assets/js/vendor/jquery.dataTables.min.js"></script>
+    <script src="/assets/js/vendor/dataTables.bootstrap5.js"></script>
+    <script src="/assets/js/vendor/dataTables.responsive.min.js"></script>
+    <script src="/assets/js/vendor/responsive.bootstrap5.min.js"></script>
+    <script src="/assets/js/vendor/dataTables.checkboxes.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Calculate total and grade for a specific subject
+            function calculateTotalAndGrade(subjectId) {
+                const testInput = $(`.test-score-input[data-subject-id="${subjectId}"]`);
+                const examInput = $(`.exam-score-input[data-subject-id="${subjectId}"]`);
+                const testScore = parseFloat(testInput.val()) || 0;
+                const examScore = parseFloat(examInput.val()) || 0;
+                const totalScore = testScore + examScore;
+                
+                // Update total display
+                const totalSpan = $(`#total-${subjectId}`);
+                const gradeSpan = $(`#grade-${subjectId}`);
+                
+                totalSpan.text(totalScore.toFixed(1));
+                
+                // Calculate grade
+                let grade = 'F';
+                let gradeClass = 'grade-F';
+                if (totalScore >= 80) { 
+                    grade = 'A'; 
+                    gradeClass = 'grade-A'; 
+                } else if (totalScore >= 70) { 
+                    grade = 'B'; 
+                    gradeClass = 'grade-B'; 
+                } else if (totalScore >= 60) { 
+                    grade = 'C'; 
+                    gradeClass = 'grade-C'; 
+                } else if (totalScore >= 50) { 
+                    grade = 'D'; 
+                    gradeClass = 'grade-D'; 
+                } else if (totalScore >= 40) { 
+                    grade = 'E'; 
+                    gradeClass = 'grade-E'; 
+                }
+                
+                gradeSpan.text(grade);
+                gradeSpan.removeClass('grade-A grade-B grade-C grade-D grade-E grade-F');
+                gradeSpan.addClass(gradeClass);
+                totalSpan.removeClass('grade-A grade-B grade-C grade-D grade-E grade-F');
+                totalSpan.addClass(gradeClass);
+            }
+            
+            // Validate input range
+            function validateScoreInput(input, max) {
+                let value = parseFloat(input.value);
+                if (isNaN(value)) {
+                    input.value = 0;
+                } else if (value > max) {
+                    input.value = max;
+                } else if (value < 0) {
+                    input.value = 0;
+                }
+                
+                // Round to nearest 0.5
+                let rounded = Math.round(value * 2) / 2;
+                input.value = rounded;
+                
+                // Trigger recalculation
+                const subjectId = $(input).data('subject-id');
+                calculateTotalAndGrade(subjectId);
+            }
+            
+            // Live calculation on input
+            $('.test-score-input, .exam-score-input').on('input', function() {
+                const subjectId = $(this).data('subject-id');
+                const max = $(this).data('max');
+                validateScoreInput(this, max);
+            });
+            
+            // Save single row - FIXED
+            $('.save-row-btn').on('click', function () {
+                const subjectId = $(this).data('subject-id');
+                const testInput = $(`.test-score-input[data-subject-id="${subjectId}"]`);
+                const examInput = $(`.exam-score-input[data-subject-id="${subjectId}"]`);
+                const testScore = parseFloat(testInput.val()) || 0;
+                const examScore = parseFloat(examInput.val()) || 0;
+                const totalScore = testScore + examScore;
+                const gradeText = $(`#grade-${subjectId}`).text();
+
+                // Validate
+                if (testScore < 0 || testScore > 40) {
+                    alert('Test score must be between 0 and 40');
+                    return;
+                }
+                if (examScore < 0 || examScore > 60) {
+                    alert('Exam score must be between 0 and 60');
+                    return;
+                }
+
+                // Show loading state on button
+                const $btn = $(this);
+                const originalText = $btn.html();
+                $btn.html('<span class="spinner-border spinner-border-sm me-1" role="status"></span> Saving...');
+                $btn.prop('disabled', true);
+
+                $.ajax({
+                    url: '/api/save-student-score',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        studentId: <%= studentId %>,
+                        classId: <%= classId %>,
+                        subjectId: subjectId,
+                        testScore: testScore,
+                        examScore: examScore,
+                        totalScore: totalScore,
+                        grade: gradeText,
+                        term: '<%= term %>',
+                        academicYear: '<%= academicYear %>'
+                    }),
+                    success: function(response) {
+                        if (response.success) {
+                            $btn.html('<i class="bi bi-check-lg"></i> Saved');
+                            setTimeout(() => {
+                                $btn.html(originalText);
+                                $btn.prop('disabled', false);
+                            }, 2000);
+                            $('#saveIndicator').fadeIn().delay(2000).fadeOut();
+                        } else {
+                            alert('Error: ' + (response.message || 'Please try again'));
+                            $btn.html(originalText);
+                            $btn.prop('disabled', false);
+                        }
+                    },
+                error: function(xhr) {
+                    alert('Network error. Could not save score.');
+                    $btn.html(originalText);
+                    $btn.prop('disabled', false);
+                }
+            });
+        });
+
+                // Save all scores - FIXED
+                $('#saveAllScoresBtn').on('click', function () {
+                    const allPromises = [];
+                    let hasError = false;
+                    let errorMessages = [];
+
+                    $('.save-row-btn').each(function () {
+                        const subjectId = $(this).data('subject-id');
+                        const testInput = $(`.test-score-input[data-subject-id="${subjectId}"]`);
+                        const examInput = $(`.exam-score-input[data-subject-id="${subjectId}"]`);
+                        const testScore = parseFloat(testInput.val()) || 0;
+                        const examScore = parseFloat(examInput.val()) || 0;
+
+                        if (testScore < 0 || testScore > 40) {
+                            errorMessages.push('Test score for subject must be between 0 and 40');
+                            hasError = true;
+                            return false;
+                        }
+                        if (examScore < 0 || examScore > 60) {
+                            errorMessages.push('Exam score for subject must be between 0 and 60');
+                            hasError = true;
+                            return false;
+                        }
+
+                        const totalScore = testScore + examScore;
+                        const gradeText = $(`#grade-${subjectId}`).text();
+
+                        const promise = $.ajax({
+                            url: '/api/save-student-score',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                studentId: <%= studentId %>,
+                                classId: <%= classId %>,
+                                subjectId: subjectId,
+                                testScore: testScore,
+                                examScore: examScore,
+                                totalScore: totalScore,
+                                grade: gradeText,
+                                term: '<%= term %>',
+                                academicYear: '<%= academicYear %>'
+                            })
+                        });
+                    allPromises.push(promise);
+                });
+
+                if (hasError) {
+                    alert(errorMessages[0]);
+                    return;
+                }
+
+                if (allPromises.length === 0) {
+                    alert('No subjects to save');
+                    return;
+                }
+
+                // Show loading state
+                const btn = $('#saveAllScoresBtn');
+                const originalText = btn.html();
+                btn.html('<span class="spinner-border spinner-border-sm me-2" role="status"></span> Saving...');
+                btn.prop('disabled', true);
+
+                Promise.all(allPromises)
+                    .then(function () {
+                        alert('All scores saved successfully!');
+                        location.reload();
+                    })
+                    .catch(function () {
+                        alert('Some scores failed to save. Please check your connection and try again.');
+                    })
+                    .finally(function () {
+                        btn.html(originalText);
+                        btn.prop('disabled', false);
+                    });
+});
+
+            // Save teacher & management comments
+            $('#saveCommentsBtn').on('click', function () {
+                const $btn = $(this);
+                const originalText = $btn.html();
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span> Saving...');
+                $('#commentsSaveStatus').text('');
+
+                $.ajax({
+                    url: '/api/save-student-comments',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        studentId: <%= studentId %>,
+                        classId: <%= classId %>,
+                        term: '<%= term %>',
+                        academicYear: '<%= academicYear %>',
+                        teacherComment: $('#teacherComment').val(),
+                        managementComment: $('#managementComment').val(),
+                        sessionTeacherComment: $('#sessionTeacherComment').val(),
+                        sessionManagementComment: $('#sessionManagementComment').val()
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#commentsSaveStatus').removeClass('text-danger').addClass('text-success')
+                                .text(response.message || 'Comments saved');
+                            $('#saveIndicator').html('<i class="bi bi-check-circle me-1"></i> Comments saved successfully!')
+                                .fadeIn().delay(2000).fadeOut();
+                        } else {
+                            $('#commentsSaveStatus').removeClass('text-success').addClass('text-danger')
+                                .text(response.error || 'Failed to save comments');
+                            alert(response.error || 'Failed to save comments');
+                        }
+                    },
+                    error: function (xhr) {
+                        const msg = (xhr.responseJSON && xhr.responseJSON.error)
+                            ? xhr.responseJSON.error
+                            : 'Network error. Could not save comments.';
+                        $('#commentsSaveStatus').removeClass('text-success').addClass('text-danger').text(msg);
+                        alert(msg);
+                    },
+                    complete: function () {
+                        $btn.prop('disabled', false).html(originalText);
+                    }
+                });
+            });
+            
+            // Auto-dismiss alerts
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
