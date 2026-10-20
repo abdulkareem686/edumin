@@ -1,0 +1,88 @@
+<script>
+      // Form submission
+      document.getElementById('bookForm').addEventListener('submit', function (e) {
+         e.preventDefault();
+
+         const formData = new FormData(this);
+         const data = {};
+         formData.forEach((value, key) => {
+            data[key] = value;
+         });
+
+         fetch('/manage-book-lists/save', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+         })
+            .then(response => response.json())
+            .then(data => {
+               if (data.success) {
+                  showToast(data.message, 'success');
+                  setTimeout(() => {
+                     window.location.href = '/manage-book-lists';
+                  }, 1500);
+               } else {
+                  showToast(data.error || 'Failed to save book', 'danger');
+               }
+            })
+            .catch(error => {
+               console.error('Error:', error);
+               showToast('An error occurred while saving', 'danger');
+            });
+      });
+
+      // Toast notification
+      function showToast(message, type) {
+         var container = document.querySelector('.toast-container');
+         if (!container) {
+            container = document.createElement('div');
+            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+         }
+
+         var toast = document.createElement('div');
+         toast.className = 'toast align-items-center text-white bg-' + type + ' border-0 fade show';
+         toast.setAttribute('role', 'alert');
+         toast.innerHTML = `
+            <div class="d-flex">
+               <div class="toast-body">
+                  <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                  ${message}
+               </div>
+               <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+         `;
+         container.appendChild(toast);
+         setTimeout(() => toast.remove(), 5000);
+      }
+
+      // Auto-dismiss alerts
+      setTimeout(function () {
+         document.querySelectorAll('.alert').forEach(function (alert) {
+            setTimeout(function () {
+               alert.classList.remove('show');
+               setTimeout(function () { alert.remove(); }, 300);
+            }, 5000);
+         });
+      }, 5000);
+
+      // Notification functions
+      function markRead(notificationId) {
+         fetch('/admin/notifications/mark-read/' + notificationId, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+         }).then(response => response.json())
+            .then(data => { if (data.success) location.reload(); });
+      }
+
+      function markAllRead() {
+         fetch('/admin/notifications/mark-all-read', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+         }).then(response => response.json())
+            .then(data => { if (data.success) location.reload(); });
+      }
+   </script>

@@ -1,0 +1,147 @@
+<form id="bookForm" method="post">
+                                    <% if (isEdit) { %>
+                                       <input type="hidden" name="id" value="<%= bookList.id %>">
+                                       <% } %>
+
+                                          <div class="form-section">
+                                             <h5 class="form-section-title"><i class="bi bi-info-circle me-2"></i>Book
+                                                Information</h5>
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Academic Year</label>
+                                                      <select class="form-select" name="academicYear" required>
+                                                         <option value="">Select Academic Year</option>
+                                                         <% academicYears.forEach(function(year) { %>
+                                                            <option value="<%= year.year_name %>"
+                                                               <%=(bookList.academic_year===year.year_name) ? 'selected'
+                                                               : '' %>>
+                                                               <%= year.year_name %>
+                                                            </option>
+                                                            <% }); %>
+                                                      </select>
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Class Level</label>
+                                                      <select class="form-select" name="classLevel" required>
+                                                         <option value="">Select Class Level</option>
+                                                         <option value="KG" <%=(bookList.class_level==='KG' )
+                                                            ? 'selected' : '' %>>Kindergarten</option>
+                                                         <option value="NURSERY" <%=(bookList.class_level==='NURSERY' )
+                                                            ? 'selected' : '' %>>Nursery</option>
+                                                         <option value="PRIMARY" <%=(bookList.class_level==='PRIMARY' )
+                                                            ? 'selected' : '' %>>Primary</option>
+                                                         <option value="JUNIOR SECONDARY"
+                                                            <%=(bookList.class_level==='JUNIOR SECONDARY' ) ? 'selected'
+                                                            : '' %>>Junior Secondary</option>
+                                                         <option value="SENIOR SECONDARY"
+                                                            <%=(bookList.class_level==='SENIOR SECONDARY' ) ? 'selected'
+                                                            : '' %>>Senior Secondary</option>
+                                                      </select>
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Department</label>
+                                                      <select class="form-select" name="department">
+                                                         <option value="">Select Department (if applicable)</option>
+                                                         <% departments.forEach(function(dept) { %>
+                                                            <option value="<%= dept.department %>"
+                                                               <%=(bookList.department===dept.department) ? 'selected'
+                                                               : '' %>>
+                                                               <%= dept.department %>
+                                                            </option>
+                                                            <% }); %>
+                                                      </select>
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Subject</label>
+                                                      <input type="text" class="form-control" name="subject"
+                                                         value="<%= bookList.subject || '' %>"
+                                                         placeholder="e.g., Mathematics, English, Physics" required>
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-12">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Book Title</label>
+                                                      <input type="text" class="form-control" name="title"
+                                                         value="<%= bookList.title || '' %>"
+                                                         placeholder="Full title of the book" required>
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Author(s)</label>
+                                                      <input type="text" class="form-control" name="author"
+                                                         value="<%= bookList.author || '' %>"
+                                                         placeholder="Author name(s)">
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">ISBN</label>
+                                                      <input type="text" class="form-control" name="isbn"
+                                                         value="<%= bookList.isbn || '' %>" placeholder="ISBN number">
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Publisher</label>
+                                                      <input type="text" class="form-control" name="publisher"
+                                                         value="<%= bookList.publisher || '' %>"
+                                                         placeholder="Publisher name">
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Edition</label>
+                                                      <input type="text" class="form-control" name="edition"
+                                                         value="<%= bookList.edition || '' %>"
+                                                         placeholder="e.g., 2nd Edition, Revised">
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Quantity</label>
+                                                      <input type="number" class="form-control" name="quantity"
+                                                         value="<%= bookList.quantity || 0 %>" min="0"
+                                                         placeholder="Number of copies">
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Notes</label>
+                                                      <input type="text" class="form-control" name="notes"
+                                                         value="<%= bookList.notes || '' %>"
+                                                         placeholder="Additional notes">
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+
+                                          <div class="text-end mt-4">
+                                             <a href="/manage-book-lists" class="btn btn-light me-2">Cancel</a>
+                                             <button type="submit" class="btn btn-primary">
+                                                <%= isEdit ? 'Update' : 'Add' %> Book
+                                             </button>
+                                          </div>
+                                 </form>

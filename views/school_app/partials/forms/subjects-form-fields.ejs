@@ -1,0 +1,122 @@
+<form action="/register-subjects" method="post">
+    <% if (error) { %>
+        <div class="alert alert-danger mb-3">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="mb-3">
+                <label class="form-label">Select Level*</label>
+                <select class="form-control" name="level" required id="level-select">
+                    <option value="">Select a level</option>
+                    <% if (levels && levels.length) { %>
+                        <% levels.forEach(level => { %>
+                            <option value="<%= level.name %>" 
+                                <%= formData.level === level.name ? 'selected' : '' %>>
+                                <%= level.name %>
+                            </option>
+                        <% }); %>
+                    <% } else { %>
+                        <option value="" disabled>No levels available</option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xl-4" id="department-field" style="display: none;">
+            <div class="mb-3">
+                <label class="form-label">Select Department <span class="text-danger">*</span></label>
+                <select class="form-control" name="department" id="department-select">
+                    <option value="">Select department</option>
+                    <option value="ALL" <%= (formData.department === 'ALL' || formData.autoAllDepartments) ? 'selected' : '' %>>All Departments (Science, Commercial, Art)</option>
+                    <% if (departments && departments.length) { %>
+                        <% departments.forEach(dept => { %>
+                            <option value="<%= dept.name %>" 
+                                <%= (formData.department === dept.name && !formData.autoAllDepartments) ? 'selected' : '' %>>
+                                <%= dept.name %>
+                            </option>
+                        <% }); %>
+                    <% } else { %>
+                        <option value="" disabled>No departments available</option>
+                    <% } %>
+                </select>
+                <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" id="all-departments-check" name="autoAllDepartments" value="1" <%= (formData.autoAllDepartments || formData.department === 'ALL') ? 'checked' : '' %>>
+                    <label class="form-check-label fw-semibold text-primary" for="all-departments-check">
+                        <i class="bi bi-diagram-3-fill me-1"></i> Register for all departments automatically
+                    </label>
+                </div>
+                <div class="form-text text-muted mt-1" id="dept-help">
+                    <span id="single-dept-help" class="text-warning"><i class="bi bi-exclamation-circle me-1"></i>Required for Senior Secondary subjects.</span>
+                    <span id="all-dept-help" class="text-success fw-medium" style="display:none;"><i class="bi bi-check2-circle me-1"></i>Will automatically register subject(s) to all Senior Secondary classes across all departments (Science, Commercial, Art).</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="subjects-container">
+        <% const subjects = formData.subjects || ['']; %>
+        <% const subject_codes = formData.subject_codes || ['']; %>
+        <% const descriptions = formData.descriptions || ['']; %>
+        
+        <% for (let i = 0; i < subjects.length; i++) { %>
+            <div class="row subject-row mb-3">
+                <div class="col-xl-4">
+                    <div class="mb-3">
+                        <label class="form-label">Subject Name*</label>
+                        <input type="text" class="form-control" name="subjects[]" 
+                            value="<%= subjects[i] %>" 
+                            placeholder="e.g. Mathematics" required>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3">
+                    <div class="mb-3">
+                        <label class="form-label">Subject Code*</label>
+                        <input type="text" class="form-control" name="subject_codes[]" 
+                            value="<%= subject_codes[i] %>"
+                            placeholder="e.g. MATH101" required>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="descriptions[]" 
+                            rows="1" placeholder="Subject description"><%= descriptions[i] %></textarea>
+                    </div>
+                </div>
+
+                <div class="col-xl-1 d-flex align-items-end mb-3">
+                    <% if (i === 0) { %>
+                        <button type="button" class="btn btn-secondary w-100" disabled>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    <% } else { %>
+                        <button type="button" class="btn btn-danger remove-subject w-100">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <button type="button" id="add-subject" class="btn btn-secondary">
+                <i class="fas fa-plus me-1"></i> Add Another Subject
+            </button>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">Register Subjects</button>
+            <button type="reset" class="btn btn-light ms-2">Cancel</button>
+        </div>
+    </div>
+</form>

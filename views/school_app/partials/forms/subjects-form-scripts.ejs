@@ -1,0 +1,189 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const levelSelect = document.getElementById('level-select');
+    const departmentField = document.getElementById('department-field');
+    const departmentSelect = document.getElementById('department-select');
+    const classesContainer = document.getElementById('classes-container');
+    
+    // Store classes data from server
+    const classesData = {
+        <% Object.keys(classesByLevel || {}).forEach(level => { %>
+            '<%= level %>': [
+                <% classesByLevel[level].forEach(cls => { %>
+                    {
+                        id: <%= cls.id %>,
+                        className: '<%= cls.className %>',
+                        department: '<%= cls.department || '' %>'
+                    },
+                <% }); %>
+            ],
+        <% }); %>
+    };
+
+    // Show/hide department field based on level
+    if (levelSelect) {
+        levelSelect.addEventListener('change', function() {
+            const level = this.value;
+            
+            // Show department field only for SENIOR SECONDARY
+            if (level === 'SENIOR SECONDARY') {
+                if (departmentField) departmentField.style.display = 'block';
+                if (departmentSelect) departmentSelect.setAttribute('required', 'required');
+            } else {
+                if (departmentField) departmentField.style.display = 'none';
+                if (departmentSelect) {
+                    departmentSelect.removeAttribute('required');
+                    departmentSelect.value = '';
+                }
+            }
+            
+            // Load classes for selected level
+            if (classesContainer) {
+                loadClassesForLevel(level);
+            }
+        });
+
+        // Initialize classes dropdown
+        if (levelSelect.value && classesContainer) {
+            levelSelect.dispatchEvent(new Event('change'));
+        } else if (classesContainer) {
+            loadClassesForLevel('');
+        }
+    }
+
+    // Also trigger when department changes to filter classes
+    if (departmentSelect) {
+        departmentSelect.addEventListener('change', function() {
+            const level = levelSelect ? levelSelect.value : '';
+            const department = this.value;
+            if (classesContainer) {
+                loadClassesForLevel(level, department);
+            }
+        });
+    }
+
+    function loadClassesForLevel(level, department = '') {
+        if (!classesContainer) return;
+        
+        classesContainer.innerHTML = '';
+        
+        if (!level) {
+            const select = document.createElement('select');
+            select.className = 'form-control';
+            select.multiple = true;
+            select.name = 'classIds';
+            select.innerHTML = '<option value="">Select a level first</option>';
+            classesContainer.appendChild(select);
+            return;
+        }
+
+        const select = document.createElement('select');
+        select.className = 'form-control';
+        select.multiple = true;
+        select.name = 'classIds';
+        select.required = true;
+        select.size = 5; // Show 5 options at once
+
+        // Add default option
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Select classes (' + level + (department ? ' - ' + department : '') + ')';
+        defaultOption.disabled = true;
+        select.appendChild(defaultOption);
+
+        // Filter classes by level and department
+        const filteredClasses = classesData[level] || [];
+        const classesToShow = department ? 
+            filteredClasses.filter(cls => cls.department === department) : 
+            filteredClasses;
+
+        if (classesToShow.length === 0) {
+            const noClassesOption = document.createElement('option');
+            noClassesOption.value = '';
+            noClassesOption.textContent = 'No classes available for this selection';
+            noClassesOption.disabled = true;
+            select.appendChild(noClassesOption);
+        } else {
+            classesToShow.forEach(cls => {
+                const option = document.createElement('option');
+                option.value = cls.id;
+                option.textContent = cls.className + (cls.department ? ' (' + cls.department + ')' : '');
+                // Pre-select if previously selected
+                if (typeof formData !== 'undefined' && Array.isArray(formData.classIds) && formData.classIds.includes(cls.id.toString())) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
+
+        classesContainer.appendChild(select);
+    }
+
+    // Add subject row - This is the main fix
+    const addSubjectBtn = document.getElementById('add-subject');
+    if (addSubjectBtn) {
+        addSubjectBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const container = document.getElementById('subjects-container');
+            if (!container) {
+                console.error('subjects-container not found');
+                return;
+            }
+            const newRow = document.createElement('div');
+            newRow.className = 'row subject-row mb-3';
+            newRow.innerHTML = `
+                <div class="col-xl-4">
+                    <div class="mb-3">
+                        <label class="form-label">Subject Name*</label>
+                        <input type="text" class="form-control" name="subjects[]" placeholder="e.g. Mathematics" required>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3">
+                    <div class="mb-3">
+                        <label class="form-label">Subject Code*</label>
+                        <input type="text" class="form-control" name="subject_codes[]" placeholder="e.g. MATH101" required>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="descriptions[]" rows="1" placeholder="Subject description"></textarea>
+                    </div>
+                </div>
+
+                <div class="col-xl-1 d-flex align-items-end mb-3">
+                    <button type="button" class="btn btn-danger remove-subject w-100">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(newRow);
+        });
+    } else {
+        console.error('add-subject button not found');
+    }
+
+    // Remove subject row
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-subject') || e.target.closest('.remove-subject')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const row = e.target.closest('.subject-row');
+            if (row) {
+                if (document.querySelectorAll('.subject-row').length > 1) {
+                    row.remove();
+                } else {
+                    // Reset the first row instead of removing it
+                    const inputs = row.querySelectorAll('input, textarea');
+                    inputs.forEach(input => {
+                        input.value = '';
+                    });
+                }
+            }
+        }
+    });
+});
+</script>

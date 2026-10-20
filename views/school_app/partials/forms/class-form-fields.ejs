@@ -1,0 +1,81 @@
+<form action="/add-class" method="post" id="classForm">
+                                    <div class="row">
+        <div class="col-xl-6">
+            <div class="mb-3">
+                <label class="form-label">Level*</label>
+                <select class="form-control" name="level" id="levelSelect" required>
+                    <option value="">-- Select Level --</option>
+                    <option value="KG">KG</option>
+                    <option value="NURSERY">Nursery</option>
+                    <option value="PRIMARY">Primary</option>
+                    <option value="JUNIOR SECONDARY">Junior Secondary</option>
+                    <option value="SENIOR SECONDARY">Senior Secondary</option>
+                </select>
+            </div>
+        </div>
+    
+    
+        <div class="col-xl-6">
+            <div class="mb-3">
+                <label class="form-label">Class Name*</label>
+                <input type="text" class="form-control" name="className" required>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="mb-3">
+                    <label class="form-label">Class Code*</label>
+                    <input type="text" class="form-control" name="classCode" required>
+                </div>
+        </div>
+    </div>
+
+        
+        <div class="col-xl-6">
+            <div class="mb-3" id="departmentContainer" style="display: none;">
+                <label class="form-label">Department*</label>
+                <select class="form-control" name="department" id="departmentSelect">
+                    <option value="">-- Select Department --</option>
+                    <option value="SCIENCE">Science</option>
+                    <option value="COMMERCIAL">Commercial</option>
+                    <option value="ART">Art</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="mb-3">
+                <label class="form-label">Teacher*</label>
+                <select class="form-control" name="professorId" required>
+                    <option value="">-- Select Teacher --</option>
+                    <% if (teachers && teachers.length) { %>
+                        <% teachers.forEach(teacher => { %>
+                            <option value="<%= teacher.id %>">
+                                <%= teacher.firstName %> <%= teacher.lastName %>
+                            </option>
+                        <% }); %>
+                    <% } else { %>
+                        <option value="" disabled>No teachers available</option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+        
+        <div class="col-xl-6">
+            <div class="mb-3">
+                <label class="form-label">Maximum Students</label>
+                <input type="number" class="form-control" name="maximumStudents">
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="reset" class="btn btn-light ms-2">Cancel</button>
+        </div>
+    </div>
+</form>

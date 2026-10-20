@@ -1,0 +1,31 @@
+<script>
+    // Show/hide department based on level selection
+    document.getElementById('levelSelect').addEventListener('change', function() {
+        const departmentContainer = document.getElementById('departmentContainer');
+        const departmentSelect = document.getElementById('departmentSelect');
+        
+        if (this.value === 'SENIOR SECONDARY') {
+            departmentContainer.style.display = 'block';
+            departmentSelect.required = true;
+        } else {
+            departmentContainer.style.display = 'none';
+            departmentSelect.required = false;
+            departmentSelect.value = '';
+        }
+    });
+
+    // Form validation
+    document.getElementById('classForm').addEventListener('submit', function(e) {
+        const level = document.getElementById('levelSelect').value;
+        const department = document.getElementById('departmentSelect').value;
+        
+        if (level === 'SENIOR SECONDARY' && !department) {
+            e.preventDefault();
+            if (window.showFormFeedbackToast) {
+                window.showFormFeedbackToast('Please select a department for Senior Secondary', 'warning');
+            } else {
+                alert('Please select a department for Senior Secondary');
+            }
+        }
+    });
+</script>

@@ -1,0 +1,111 @@
+<!-- Left Sidebar -->
+<div class="leftside-menu">
+    <a href="/parent/parent-dashboard" class="logo text-center logo-light">
+        <span class="logo-lg">
+            <h3><i class="mdi mdi-school"></i> EduSuite</h3>
+        </span>
+        <span class="logo-sm">
+            <h3><i class="mdi mdi-school"></i></h3>
+        </span>
+    </a>
+
+    <div class="h-100" id="leftside-menu-container" data-simplebar="">
+        <ul class="side-nav">
+            <li class="side-nav-title side-nav-item">Main</li>
+            <li class="side-nav-item">
+                <a href="/parent/parent-dashboard" class="side-nav-link">
+                    <i class="uil-home-alt"></i>
+                    <span> Dashboard </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">My Children</li>
+            <li class="side-nav-item">
+                <a href="/parent/children" class="side-nav-link">
+                    <i class="uil-users-alt"></i>
+                    <span> All Children </span>
+                    <% if (typeof students !== 'undefined' && students && students.length > 0) { %>
+                        <span class="badge bg-primary float-end"><%= students.length %></span>
+                    <% } %>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="/parent/reports" class="side-nav-link">
+                    <i class="uil-file-alt"></i>
+                    <span> Report Cards </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Academic</li>
+            <li class="side-nav-item">
+                <a href="/parent/grades" class="side-nav-link">
+                    <i class="uil-clipboard-notes"></i>
+                    <span> Grades </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="/parent/attendance" class="side-nav-link">
+                    <i class="uil-check-circle"></i>
+                    <span> Attendance </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="/parent/fees" class="side-nav-link">
+                    <i class="uil-wallet"></i>
+                    <span> Fees </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="/parent/make-payment" class="side-nav-link">
+                    <i class="uil-credit-card"></i>
+                    <span> Pay School Fees </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Resources</li>
+            <li class="side-nav-item">
+                <a href="/school-calendar" class="side-nav-link">
+                    <i class="uil-calendar-alt"></i>
+                    <span> Calendar </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="/parent/notifications" class="side-nav-link">
+                    <i class="uil-bell"></i>
+                    <span> Notifications </span>
+                    <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+                        <span class="badge bg-danger float-end"><%= unreadCount %></span>
+                    <% } %>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Account</li>
+            <li class="side-nav-item">
+                <a href="/parent-profile" class="side-nav-link">
+                    <i class="uil-user"></i>
+                    <span> My Profile </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="/parent/contact" class="side-nav-link">
+                    <i class="uil-envelope"></i>
+                    <span> Contact School </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="/logout" class="side-nav-link">
+                    <i class="uil-sign-out-alt"></i>
+                    <span> Logout </span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="help-box p-3 text-white text-center mt-4">
+            <i class="mdi mdi-help-circle-outline h3"></i>
+            <h5 class="text-white mt-2">Need Help?</h5>
+            <p class="small">Contact the school office</p>
+            <a href="/parent/contact" class="btn btn-sm btn-secondary">Contact</a>
+        </div>
+    </div>
+</div>
+<!-- Left Sidebar End -->
