@@ -1,0 +1,708 @@
+/**
+ * EduSuite admin dashboard — scoped overrides (works with Hyper / app.min.css)
+ */
+.edu-dashboard {
+  --edu-primary: #4f46e5;
+  --edu-primary-soft: rgba(79, 70, 229, 0.12);
+  --edu-success: #059669;
+  --edu-success-soft: rgba(5, 150, 105, 0.12);
+  --edu-info: #0891b2;
+  --edu-info-soft: rgba(8, 145, 178, 0.12);
+  --edu-warning: #d97706;
+  --edu-warning-soft: rgba(217, 119, 6, 0.14);
+  --edu-surface: #fff;
+  --edu-border: rgba(15, 23, 42, 0.08);
+  --edu-text-muted: #64748b;
+  --edu-radius: 14px;
+  --edu-radius-sm: 10px;
+  --edu-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.edu-dashboard .edu-dash-hero-inner {
+  background: color(#4f46e5);
+  color: #fff;
+  border-radius: var(--edu-radius);
+  padding: 1.75rem 1.75rem 1.5rem;
+  box-shadow: var(--edu-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.edu-dashboard .edu-dash-hero-inner::after {
+  content: "";
+  position: absolute;
+  right: -20%;
+  top: -40%;
+  width: 55%;
+  height: 180%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.edu-dashboard .edu-dash-hero-inner > .d-flex {
+  position: relative;
+  z-index: 1;
+}
+
+.edu-dashboard .edu-dash-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-bottom: 0.35rem;
+}
+
+.edu-dashboard .edu-dash-title {
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #fff;
+}
+
+.edu-dashboard .edu-dash-sub {
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-size: 0.95rem;
+  max-width: 36rem;
+}
+
+.edu-dashboard .edu-dash-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.edu-dashboard .edu-dash-badge i {
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.edu-dashboard .edu-kpi {
+  border-radius: var(--edu-radius);
+  border: 1px solid var(--edu-border) !important;
+  box-shadow: var(--edu-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.edu-dashboard .edu-kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08), 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.edu-dashboard .edu-kpi .card-body {
+  padding: 1.35rem 1.25rem;
+}
+
+.edu-dashboard .edu-kpi-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--edu-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.edu-dashboard .edu-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: #0f172a;
+  margin: 0 0 0.35rem;
+}
+
+.edu-dashboard .edu-kpi-hint {
+  font-size: 0.8125rem;
+  color: var(--edu-text-muted);
+  margin: 0;
+}
+
+.edu-dashboard .edu-kpi-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--edu-radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.edu-dashboard .edu-kpi--students .edu-kpi-icon {
+  background: var(--edu-primary-soft);
+  color: var(--edu-primary);
+}
+
+.edu-dashboard .edu-kpi--teachers .edu-kpi-icon {
+  background: var(--edu-success-soft);
+  color: var(--edu-success);
+}
+
+.edu-dashboard .edu-kpi--classes .edu-kpi-icon {
+  background: var(--edu-info-soft);
+  color: var(--edu-info);
+}
+
+.edu-dashboard .edu-kpi--fees .edu-kpi-icon {
+  background: var(--edu-warning-soft);
+  color: var(--edu-warning);
+}
+
+.edu-dashboard .edu-panel {
+  border-radius: var(--edu-radius);
+  border: 1px solid var(--edu-border) !important;
+  box-shadow: var(--edu-shadow);
+}
+
+.edu-dashboard .edu-panel-header {
+  padding: 1.15rem 1.25rem;
+  border-bottom: 1px solid var(--edu-border);
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, var(--edu-surface) 100%);
+}
+
+.edu-dashboard .edu-panel-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.edu-dashboard .edu-panel-body {
+  padding: 1.25rem;
+}
+
+.edu-dashboard .edu-metric-tile {
+  padding: 1rem 1.1rem;
+  border-radius: var(--edu-radius-sm);
+  border: 1px solid var(--edu-border);
+  background: #f8fafc;
+  height: 100%;
+}
+
+.edu-dashboard .edu-metric-tile .metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.edu-dashboard .edu-metric-tile .metric-label {
+  font-size: 0.875rem;
+  color: var(--edu-text-muted);
+  margin: 0.25rem 0 0;
+}
+
+.edu-dashboard .edu-table-activities thead th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--edu-text-muted);
+  border-bottom-width: 1px;
+  background: #f8fafc;
+  padding: 0.75rem 1rem;
+}
+
+.edu-dashboard .edu-table-activities tbody td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+  border-color: var(--edu-border);
+}
+
+.edu-dashboard .edu-table-activities tbody tr:hover {
+  background: #fafafa;
+}
+
+.edu-dashboard .edu-progress-wrap .progress {
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.edu-dashboard .edu-progress-wrap .progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--edu-primary), #818cf8);
+}
+
+.edu-dashboard .edu-stat-row {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--edu-border);
+}
+
+.edu-dashboard .edu-stat-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.edu-dashboard .edu-stat-row:first-child {
+  padding-top: 0;
+}
+
+.edu-dashboard .edu-stat-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.edu-dashboard .edu-event-card {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--edu-border);
+}
+
+.edu-dashboard .edu-event-card:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.edu-dashboard .edu-event-date {
+  min-width: 3.25rem;
+  border-radius: var(--edu-radius-sm);
+  border: 1px solid var(--edu-border);
+  background: linear-gradient(180deg, #f8fafc, #fff);
+  padding: 0.5rem 0.4rem;
+}
+
+.edu-dashboard .edu-event-date .day {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--edu-primary);
+  line-height: 1;
+}
+
+.edu-dashboard .edu-event-date .mon {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--edu-text-muted);
+  margin-top: 0.2rem;
+}
+
+.edu-dashboard .edu-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.85rem;
+}
+
+@media (min-width: 768px) {
+  .edu-dashboard .edu-quick-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.edu-dashboard .edu-quick-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--edu-radius-sm);
+  border: 1px solid var(--edu-border);
+  background: var(--edu-surface);
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.edu-dashboard .edu-quick-tile:hover {
+  background: #f8fafc;
+  border-color: rgba(79, 70, 229, 0.35);
+  color: var(--edu-primary);
+  transform: translateY(-1px);
+}
+
+.edu-dashboard .edu-quick-tile i {
+  font-size: 1.35rem;
+  opacity: 0.9;
+}
+
+.edu-dashboard .edu-quick-tile--scores i {
+  color: var(--edu-primary);
+}
+.edu-dashboard .edu-quick-tile--student i {
+  color: var(--edu-success);
+}
+.edu-dashboard .edu-quick-tile--fees i {
+  color: var(--edu-info);
+}
+.edu-dashboard .edu-quick-tile--calendar i {
+  color: var(--edu-warning);
+}
+
+/* Dark layout: soften for app-dark if body uses dark sidebar only */
+body[data-layout-color="dark"] .edu-dashboard .edu-kpi-value,
+body.layout-mode-dark .edu-dashboard .edu-kpi-value {
+  color: inherit;
+}
+
+/* Term pulse year pill: reliable tint if theme lacks bg-opacity utilities */
+.edu-dashboard .edu-term-year-pill {
+  background: var(--edu-primary-soft) !important;
+  color: var(--edu-primary) !important;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   ACADEMIC SCHOOL WEEK WIDGET & ENHANCED DASHBOARD DESIGN SYSTEM
+   ========================================================================== */
+
+/* Universal School Week Pill Badge (For Hero Headers) */
+.school-week-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+  font-size: 0.825rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
+}
+
+.school-week-hero-pill .pulse-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #34d399;
+  box-shadow: 0 0 10px #34d399;
+  display: inline-block;
+  animation: weekStatusPulse 2s infinite ease-in-out;
+}
+
+@keyframes weekStatusPulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.35); opacity: 1; }
+}
+
+/* Dedicated School Week Tracker Card */
+.school-week-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid rgba(79, 70, 229, 0.14) !important;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(79, 70, 229, 0.05);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.school-week-card:hover {
+  box-shadow: 0 14px 35px -5px rgba(79, 70, 229, 0.12);
+}
+
+.school-week-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 50%, #10b981 100%);
+}
+
+.school-week-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.school-week-header-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.school-week-header-title i {
+  color: #4f46e5;
+  font-size: 1.25rem;
+}
+
+.school-week-body {
+  padding: 1.5rem;
+}
+
+/* Week Big Display Banner */
+.week-display-banner {
+  background: linear-gradient(135deg, #312e81 0%, #4338ca 60%, #4f46e5 100%);
+  border-radius: 16px;
+  padding: 1.35rem 1.5rem;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.35);
+}
+
+.week-display-banner::after {
+  content: "";
+  position: absolute;
+  right: -10%;
+  bottom: -40%;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.week-display-number {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+}
+
+.week-display-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.week-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #047857;   /* ✅ dark emerald — readable on white */
+  font-size: 0.775rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.week-status-badge i {
+  color: #059669;
+}
+
+/* Hero (dark background) variant */
+.week-status-badge.week-status-badge--on-dark {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #a7f3d0;
+}
+.week-status-badge.week-status-badge--on-dark i {
+  color: #a7f3d0;
+}
+
+/* Progress bar inside week widget */
+.school-week-progress-wrap {
+  margin-bottom: 1.25rem;
+}
+
+.school-week-progress-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.school-week-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 4 Metrics Strip */
+.school-week-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .school-week-metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.school-week-metric-tile {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  text-align: center;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.school-week-metric-tile:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.school-week-metric-val {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.school-week-metric-lbl {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 0.25rem;
+}
+
+/* Modern Dashboard Card Overrides */
+.edu-card-modern {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  border-radius: 18px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edu-card-modern:hover {
+  box-shadow: 0 8px 26px rgba(15, 23, 42, 0.07);
+}
+
+/* Modern Stat KPI Card */
+.stat-kpi-modern {
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: #ffffff;
+  padding: 1.35rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.stat-kpi-modern:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.stat-kpi-modern .kpi-indicator-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.stat-kpi-modern.kpi-blue .kpi-indicator-bar { background: #4f46e5; }
+.stat-kpi-modern.kpi-green .kpi-indicator-bar { background: #10b981; }
+.stat-kpi-modern.kpi-amber .kpi-indicator-bar { background: #f59e0b; }
+.stat-kpi-modern.kpi-rose .kpi-indicator-bar { background: #ef4444; }
+
+.stat-kpi-modern .kpi-icon-chip {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.stat-kpi-modern.kpi-blue .kpi-icon-chip { background: rgba(79, 70, 229, 0.1); color: #4f46e5; }
+.stat-kpi-modern.kpi-green .kpi-icon-chip { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.stat-kpi-modern.kpi-amber .kpi-icon-chip { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.stat-kpi-modern.kpi-rose .kpi-icon-chip { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+/* Quick Action Tiles */
+.modern-action-tile {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  text-decoration: none !important;
+  color: #0f172a;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.modern-action-tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(79, 70, 229, 0.35);
+  box-shadow: 0 8px 22px rgba(79, 70, 229, 0.09);
+  color: #4f46e5;
+}
+
+.modern-action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Bootstrap bg-opacity-* / border-opacity-* FALLBACK SHIM
+   Hyper's app.min.css doesn't ship these utilities, which causes badges to
+   render solid white and their white text to disappear.
+   ========================================================================== */
+
+/* --- White overlay pills used inside the dark hero --- */
+.bg-white.bg-opacity-15 { background-color: rgba(255, 255, 255, 0.15) !important; }
+.bg-white.bg-opacity-20 { background-color: rgba(255, 255, 255, 0.20) !important; }
+.bg-white.bg-opacity-25 { background-color: rgba(255, 255, 255, 0.25) !important; }
+
+/* --- Colored badge tints used in KPI cards & status pills --- */
+.bg-primary.bg-opacity-10  { background-color: rgba(79, 70, 229, 0.10) !important; }
+.bg-primary.bg-opacity-15  { background-color: rgba(79, 70, 229, 0.15) !important; }
+.bg-primary.bg-opacity-20  { background-color: rgba(79, 70, 229, 0.20) !important; }
+
+.bg-success.bg-opacity-10  { background-color: rgba(16, 185, 129, 0.10) !important; }
+.bg-success.bg-opacity-25  { background-color: rgba(16, 185, 129, 0.25) !important; }
+
+.bg-info.bg-opacity-10     { background-color: rgba(8, 145, 178, 0.10) !important; }
+.bg-warning.bg-opacity-10  { background-color: rgba(245, 158, 11, 0.10) !important; }
+.bg-danger.bg-opacity-10   { background-color: rgba(239, 68, 68, 0.10) !important; }
+.bg-secondary.bg-opacity-10{ background-color: rgba(108, 117, 125, 0.10) !important; }
+.bg-dark.bg-opacity-10     { background-color: rgba(15, 23, 42, 0.10) !important; }
+.bg-dark.bg-opacity-25     { background-color: rgba(15, 23, 42, 0.25) !important; }
+
+/* --- Border opacity used on hero pills --- */
+.border-white.border-opacity-20 { border-color: rgba(255, 255, 255, 0.20) !important; }
+.border-white.border-opacity-25 { border-color: rgba(255, 255, 255, 0.25) !important; }
+
+/* --- Belt-and-braces: force white text to stay readable on those pills --- */
+.edu-dash-hero-inner .badge.text-white,
+.school-week-hero-pill .badge.text-white {
+  color: #ffffff !important;
+}
