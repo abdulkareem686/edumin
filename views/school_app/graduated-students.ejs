@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Graduated Students (Alumni) - EduSuite</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="Graduated Students Management & Alumni Records" name="description" />
+        <meta content="EduSuite" name="author" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style" />
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+        <style>
+            .alumni-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                font-size: 15px;
+                color: #fff;
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            }
+            .badge-graduated {
+                background-color: #d1fae5;
+                color: #065f46;
+                font-weight: 600;
+                padding: 5px 10px;
+                border-radius: 20px;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .stat-tile {
+                border-radius: 10px;
+                padding: 1.25rem;
+                color: #fff;
+                margin-bottom: 1.5rem;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+                transition: transform 0.2s ease;
+            }
+            .stat-tile:hover {
+                transform: translateY(-3px);
+            }
+            .stat-tile.green { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
+            .stat-tile.blue  { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+            .stat-tile.purple{ background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
+            .stat-tile.amber { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
+            @media print {
+                .leftside-menu, .navbar-custom, .footer, .btn, .breadcrumb, .no-print {
+                    display: none !important;
+                }
+                .content-page, .content, .container-fluid {
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    width: 100% !important;
+                }
+                .card {
+                    box-shadow: none !important;
+                    border: none !important;
+                }
+            }
+        </style>
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+
+            <!-- ========== Left Sidebar Start ========== -->
+            <%- include('partials/admin-sidebar') %>
+            <!-- Left Sidebar End -->
+
+            <div class="content-page">
+                <div class="content">
+
+                    <!-- Topbar Start -->
+                    <%- include('partials/admin-navbar') %>
+                    <!-- end Topbar -->
+
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="/all-students">Students</a></li>
+                                            <li class="breadcrumb-item active">Graduated Students</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">
+                                        <i class="bi bi-award-fill text-success me-2"></i>Graduated Students (Alumni)
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <% } %>
+
+                        <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i><%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <% } %>
+
+                        <!-- Metrics Row -->
+                        <div class="row no-print">
+                            <div class="col-md-6 col-xl-3">
+                                <div class="stat-tile green">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-uppercase text-white-50 mb-1">Total Graduates</h6>
+                                            <h2 class="my-0 text-white fw-bold"><%= (typeof totalGraduates !== 'undefined' ? totalGraduates : (graduates ? graduates.length : 0)).toLocaleString() %></h2>
+                                        </div>
+                                        <div class="avatar-sm">
+                                            <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-3">
+                                                <i class="bi bi-mortarboard-fill"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <small class="text-white-50 mt-2 d-block">All archived alumni records</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="stat-tile blue">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-uppercase text-white-50 mb-1">Graduation Sessions</h6>
+                                            <h2 class="my-0 text-white fw-bold"><%= (typeof graduationYears !== 'undefined' && graduationYears ? graduationYears.length : 0) %></h2>
+                                        </div>
+                                        <div class="avatar-sm">
+                                            <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-3">
+                                                <i class="bi bi-calendar3"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <small class="text-white-50 mt-2 d-block">Distinct graduating cohorts</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="stat-tile purple">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-uppercase text-white-50 mb-1">Male Alumni</h6>
+                                            <h2 class="my-0 text-white fw-bold"><%= (typeof maleCount !== 'undefined' ? maleCount : 0).toLocaleString() %></h2>
+                                        </div>
+                                        <div class="avatar-sm">
+                                            <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-3">
+                                                <i class="bi bi-gender-male"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <small class="text-white-50 mt-2 d-block">Male graduated students</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-xl-3">
+                                <div class="stat-tile amber">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-uppercase text-white-50 mb-1">Female Alumni</h6>
+                                            <h2 class="my-0 text-white fw-bold"><%= (typeof femaleCount !== 'undefined' ? femaleCount : 0).toLocaleString() %></h2>
+                                        </div>
+                                        <div class="avatar-sm">
+                                            <span class="avatar-title bg-white bg-opacity-25 rounded-circle fs-3">
+                                                <i class="bi bi-gender-female"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <small class="text-white-50 mt-2 d-block">Female graduated students</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Table Card -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <!-- Filter and Action Bar -->
+                                        <div class="row mb-3 align-items-center no-print">
+                                            <div class="col-lg-6">
+                                                <form class="row g-2 align-items-center" method="get" action="/graduated-students">
+                                                    <div class="col-sm-5">
+                                                        <select class="form-select" name="year" onchange="this.form.submit()">
+                                                            <option value="">All Graduation Sessions</option>
+                                                            <% if (typeof graduationYears !== 'undefined' && graduationYears) { %>
+                                                                <% graduationYears.forEach(function(yr) { %>
+                                                                    <option value="<%= yr %>" <%= (typeof selectedYear !== 'undefined' && selectedYear === yr) ? 'selected' : '' %>>
+                                                                        Class of <%= yr %>
+                                                                    </option>
+                                                                <% }); %>
+                                                            <% } %>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-sm-5">
+                                                        <input type="search" name="q" class="form-control" placeholder="Search name, admission..." value="<%= typeof searchQ !== 'undefined' ? searchQ : '' %>">
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <button type="submit" class="btn btn-primary w-100" title="Filter"><i class="bi bi-search"></i></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="col-lg-6 text-lg-end mt-2 mt-lg-0">
+                                                <% if ((typeof selectedYear !== 'undefined' && selectedYear) || (typeof searchQ !== 'undefined' && searchQ)) { %>
+                                                    <a href="/graduated-students" class="btn btn-outline-secondary me-1">
+                                                        <i class="bi bi-x-circle me-1"></i>Clear Filters
+                                                    </a>
+                                                <% } %>
+                                                <a href="/all-students" class="btn btn-outline-primary me-1">
+                                                    <i class="bi bi-people me-1"></i>Active Students
+                                                </a>
+                                                <button type="button" class="btn btn-light me-1" onclick="window.print()">
+                                                    <i class="bi bi-printer me-1"></i>Print List
+                                                </button>
+                                                <button type="button" class="btn btn-success" id="exportGraduatesBtn">
+                                                    <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Graduates Table -->
+                                        <div class="table-responsive">
+                                            <table class="table table-centered table-striped table-hover w-100" id="graduates-datatable">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th style="width: 50px;">#</th>
+                                                        <th>Admission No.</th>
+                                                        <th>Student Name</th>
+                                                        <th>Gender</th>
+                                                        <th>Final Class</th>
+                                                        <th>Graduation Session</th>
+                                                        <th>Graduation Date</th>
+                                                        <th>Status</th>
+                                                        <th style="width: 150px;" class="text-center no-print">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% if (typeof graduates !== 'undefined' && graduates && graduates.length > 0) { %>
+                                                        <% graduates.forEach(function(student, idx) { 
+                                                            var fullName = [student.firstName, student.middleName, student.lastName].filter(Boolean).join(' ');
+                                                            var initials = ((student.firstName ? student.firstName[0] : '') + (student.lastName ? student.lastName[0] : '')).toUpperCase() || 'ST';
+                                                            var formattedDate = student.graduation_date ? (typeof moment !== 'undefined' ? moment(student.graduation_date).format('DD MMM YYYY') : student.graduation_date) : 'N/A';
+                                                        %>
+                                                        <tr id="student-row-<%= student.id %>">
+                                                            <td><%= idx + 1 %></td>
+                                                            <td>
+                                                                <span class="badge bg-secondary-subtle text-secondary font-monospace"><%= student.admission_number || 'N/A' %></span>
+                                                            </td>
+                                                            <td class="table-user">
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="alumni-avatar me-2"><%= initials %></div>
+                                                                    <div>
+                                                                        <a href="/student-profile/<%= student.id %>" class="text-body fw-bold text-decoration-none">
+                                                                            <%= fullName %>
+                                                                        </a>
+                                                                        <div class="text-muted small"><%= student.email || 'No email' %></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <% if ((student.gender || '').toLowerCase() === 'male') { %>
+                                                                    <span class="badge bg-info-subtle text-info"><i class="bi bi-gender-male me-1"></i>Male</span>
+                                                                <% } else if ((student.gender || '').toLowerCase() === 'female') { %>
+                                                                    <span class="badge bg-danger-subtle text-danger"><i class="bi bi-gender-female me-1"></i>Female</span>
+                                                                <% } else { %>
+                                                                    <span class="badge bg-light text-dark"><%= student.gender || 'N/A' %></span>
+                                                                <% } %>
+                                                            </td>
+                                                            <td>
+                                                                <span class="fw-semibold"><%= student.className || 'Graduated Class' %></span>
+                                                                <% if (student.level) { %>
+                                                                    <small class="text-muted d-block"><%= student.level %></small>
+                                                                <% } %>
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge bg-primary-subtle text-primary fw-bold">
+                                                                    <%= student.graduation_year || 'Completed' %>
+                                                                </span>
+                                                            </td>
+                                                            <td><%= formattedDate %></td>
+                                                            <td>
+                                                                <span class="badge-graduated">
+                                                                    <i class="bi bi-award-fill"></i> Graduated
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center no-print">
+                                                                <div class="dropdown">
+                                                                    <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                                                                        <li>
+                                                                            <a class="dropdown-item" href="/student-profile/<%= student.id %>">
+                                                                                <i class="bi bi-person-badge text-primary me-2"></i>View Profile
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a class="dropdown-item" href="/session-records">
+                                                                                <i class="bi bi-journal-text text-info me-2"></i>Academic Transcripts
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a class="dropdown-item" href="/student-bills/<%= student.id %>">
+                                                                                <i class="bi bi-receipt text-secondary me-2"></i>Fee Records
+                                                                            </a>
+                                                                        </li>
+                                                                        <li><hr class="dropdown-divider"></li>
+                                                                        <li>
+                                                                            <button type="button" class="dropdown-item text-warning restore-btn" 
+                                                                                    data-id="<%= student.id %>" 
+                                                                                    data-name="<%= fullName %>">
+                                                                                <i class="bi bi-arrow-counterclockwise text-warning me-2"></i>Revert to Active
+                                                                            </button>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <% }); %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="9" class="text-center py-5">
+                                                                <div class="py-4">
+                                                                    <i class="bi bi-mortarboard text-muted" style="font-size: 4rem;"></i>
+                                                                    <h5 class="mt-3 text-muted">No Graduated Students Found</h5>
+                                                                    <p class="text-muted">
+                                                                        <% if (typeof selectedYear !== 'undefined' && selectedYear) { %>
+                                                                            No graduates found for session <strong><%= selectedYear %></strong>.
+                                                                        <% } else { %>
+                                                                            When students are marked as graduated during session transition or from the broadsheet, they will appear here as alumni.
+                                                                        <% } %>
+                                                                    </p>
+                                                                    <a href="/all-students" class="btn btn-primary mt-2">
+                                                                        <i class="bi bi-arrow-left me-1"></i>Back to Active Students
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div> <!-- end card-body -->
+                                </div> <!-- end card -->
+                            </div> <!-- end col -->
+                        </div> <!-- end row -->
+
+                    </div> <!-- container -->
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                © EduSuite School Management System
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+            <!-- End Page content -->
+
+        </div>
+        <!-- END wrapper -->
+
+        <!-- Revert / Restore Modal -->
+        <div class="modal fade" id="restoreModal" tabindex="-1" aria-labelledby="restoreModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title fw-bold" id="restoreModalLabel">
+                            <i class="bi bi-arrow-counterclockwise me-2"></i>Restore Student to Active Status
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <p class="mb-2">Are you sure you want to revert the graduated status for <strong id="restoreStudentName"></strong>?</p>
+                        <div class="alert alert-info py-2 small">
+                            <i class="bi bi-info-circle me-1"></i>The student will be returned to the active enrollment list with their prior class and academic history fully preserved.
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-warning fw-semibold" id="confirmRestoreBtn">
+                            <i class="bi bi-check-lg me-1"></i>Yes, Restore Student
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- bundle -->
+        <script src="/assets/js/vendor.min.js"></script>
+        <script src="/assets/js/app.min.js"></script>
+
+        <script>
+            let targetStudentId = null;
+            const restoreModal = new bootstrap.Modal(document.getElementById('restoreModal'));
+
+            document.querySelectorAll('.restore-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    targetStudentId = this.dataset.id;
+                    document.getElementById('restoreStudentName').textContent = this.dataset.name;
+                    restoreModal.show();
+                });
+            });
+
+            document.getElementById('confirmRestoreBtn').addEventListener('click', async function() {
+                if (!targetStudentId) return;
+                const btn = this;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Restoring...';
+
+                try {
+                    const response = await fetch('/restore-graduated-student/' + targetStudentId, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        restoreModal.hide();
+                        const row = document.getElementById('student-row-' + targetStudentId);
+                        if (row) {
+                            row.style.transition = 'opacity 0.4s';
+                            row.style.opacity = '0';
+                            setTimeout(() => {
+                                row.remove();
+                                location.reload();
+                            }, 400);
+                        } else {
+                            location.reload();
+                        }
+                    } else {
+                        alert(data.error || 'Failed to restore student');
+                    }
+                } catch (err) {
+                    alert('Network error: ' + err.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Yes, Restore Student';
+                }
+            });
+
+            // CSV Export
+            document.getElementById('exportGraduatesBtn')?.addEventListener('click', function() {
+                const table = document.getElementById('graduates-datatable');
+                let csv = [];
+                const rows = table.querySelectorAll('tr');
+                for (let i = 0; i < rows.length; i++) {
+                    const row = [], cols = rows[i].querySelectorAll('td:not(.no-print), th:not(.no-print)');
+                    for (let j = 0; j < cols.length; j++) {
+                        let text = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, ' ').replace(/\s+/g, ' ').trim();
+                        text = text.replace(/"/g, '""');
+                        row.push('"' + text + '"');
+                    }
+                    if (row.length > 0) csv.push(row.join(','));
+                }
+                const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Graduated_Students_Alumni_' + new Date().toISOString().split('T')[0] + '.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8">
+   <title>Notifications - Teacher Portal</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+   <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+   <!-- SweetAlert2 CSS -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+   <style>
+      .notification-card {
+         transition: all 0.2s ease;
+         border-radius: 12px;
+         margin-bottom: 1rem;
+         cursor: pointer;
+      }
+
+      .notification-card:hover {
+         transform: translateX(5px);
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .notification-unread {
+         background: linear-gradient(135deg, #eef2ff 0%, #ffffff 100%);
+         border-left: 4px solid #3b5de7;
+      }
+
+      .notification-read {
+         background: white;
+         border-left: 4px solid #e9ecef;
+         opacity: 0.8;
+      }
+
+      .notification-icon {
+         width: 45px;
+         height: 45px;
+         border-radius: 50%;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 1.25rem;
+      }
+
+      .filter-btn {
+         transition: all 0.2s;
+         border-radius: 20px;
+         padding: 0.5rem 1.25rem;
+      }
+
+      .filter-btn.active {
+         background: #3b5de7;
+         color: white;
+         border-color: #3b5de7;
+      }
+
+      .filter-btn:hover:not(.active) {
+         background: #e9ecef;
+      }
+
+      .notification-unread-badge {
+         background: #3b5de7;
+         color: white;
+         border-radius: 20px;
+         padding: 0.25rem 0.75rem;
+         font-size: 0.7rem;
+      }
+
+      .toast-container {
+         position: fixed;
+         bottom: 20px;
+         right: 20px;
+         z-index: 9999;
+      }
+   </style>
+</head>
+
+<body class="loading"
+   data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+   <div class="wrapper">
+      <!-- Left Sidebar -->
+      <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/teacher-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+
+      <div class="content-page">
+         <div class="content">
+            <!-- Topbar -->
+                <%- include('partials/teacher-navbar') %>
+                <!-- end Topbar -->
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title">
+                                    <i class="mdi mdi-bell me-2"></i>Notifications
+                                    <% if (unreadCount > 0) { %>
+                                        <span class="badge bg-danger ms-2"><%= unreadCount %> Unread</span>
+                                    <% } %>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <% if (error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Success Message -->
+                    <% if (success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i> <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <div class="row">
+                        <!-- Sidebar with stats -->
+                        <div class="col-lg-3 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-white">
+                                    <h6 class="mb-0"><i class="bi bi-bell me-2 text-primary"></i>Quick Stats</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <div class="display-4 fw-bold text-primary"><%= totalCount %></div>
+                                        <div class="text-muted">Total Notifications</div>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Unread</span>
+                                        <span class="fw-bold text-primary"><%= unreadCount %></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Read</span>
+                                        <span class="fw-bold text-success"><%= totalCount - unreadCount %></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-3">
+                                <div class="card-header bg-white">
+                                    <h6 class="mb-0"><i class="bi bi-info-circle me-2 text-primary"></i>Info</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p class="small text-muted mb-0">
+                                        <i class="bi bi-envelope-paper me-1"></i> Notifications appear here when school sends updates.<br><br>
+                                        <i class="bi bi-check-circle me-1"></i> Click on a notification to mark as read.<br><br>
+                                        <i class="bi bi-trash me-1"></i> Read notifications can be deleted.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Notifications List -->
+                        <div class="col-lg-9">
+                            <!-- Filter Buttons -->
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                        <div class="btn-group" role="group">
+                                            <a href="/teacher/notifications?filter=all" class="btn filter-btn <%= currentFilter === ' all' ? 'active' : ''
+                                 %>">
+                                 <i class="bi bi-list-ul"></i> All
+                                 </a>
+                                 <a href="/teacher/notifications?filter=unread"
+                                    class="btn filter-btn <%= currentFilter === 'unread' ? 'active' : '' %>">
+                                    <i class="bi bi-envelope"></i> Unread
+                                    <% if (unreadCount> 0 && currentFilter !== 'unread') { %>
+                                       <span class="badge bg-danger ms-1">
+                                          <%= unreadCount %>
+                                       </span>
+                                       <% } %>
+                                 </a>
+                                 <a href="/teacher/notifications?filter=read"
+                                    class="btn filter-btn <%= currentFilter === 'read' ? 'active' : '' %>">
+                                    <i class="bi bi-envelope-open"></i> Read
+                                 </a>
+                        </div>
+
+                        <div>
+                           <button class="btn btn-sm btn-primary me-2" onclick="confirmMarkAllRead()">
+                              <i class="bi bi-check2-all"></i> Mark All Read
+                           </button>
+                           <button class="btn btn-sm btn-danger" onclick="confirmDeleteAllRead()">
+                              <i class="bi bi-trash"></i> Delete Read
+                           </button>
+                        </div>
+                     </div>
+            </div>
+         </div>
+
+         <!-- Notifications List -->
+         <% if (notifications && notifications.length> 0) {
+            for(var i = 0; i < notifications.length; i++) { var notification=notifications[i]; %>
+               <div
+                  class="card notification-card <%= !notification.is_read ? 'notification-unread' : 'notification-read' %>"
+                  data-id="<%= notification.id %>" onclick="confirmMarkRead(<%= notification.id %>)">
+                  <div class="card-body">
+                     <div class="d-flex">
+                        <div class="me-3">
+                           <div class="notification-icon bg-light">
+                              <i class="bi bi-bell text-primary"></i>
+                           </div>
+                        </div>
+                        <div class="flex-grow-1">
+                           <div class="d-flex justify-content-between align-items-start">
+                              <div>
+                                 <div class="notification-title">
+                                    <%= notification.title || 'Notification' %>
+                                       <% if (!notification.is_read) { %>
+                                          <span class="notification-unread-badge ms-2">New</span>
+                                          <% } %>
+                                 </div>
+                                 <div class="notification-message">
+                                    <%= notification.message %>
+                                 </div>
+                                 <div class="notification-time">
+                                    <i class="bi bi-clock me-1"></i>
+                                    <%= notification.formatted_date %>
+                                 </div>
+                              </div>
+                              <div class="dropdown">
+                                 <button class="btn btn-sm btn-link text-muted" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                 </button>
+                                 <ul class="dropdown-menu dropdown-menu-end">
+                                    <% if (!notification.is_read) { %>
+                                       <li>
+                                          <a class="dropdown-item" href="javascript:void(0)"
+                                             onclick="event.stopPropagation(); confirmMarkRead(<%= notification.id %>)">
+                                             <i class="bi bi-envelope-check me-2"></i> Mark as Read
+                                          </a>
+                                       </li>
+                                       <% } %>
+                                          <li>
+                                             <a class="dropdown-item text-danger" href="javascript:void(0)"
+                                                onclick="event.stopPropagation(); confirmDeleteNotification(<%= notification.id %>)">
+                                                <i class="bi bi-trash me-2"></i> Delete
+                                             </a>
+                                          </li>
+                                 </ul>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <% } %>
+                  <% } else { %>
+                     <div class="card">
+                        <div class="card-body text-center py-5">
+                           <i class="bi bi-inbox fs-1 text-muted"></i>
+                           <h5 class="mt-3">No Notifications</h5>
+                           <p class="text-muted">You don't have any notifications at this time.</p>
+                           <% if (currentFilter !=='all' ) { %>
+                              <a href="/teacher/notifications?filter=all" class="btn btn-primary mt-2">
+                                 <i class="bi bi-list-ul"></i> View All Notifications
+                              </a>
+                              <% } %>
+                        </div>
+                     </div>
+                     <% } %>
+
+                        <!-- Pagination -->
+                        <% if (totalPages> 1) { %>
+                           <div class="d-flex justify-content-center mt-4">
+                              <nav>
+                                 <ul class="pagination">
+                                    <% if (currentPage> 1) { %>
+                                       <li class="page-item">
+                                          <a class="page-link"
+                                             href="/teacher/notifications?filter=<%= currentFilter %>&page=<%= currentPage - 1 %>">
+                                             <i class="bi bi-chevron-left"></i> Previous
+                                          </a>
+                                       </li>
+                                       <% } %>
+
+                                          <% for(var i=1; i <=totalPages; i++) { if (i===1 || i===totalPages || (i>=
+                                             currentPage - 2 && i <= currentPage + 2)) { %>
+                                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                                   <a class="page-link"
+                                                      href="/teacher/notifications?filter=<%= currentFilter %>&page=<%= i %>">
+                                                      <%= i %>
+                                                   </a>
+                                                </li>
+                                                <% } else if (i===currentPage - 3 || i===currentPage + 3) { %>
+                                                   <li class="page-item disabled"><span class="page-link">...</span>
+                                                   </li>
+                                                   <% } %>
+                                                      <% } %>
+
+                                                         <% if (currentPage < totalPages) { %>
+                                                            <li class="page-item">
+                                                               <a class="page-link"
+                                                                  href="/teacher/notifications?filter=<%= currentFilter %>&page=<%= currentPage + 1 %>">
+                                                                  Next <i class="bi bi-chevron-right"></i>
+                                                               </a>
+                                                            </li>
+                                                            <% } %>
+                                 </ul>
+                              </nav>
+                           </div>
+                           <% } %>
+      </div>
+   </div>
+   </div>
+   </div>
+
+   <footer class="footer">
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-md-6">
+               <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - Teacher Portal
+            </div>
+            <div class="col-md-6 text-md-end">
+               <a href="#" class="text-muted text-decoration-none small">Support</a>
+               <span class="text-muted mx-1">|</span>
+               <a href="#" class="text-muted text-decoration-none small">Privacy</a>
+            </div>
+         </div>
+      </div>
+   </footer>
+   </div>
+   </div>
+
+   <!-- SweetAlert2 JS -->
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script src="/assets/js/vendor.min.js"></script>
+   <script src="/assets/js/app.min.js"></script>
+
+   <script>
+      function confirmMarkRead(notificationId) {
+         Swal.fire({
+            title: 'Mark as Read?',
+            text: 'Do you want to mark this notification as read?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3b5de7',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, mark as read',
+            cancelButtonText: 'Cancel'
+         }).then((result) => {
+            if (result.isConfirmed) {
+               markRead(notificationId);
+            }
+         });
+      }
+
+      function markRead(notificationId) {
+         fetch('/teacher/notifications/mark-read/' + notificationId, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+         }).then(function (response) {
+            return response.json();
+         }).then(function (data) {
+            if (data.success) {
+               Swal.fire({
+                  title: 'Success!',
+                  text: 'Notification marked as read',
+                  icon: 'success',
+                  timer: 1500,
+                  showConfirmButton: false
+               });
+               setTimeout(function () { location.reload(); }, 1500);
+            }
+         }).catch(function (error) {
+            Swal.fire({
+               title: 'Error!',
+               text: 'Failed to mark notification as read',
+               icon: 'error',
+               confirmButtonColor: '#3b5de7'
+            });
+         });
+      }
+
+      function confirmMarkAllRead() {
+         Swal.fire({
+            title: 'Mark All as Read?',
+            text: 'Do you want to mark all notifications as read?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3b5de7',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, mark all',
+            cancelButtonText: 'Cancel'
+         }).then((result) => {
+            if (result.isConfirmed) {
+               markAllRead();
+            }
+         });
+      }
+
+      function markAllRead() {
+         fetch('/teacher/notifications/mark-all-read', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+         }).then(function (response) {
+            return response.json();
+         }).then(function (data) {
+            if (data.success) {
+               Swal.fire({
+                  title: 'Success!',
+                  text: 'All notifications marked as read',
+                  icon: 'success',
+                  timer: 1500,
+                  showConfirmButton: false
+               });
+               setTimeout(function () { location.reload(); }, 1500);
+            }
+         }).catch(function (error) {
+            Swal.fire({
+               title: 'Error!',
+               text: 'Failed to mark notifications as read',
+               icon: 'error',
+               confirmButtonColor: '#3b5de7'
+            });
+         });
+      }
+
+      function confirmDeleteNotification(notificationId) {
+         Swal.fire({
+            title: 'Delete Notification?',
+            text: 'This action cannot be undone!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'Cancel'
+         }).then((result) => {
+            if (result.isConfirmed) {
+               deleteNotification(notificationId);
+            }
+         });
+      }
+
+      function deleteNotification(notificationId) {
+         event.stopPropagation();
+         fetch('/teacher/notifications/delete/' + notificationId, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+         }).then(function (response) {
+            return response.json();
+         }).then(function (data) {
+            if (data.success) {
+               Swal.fire({
+                  title: 'Deleted!',
+                  text: 'Notification has been deleted',
+                  icon: 'success',
+                  timer: 1500,
+                  showConfirmButton: false
+               });
+               setTimeout(function () { location.reload(); }, 1500);
+            }
+         }).catch(function (error) {
+            Swal.fire({
+               title: 'Error!',
+               text: 'Failed to delete notification',
+               icon: 'error',
+               confirmButtonColor: '#3b5de7'
+            });
+         });
+      }
+
+      function confirmDeleteAllRead() {
+         Swal.fire({
+            title: 'Delete All Read Notifications?',
+            text: 'This action cannot be undone! Only read notifications will be deleted.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete all',
+            cancelButtonText: 'Cancel'
+         }).then((result) => {
+            if (result.isConfirmed) {
+               deleteAllRead();
+            }
+         });
+      }
+
+      function deleteAllRead() {
+         fetch('/teacher/notifications/delete-all-read', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+         }).then(function (response) {
+            return response.json();
+         }).then(function (data) {
+            if (data.success) {
+               Swal.fire({
+                  title: 'Deleted!',
+                  text: 'All read notifications have been deleted',
+                  icon: 'success',
+                  timer: 1500,
+                  showConfirmButton: false
+               });
+               setTimeout(function () { location.reload(); }, 1500);
+            }
+         }).catch(function (error) {
+            Swal.fire({
+               title: 'Error!',
+               text: 'Failed to delete notifications',
+               icon: 'error',
+               confirmButtonColor: '#3b5de7'
+            });
+         });
+      }
+
+      // Auto-dismiss alerts
+      setTimeout(function () {
+         var alerts = document.querySelectorAll('.alert');
+         for (var i = 0; i < alerts.length; i++) {
+            setTimeout(function (alert) {
+               if (alert) alert.remove();
+            }, 5000, alerts[i]);
+         }
+      }, 1000);
+   </script>
+</body>
+
+</html>

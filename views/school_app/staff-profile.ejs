@@ -1,0 +1,350 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Staff Profile - <%= staff.firstName %> <%= staff.lastName %></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="/images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link rel="stylesheet" href="/vendor/bootstrap-select/dist/css/bootstrap-select.min.css">
+    </head>
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+    
+    
+                    <!-- Start Content-->
+<div class="container-fluid">
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box">
+                <div class="page-title-right">
+                    
+                </div>
+                <h4 class="page-title">Staff Profile: <%= staff.firstName %> <%= staff.lastName %></h4>
+            </div>
+        </div>
+    </div>     
+
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- Profile Header -->
+            <div class="card bg-primary">
+                <div class="card-body profile-user-box">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <div class="avatar-lg">
+                                <% if (staff.imagePath) { %>
+                                    <img src="<%= staff.imagePath %>" alt="<%= staff.firstName %>" class="rounded-circle img-thumbnail" style="width: 120px; height: 120px;">
+                                <% } else { %>
+                                    <div class="avatar-lg bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                                        <span class="display-4 text-primary"><%= staff.firstName.charAt(0) %><%= staff.lastName.charAt(0) %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <h4 class="mt-1 mb-1 text-white"><%= staff.firstName %> <%= staff.lastName %></h4>
+                                <p class="font-13 text-white-50">
+                                    <%= staff.position || 'Staff Member' %> - <%= staff.department || 'Department' %>
+                                </p>
+                                
+                                <ul class="mb-0 list-inline text-light">
+                                    <li class="list-inline-item me-3">
+                                        <h5 class="mb-1"><%= staff.joiningDate ? moment(staff.joiningDate).format('YYYY') : 'N/A' %></h5>
+                                        <p class="mb-0 font-13 text-white-50">Joining Year</p>
+                                    </li>
+                                    <li class="list-inline-item me-3">
+                                        <h5 class="mb-1"><%= staff.department || 'N/A' %></h5>
+                                        <p class="mb-0 font-13 text-white-50">Department</p>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <h5 class="mb-1"><%= staff.nationality || 'N/A' %></h5>
+                                        <p class="mb-0 font-13 text-white-50">Nationality</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <a href="/" class="btn btn-light">
+                                <i class="mdi mdi-home me-1"></i> Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-xl-4">
+            <!-- Personal Information -->
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Personal Information</h4>
+                    
+                    <hr>
+
+                    <div class="text-start">
+                        <p class="text-muted mb-2"><strong>Full Name:</strong> 
+                            <span class="ms-2"><%= staff.firstName %> <%= staff.lastName %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Email:</strong> 
+                            <span class="ms-2"><%= staff.email %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Phone:</strong>
+                            <span class="ms-2"><%= staff.phone || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Date of Birth:</strong> 
+                            <span class="ms-2"><%= staff.dateOfBirth ? moment(staff.dateOfBirth).format('MMMM Do, YYYY') : 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Gender:</strong> 
+                            <span class="ms-2"><%= staff.gender || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-0"><strong>Nationality:</strong> 
+                            <span class="ms-2"><%= staff.nationality || 'N/A' %></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Contact Information</h4>
+                    
+                    <hr>
+                    
+                    <div class="text-start">
+                        <p class="text-muted mb-2"><strong>Emergency Contact:</strong> 
+                            <span class="ms-2"><%= staff.emergencyContactName || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Emergency Phone:</strong>
+                            <span class="ms-2"><%= staff.emergencyContactNumber || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-0"><strong>Address:</strong> 
+                            <span class="ms-2"><%= staff.address || 'N/A' %></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geographical Information -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="header-title mt-0 mb-3">Geographical Information</h4>
+                    
+                    <hr>
+                    
+                    <div class="text-start">
+                        <p class="text-muted mb-2"><strong>State of Origin:</strong> 
+                            <span class="ms-2"><%= staff.stateOfOrigin || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>LGA of Origin:</strong>
+                            <span class="ms-2"><%= staff.localGovernment || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-2"><strong>Residential State:</strong> 
+                            <span class="ms-2"><%= staff.residentialState || 'N/A' %></span>
+                        </p>
+
+                        <p class="text-muted mb-0"><strong>Residential LGA:</strong> 
+                            <span class="ms-2"><%= staff.residentialLGA || 'N/A' %></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8">
+            <!-- Professional Information -->
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">Professional Information</h4>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Position</strong></label>
+                                <p class="text-muted"><%= staff.position || 'N/A' %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Department</strong></label>
+                                <p class="text-muted"><%= staff.department || 'N/A' %></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Joining Date</strong></label>
+                                <p class="text-muted"><%= staff.joiningDate ? moment(staff.joiningDate).format('MMMM Do, YYYY') : 'N/A' %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Years of Service</strong></label>
+                                <p class="text-muted">
+                                    <% if (staff.joiningDate) { %>
+                                        <%= moment().diff(moment(staff.joiningDate), 'years') %> years
+                                    <% } else { %>
+                                        N/A
+                                    <% } %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Employee ID</strong></label>
+                                <p class="text-muted">STF-<%= staff.id.toString().padStart(4, '0') %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><strong>Status</strong></label>
+                                <p class="text-muted">
+                                    <span class="badge bg-<%= staff.is_active ? 'success' : 'danger' %>">
+                                        <%= staff.is_active ? 'Active' : 'Inactive' %>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Responsibilities -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">Responsibilities</h4>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Student enrollment and registration
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Financial management and fee collection
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Facility management and maintenance
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Event planning and coordination
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Administrative support for faculty
+                        </li>
+                        <li class="list-group-item">
+                            <i class="mdi mdi-check-circle-outline text-success me-1"></i>
+                            Inventory and supplies management
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            
+            <!-- Quick Actions -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">Quick Actions</h4>
+                    
+                    <div class="row">
+                        
+                        <div class="col-md-3">
+                            <a href="mailto:<%= staff.email %>" class="btn btn-outline-success w-100 mb-2">
+                                <i class="mdi mdi-email me-1"></i> Send Email
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="tel:<%= staff.phone %>" class="btn btn-outline-info w-100 mb-2">
+                                <i class="mdi mdi-phone me-1"></i> Call Staff
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © School Management System
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+        </div>
+        <!-- END wrapper -->
+
+        <!-- Right Sidebar -->
+        <!-- (content remains the same) -->
+
+        <!-- bundle -->
+        <script src="/assets/js/vendor.min.js"></script>
+        <script src="/assets/js/app.min.js"></script>
+
+        <!-- third party js -->
+        <script src="/assets/js/vendor/Chart.bundle.min.js"></script>
+        <!-- third party js ends -->
+
+        <!-- demo app -->
+        <script src="/assets/js/pages/demo.profile.js"></script>
+        <!-- end demo js-->
+    </body>
+</html>

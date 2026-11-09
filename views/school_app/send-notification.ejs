@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8">
+   <title>Send Notification - Admin Panel</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+   <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+   <style>
+      .notification-card {
+         transition: all 0.3s ease;
+         border-radius: 15px;
+      }
+
+      .recipient-card {
+         cursor: pointer;
+         transition: all 0.2s;
+         border: 1px solid #e9ecef;
+         border-radius: 10px;
+         padding: 0.75rem;
+         margin-bottom: 0.5rem;
+      }
+
+      .recipient-card:hover {
+         background: #f8fafd;
+         border-color: #3b5de7;
+      }
+
+      .recipient-card.selected {
+         background: #eef2ff;
+         border-color: #3b5de7;
+      }
+
+      .btn-send {
+         background: linear-gradient(135deg, #3b5de7, #2a4cd0);
+         border: none;
+         padding: 10px 30px;
+         border-radius: 25px;
+         font-weight: 500;
+      }
+
+      .btn-send:hover {
+         transform: translateY(-2px);
+         box-shadow: 0 5px 15px rgba(59, 93, 231, 0.3);
+      }
+
+      .notification-type {
+         cursor: pointer;
+         padding: 0.5rem;
+         border-radius: 8px;
+         transition: all 0.2s;
+         text-align: center;
+         flex: 1;
+      }
+
+      .notification-type:hover {
+         background: #f8f9fa;
+      }
+
+      .notification-type.active {
+         background: #e8f0fe;
+         border-left: 3px solid #3b5de7;
+      }
+
+      .recipient-count-badge {
+         font-size: 0.8rem;
+         margin-left: 8px;
+      }
+
+      .list-group-item {
+         transition: background-color 0.2s;
+      }
+
+      .list-group-item:hover {
+         background-color: #f8f9fa;
+      }
+
+      .loading-overlay {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.6);
+         z-index: 9999;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         flex-direction: column;
+      }
+
+      .loading-spinner {
+         width: 50px;
+         height: 50px;
+         border: 4px solid #f3f3f3;
+         border-top: 4px solid #3b5de7;
+         border-radius: 50%;
+         animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+         0% {
+            transform: rotate(0deg);
+         }
+
+         100% {
+            transform: rotate(360deg);
+         }
+      }
+   </style>
+</head>
+
+<body class="loading"
+   data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+   <div class="wrapper">
+      <!-- Left Sidebar -->
+      <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+
+      <div class="content-page">
+         <div class="content">
+            <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-12">
+                     <div class="page-title-box">
+                        <h4 class="page-title">
+                           <i class="mdi mdi-bell-ring me-2"></i>Send Notification
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Messages -->
+               <% if (success) { %>
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                     <i class="bi bi-check-circle me-2"></i>
+                     <%= success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  </div>
+                  <% } %>
+                     <% if (error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                           <i class="bi bi-exclamation-triangle me-2"></i>
+                           <%= error %>
+                              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <% } %>
+
+                           <div class="row">
+                              <!-- Recipient Selection -->
+                              <div class="col-lg-4">
+                                 <div class="card notification-card">
+                                    <div class="card-header bg-white">
+                                       <h5 class="mb-0">
+                                          <i class="bi bi-people me-2 text-primary"></i>
+                                          Select Recipients
+                                          <span id="recipientCountBadge" class="badge bg-primary recipient-count-badge"
+                                             style="display: none;">0</span>
+                                       </h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="mb-3">
+                                          <label class="form-label">Quick Select</label>
+                                          <div class="d-grid gap-2">
+                                             <button type="button" class="btn btn-outline-primary"
+                                                onclick="selectAllTeachers()">
+                                                <i class="bi bi-person-badge me-2"></i> All Teachers
+                                             </button>
+                                             <button type="button" class="btn btn-outline-success"
+                                                onclick="selectAllParents()">
+                                                <i class="bi bi-people me-2"></i> All Parents
+                                             </button>
+                                          </div>
+                                       </div>
+
+                                       <hr>
+
+                                       <div class="mb-3">
+                                          <label class="form-label">
+                                             Teachers
+                                             <span id="teacherCount" class="badge bg-secondary">0</span>
+                                          </label>
+                                          <div class="list-group list-group-flush"
+                                             style="max-height: 250px; overflow-y: auto;">
+                                             <% if (teachers && teachers.length> 0) { %>
+                                                <% for(var i=0; i < teachers.length; i++) { var teacher=teachers[i]; %>
+                                                   <div class="list-group-item">
+                                                      <div class="form-check">
+                                                         <input class="form-check-input teacher-checkbox"
+                                                            type="checkbox" value="<%= teacher.id %>"
+                                                            id="teacher_<%= teacher.id %>" data-type="teacher"
+                                                            data-name="<%= teacher.firstName %> <%= teacher.lastName %>">
+                                                         <label class="form-check-label"
+                                                            for="teacher_<%= teacher.id %>">
+                                                            <strong>
+                                                               <%= teacher.firstName %>
+                                                                  <%= teacher.lastName %>
+                                                            </strong>
+                                                            <br>
+                                                            <small class="text-muted">
+                                                               <%= teacher.email %>
+                                                            </small>
+                                                         </label>
+                                                      </div>
+                                                   </div>
+                                                   <% } %>
+                                                      <% } else { %>
+                                                         <div class="text-muted text-center py-3">No teachers found
+                                                         </div>
+                                                         <% } %>
+                                          </div>
+                                       </div>
+
+                                       <div class="mb-3">
+                                          <label class="form-label">
+                                             Parents
+                                             <span id="parentCount" class="badge bg-secondary">0</span>
+                                          </label>
+                                          <div class="list-group list-group-flush"
+                                             style="max-height: 250px; overflow-y: auto;">
+                                             <% if (parents && parents.length> 0) { %>
+                                                <% for(var i=0; i < parents.length; i++) { var parent=parents[i]; %>
+                                                   <div class="list-group-item">
+                                                      <div class="form-check">
+                                                         <input class="form-check-input parent-checkbox" type="checkbox"
+                                                            value="<%= parent.id %>" id="parent_<%= parent.id %>"
+                                                            data-type="parent"
+                                                            data-name="<%= parent.first_name %> <%= parent.last_name %>">
+                                                         <label class="form-check-label" for="parent_<%= parent.id %>">
+                                                            <strong>
+                                                               <%= parent.first_name %>
+                                                                  <%= parent.last_name %>
+                                                            </strong>
+                                                            <br>
+                                                            <small class="text-muted">
+                                                               <%= parent.email %>
+                                                            </small>
+                                                         </label>
+                                                      </div>
+                                                   </div>
+                                                   <% } %>
+                                                      <% } else { %>
+                                                         <div class="text-muted text-center py-3">No parents found</div>
+                                                         <% } %>
+                                          </div>
+                                       </div>
+
+                                       <div class="mt-3 p-2 bg-light rounded">
+                                          <small class="text-muted">
+                                             <i class="bi bi-info-circle me-1"></i>
+                                             Selected recipients will receive this notification in their dashboard.
+                                          </small>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <!-- Notification Form -->
+                              <div class="col-lg-8">
+                                 <div class="card notification-card">
+                                    <div class="card-header bg-white">
+                                       <h5 class="mb-0">
+                                          <i class="bi bi-envelope-paper me-2 text-primary"></i>
+                                          Notification Details
+                                       </h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <form method="POST" action="/send-notification" id="notificationForm">
+                                          <input type="hidden" name="recipientType" id="recipientType" value="">
+                                          <input type="hidden" name="recipientIds" id="recipientIds" value="">
+
+                                          <div class="mb-3">
+                                             <label class="form-label">Notification Type</label>
+                                             <div class="d-flex gap-3">
+                                                <div class="notification-type" onclick="setNotificationType('info')">
+                                                   <i class="bi bi-info-circle text-info fs-4"></i>
+                                                   <div>Info</div>
+                                                </div>
+                                                <div class="notification-type" onclick="setNotificationType('success')">
+                                                   <i class="bi bi-check-circle text-success fs-4"></i>
+                                                   <div>Success</div>
+                                                </div>
+                                                <div class="notification-type" onclick="setNotificationType('warning')">
+                                                   <i class="bi bi-exclamation-triangle text-warning fs-4"></i>
+                                                   <div>Warning</div>
+                                                </div>
+                                                <div class="notification-type" onclick="setNotificationType('danger')">
+                                                   <i class="bi bi-x-circle text-danger fs-4"></i>
+                                                   <div>Urgent</div>
+                                                </div>
+                                             </div>
+                                             <input type="hidden" name="notificationType" id="notificationType"
+                                                value="info">
+                                          </div>
+
+                                          <div class="mb-3">
+                                             <label class="form-label">Subject <span
+                                                   class="text-danger">*</span></label>
+                                             <input type="text" class="form-control" name="subject" required
+                                                placeholder="e.g., Important Update, Meeting Reminder, etc.">
+                                          </div>
+
+                                          <div class="mb-3">
+                                             <label class="form-label">Message <span
+                                                   class="text-danger">*</span></label>
+                                             <textarea class="form-control" name="message" rows="6" required
+                                                placeholder="Write your notification message here..."></textarea>
+                                             <small class="text-muted">Maximum 2000 characters</small>
+                                          </div>
+
+                                          <div class="mb-3">
+                                             <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="sendEmail"
+                                                   id="sendEmail">
+                                                <label class="form-check-label" for="sendEmail">
+                                                   <i class="bi bi-envelope me-1"></i> Send email notification as well
+                                                </label>
+                                             </div>
+                                             <div class="form-check mt-2">
+                                                <input class="form-check-input" type="checkbox" name="sendSMS"
+                                                   id="sendSMS">
+                                                <label class="form-check-label" for="sendSMS">
+                                                   <i class="bi bi-phone me-1"></i> Send SMS notification (if phone
+                                                   number available)
+                                                </label>
+                                             </div>
+                                          </div>
+
+                                          <div class="d-grid">
+                                             <button type="button" class="btn btn-send text-white"
+                                                onclick="sendNotification()">
+                                                <i class="bi bi-send me-2"></i> Send Notification
+                                             </button>
+                                          </div>
+                                       </form>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+            </div>
+         </div>
+
+         <footer class="footer">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - School Management
+                     System
+                  </div>
+                  <div class="col-md-6 text-md-end">
+                     <a href="#" class="text-muted text-decoration-none small">Support</a>
+                     <span class="text-muted mx-1">|</span>
+                     <a href="#" class="text-muted text-decoration-none small">Privacy</a>
+                  </div>
+               </div>
+            </div>
+         </footer>
+      </div>
+   </div>
+
+   <script src="/assets/js/vendor.min.js"></script>
+   <script src="/assets/js/app.min.js"></script>
+   <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+   <script>
+      let selectedTeacherIds = [];
+      let selectedParentIds = [];
+
+      function updateCounters() {
+         $('#teacherCount').text(selectedTeacherIds.length);
+         $('#parentCount').text(selectedParentIds.length);
+         const total = selectedTeacherIds.length + selectedParentIds.length;
+
+         if (total > 0) {
+            $('#recipientCountBadge').text(total).show();
+         } else {
+            $('#recipientCountBadge').hide();
+         }
+      }
+
+      // Track teacher checkbox changes
+      $('.teacher-checkbox').change(function () {
+         const value = $(this).val();
+         if ($(this).is(':checked')) {
+            if (!selectedTeacherIds.includes(value)) {
+               selectedTeacherIds.push(value);
+            }
+         } else {
+            selectedTeacherIds = selectedTeacherIds.filter(id => id !== value);
+         }
+         updateCounters();
+      });
+
+      // Track parent checkbox changes
+      $('.parent-checkbox').change(function () {
+         const value = $(this).val();
+         if ($(this).is(':checked')) {
+            if (!selectedParentIds.includes(value)) {
+               selectedParentIds.push(value);
+            }
+         } else {
+            selectedParentIds = selectedParentIds.filter(id => id !== value);
+         }
+         updateCounters();
+      });
+
+      function selectAllTeachers() {
+         const allTeachers = $('.teacher-checkbox');
+         const allChecked = allTeachers.length === selectedTeacherIds.length;
+
+         if (allChecked) {
+            $('.teacher-checkbox').prop('checked', false);
+            selectedTeacherIds = [];
+         } else {
+            $('.teacher-checkbox').prop('checked', true);
+            $('.teacher-checkbox').each(function () {
+               const value = $(this).val();
+               if (!selectedTeacherIds.includes(value)) {
+                  selectedTeacherIds.push(value);
+               }
+            });
+         }
+         updateCounters();
+      }
+
+      function selectAllParents() {
+         const allParents = $('.parent-checkbox');
+         const allChecked = allParents.length === selectedParentIds.length;
+
+         if (allChecked) {
+            $('.parent-checkbox').prop('checked', false);
+            selectedParentIds = [];
+         } else {
+            $('.parent-checkbox').prop('checked', true);
+            $('.parent-checkbox').each(function () {
+               const value = $(this).val();
+               if (!selectedParentIds.includes(value)) {
+                  selectedParentIds.push(value);
+               }
+            });
+         }
+         updateCounters();
+      }
+
+      let notificationType = 'info';
+
+      function setNotificationType(type) {
+         notificationType = type;
+         $('#notificationType').val(type);
+
+         $('.notification-type').removeClass('active');
+         $('.notification-type').each(function () {
+            if ($(this).find('i').hasClass('text-' + type)) {
+               $(this).addClass('active');
+            }
+         });
+      }
+
+      function showLoading() {
+         const overlay = document.createElement('div');
+         overlay.id = 'loadingOverlay';
+         overlay.className = 'loading-overlay';
+         overlay.innerHTML = `
+            <div class="loading-spinner"></div>
+            <div class="text-white mt-3" style="font-weight: 500;">Sending notifications...</div>
+         `;
+         document.body.appendChild(overlay);
+      }
+
+      function hideLoading() {
+         const overlay = document.getElementById('loadingOverlay');
+         if (overlay) overlay.remove();
+      }
+
+      function sendNotification() {
+         const subject = $('input[name="subject"]').val().trim();
+         const message = $('textarea[name="message"]').val().trim();
+
+         if (!subject) {
+            alert('Please enter a subject');
+            return;
+         }
+         if (!message) {
+            alert('Please enter a message');
+            return;
+         }
+         if (selectedTeacherIds.length === 0 && selectedParentIds.length === 0) {
+            alert('Please select at least one recipient');
+            return;
+         }
+
+         // Create form data manually
+         const formData = new FormData();
+         formData.append('subject', subject);
+         formData.append('message', message);
+         formData.append('notificationType', notificationType);
+         formData.append('sendEmail', $('#sendEmail').is(':checked') ? 'on' : '');
+         formData.append('sendSMS', $('#sendSMS').is(':checked') ? 'on' : '');
+
+         // Add teacher IDs
+         for (let i = 0; i < selectedTeacherIds.length; i++) {
+            formData.append('teacherIds[]', selectedTeacherIds[i]);
+         }
+
+         // Add parent IDs
+         for (let i = 0; i < selectedParentIds.length; i++) {
+            formData.append('parentIds[]', selectedParentIds[i]);
+         }
+
+         const totalRecipients = selectedTeacherIds.length + selectedParentIds.length;
+
+         if (confirm(`Send notification to ${totalRecipients} recipient(s)?`)) {
+            showLoading();
+
+            fetch('/send-notification', {
+               method: 'POST',
+               body: formData
+            }).then(response => response.json()).then(data => {
+               hideLoading();
+               if (data.success) {
+                  alert(data.message);
+                  // Reset form
+                  $('input[name="subject"]').val('');
+                  $('textarea[name="message"]').val('');
+                  $('.teacher-checkbox, .parent-checkbox').prop('checked', false);
+                  selectedTeacherIds = [];
+                  selectedParentIds = [];
+                  updateCounters();
+                  location.reload();
+               } else {
+                  alert('Error: ' + data.error);
+               }
+            }).catch(error => {
+               hideLoading();
+               console.error('Error:', error);
+               alert('Failed to send notification: ' + error.message);
+            });
+         }
+      }
+
+      // Initialize counters
+      updateCounters();
+
+      // Auto-dismiss alerts
+      setTimeout(function () {
+         var alerts = document.querySelectorAll('.alert');
+         for (var i = 0; i < alerts.length; i++) {
+            setTimeout(function (alert) {
+               if (alert) alert.remove();
+            }, 5000, alerts[i]);
+         }
+      }, 1000);
+   </script>
+</body>
+
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>All Children - Parent Portal | EduSuite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="Parent portal children directory with complete academic, fee, and attendance actions" name="description" />
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="/assets/css/school-dashboard.css" rel="stylesheet" type="text/css">
+    
+    <style>
+        .child-card-premium {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            transition: all 0.25s ease-in-out;
+            background: #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            overflow: hidden;
+            position: relative;
+        }
+        .child-card-premium:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(30, 60, 114, 0.12);
+            border-color: #cbd5e1;
+        }
+        .child-card-header {
+            padding: 20px 22px 16px 22px;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .child-avatar-pill {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #3b5de7 0%, #1e3c72 100%);
+            box-shadow: 0 4px 12px rgba(59, 93, 231, 0.25);
+            flex-shrink: 0;
+        }
+        .stat-card-modern {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #3b5de7;
+        }
+        .stat-card-modern.green::before { background: #10b981; }
+        .stat-card-modern.amber::before { background: #f59e0b; }
+        .stat-card-modern.rose::before { background: #ef4444; }
+        .stat-number-modern {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .attendance-ring {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .ring-high { background: #ecfdf5; color: #047857; border: 2px solid #a7f3d0; }
+        .ring-med { background: #fffbeb; color: #b45309; border: 2px solid #fde68a; }
+        .ring-low { background: #fef2f2; color: #b91c1c; border: 2px solid #fecaca; }
+        .bill-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+        .action-grid-btn {
+            padding: 8px 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .action-grid-btn:hover {
+            transform: translateY(-2px);
+        }
+        .pay-primary-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            border: none;
+            padding: 11px 16px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            border-radius: 10px;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .pay-primary-btn:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45);
+        }
+        .pay-paid-btn {
+            background: #f1f5f9;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+            padding: 10px 16px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .pay-paid-btn:hover {
+            background: #ecfdf5;
+            color: #047857;
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <div class="wrapper">
+        <!-- Left Sidebar -->
+        <%- include('partials/parent-sidebar') %>
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/parent-navbar') %>
+
+                <div class="container-fluid pt-3 pb-4">
+                    <!-- Page Title & Header -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="page-title-box d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h4 class="page-title mb-0 fw-bold">
+                                        <i class="bi bi-people-fill me-2 text-primary"></i>All Children
+                                    </h4>
+                                    <p class="text-muted small mb-0">View all your registered children and perform individual actions for fees, reports, and attendance.</p>
+                                </div>
+                                <div class="page-title-right d-none d-sm-block">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold">
+                                        <i class="bi bi-calendar-range me-1"></i> <%= currentAcademicYear %> · <%= currentTerm %>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direct Action Guidance Notice (if redirected from another tab) -->
+                    <% if (typeof selectNotice !== 'undefined' && selectNotice) { %>
+                        <div class="alert alert-primary alert-dismissible fade show shadow-sm rounded-3 mb-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-info-circle-fill fs-3 me-3 text-primary"></i>
+                                <div>
+                                    <strong>Select a Student:</strong> Please choose the specific action button under your child below to proceed with 
+                                    <%= selectType === 'payment' ? 'Fee Payment' : (selectType === 'fees' ? 'Fee Statements & Receipts' : (selectType === 'reports' ? 'Report Cards' : (selectType === 'grades' ? 'Subject Grades' : 'Attendance Records'))) %>.
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Summary Statistics Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-xl-3 col-sm-6">
+                            <div class="stat-card-modern">
+                                <div class="stat-number-modern"><%= stats.totalChildren %></div>
+                                <div class="text-muted small text-uppercase fw-semibold">Registered Children</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-sm-6">
+                            <div class="stat-card-modern green">
+                                <div class="stat-number-modern text-success"><%= stats.averageAttendance %>%</div>
+                                <div class="text-muted small text-uppercase fw-semibold">Average Attendance</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-sm-6">
+                            <div class="stat-card-modern amber">
+                                <div class="stat-number-modern text-warning"><%= stats.averageScore %>%</div>
+                                <div class="text-muted small text-uppercase fw-semibold">Average Performance</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-sm-6">
+                            <div class="stat-card-modern rose">
+                                <div class="stat-number-modern text-danger">₦<%= Math.max(0, stats.totalFeesDue - stats.totalFeesPaid).toLocaleString() %></div>
+                                <div class="text-muted small text-uppercase fw-semibold">Total Balance Due</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Children List Grid -->
+                    <div class="row g-4">
+                        <% if (children && children.length > 0) { 
+                            children.forEach(function(child) { 
+                                const initial = child.firstName ? child.firstName.charAt(0).toUpperCase() : 'S';
+                                const attClass = child.attendancePercentage >= 75 ? 'ring-high' : (child.attendancePercentage >= 50 ? 'ring-med' : 'ring-low');
+                                const balance = Math.max(0, (child.fees_total || 0) - (child.fees_paid || 0));
+                                const isHalfPaid = child.feeStatus === 'Half Paid (1/2)';
+                                const isFullyPaid = child.feeStatus === 'Fully Paid';
+                        %>
+                            <div class="col-lg-6 col-xl-4">
+                                <div class="child-card-premium h-100 d-flex flex-column">
+                                    <!-- Child Header Info -->
+                                    <div class="child-card-header">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="child-avatar-pill">
+                                                    <%= initial %>
+                                                </div>
+                                                <div>
+                                                    <h5 class="mb-1 fw-bold text-dark"><%= child.fullName %></h5>
+                                                    <div class="text-muted small d-flex flex-wrap align-items-center gap-1">
+                                                        <span class="badge bg-light text-dark border">
+                                                            <i class="bi bi-mortarboard me-1 text-primary"></i><%= child.className || 'No Class' %>
+                                                        </span>
+                                                        <span class="text-muted small">· Adm: <strong><%= child.admission_number || 'N/A' %></strong></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Attendance Ring -->
+                                            <div class="attendance-ring <%= attClass %>" title="Term Attendance Rate">
+                                                <span><%= child.attendancePercentage %>%</span>
+                                                <small style="font-size: 8px; line-height: 1;">ATT</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-3 d-flex flex-column flex-grow-1 justify-content-between">
+                                        <!-- Academic Performance Summary -->
+                                        <div class="row g-2 text-center mb-3">
+                                            <div class="col-6">
+                                                <div class="p-2 bg-light rounded border">
+                                                    <small class="text-muted d-block small">Term Average</small>
+                                                    <span class="fw-bold fs-5 text-dark"><%= child.currentAverage %>%</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="p-2 bg-light rounded border">
+                                                    <small class="text-muted d-block small">Grade Rating</small>
+                                                    <span class="badge bg-<%= child.gradeClass %> fs-6 px-2 py-1">Grade <%= child.grade %></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Class Fee Bill & Outstanding Balance -->
+                                        <div class="bill-box mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span class="small fw-semibold text-muted text-uppercase">
+                                                    <i class="bi bi-receipt me-1"></i> Class Bill (<%= currentTerm %>)
+                                                </span>
+                                                <span class="badge bg-<%= child.feeStatusClass %> small">
+                                                    <%= child.feeStatus %>
+                                                </span>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between align-items-baseline mb-2">
+                                                <div>
+                                                    <span class="text-muted small d-block">Fixed Class Bill:</span>
+                                                    <strong class="text-dark fs-6">₦<%= (child.fees_total || 0).toLocaleString() %></strong>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="text-muted small d-block">Balance Owed:</span>
+                                                    <strong class="<%= balance > 0 ? 'text-danger' : 'text-success' %> fs-6">
+                                                        ₦<%= balance.toLocaleString() %>
+                                                    </strong>
+                                                </div>
+                                            </div>
+
+                                            <div class="progress mb-1" style="height: 6px;">
+                                                <div class="progress-bar bg-<%= child.feeStatusClass %>" style="width: <%= child.feePercentage %>%;"></div>
+                                            </div>
+                                            <div class="d-flex justify-content-between small text-muted" style="font-size: 0.75rem;">
+                                                <span>Paid: ₦<%= (child.fees_paid || 0).toLocaleString() %> (<%= child.feePercentage %>%)</span>
+                                                <span><%= child.termPaymentCount %>/2 payments made</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- ======================================================== -->
+                                        <!-- ALL NECESSARY ACTION BUTTONS UNDER EACH STUDENT -->
+                                        <!-- ======================================================== -->
+                                        <div class="pt-2 border-top">
+                                            <div class="small fw-bold text-muted text-uppercase mb-2" style="letter-spacing: 0.5px;">Student Actions</div>
+
+                                            <!-- 1. PRIMARY ACTION: PAY SCHOOL FEES (Class Bill Installment) -->
+                                            <div class="mb-2">
+                                                <% if (isFullyPaid) { %>
+                                                    <a href="/parent/fees?studentId=<%= child.id %>" class="pay-paid-btn w-100">
+                                                        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                                        <span>Fees Fully Settled · View Receipts</span>
+                                                    </a>
+                                                <% } else { %>
+                                                    <a href="/parent/make-payment?studentId=<%= child.id %>" class="pay-primary-btn w-100">
+                                                        <i class="bi bi-credit-card-2-front fs-5"></i>
+                                                        <span>
+                                                            Pay School Fees 
+                                                            <%= isHalfPaid ? '(Pay 2nd Half · ₦' + balance.toLocaleString() + ')' : '(Full or Half)' %>
+                                                        </span>
+                                                    </a>
+                                                <% } %>
+                                            </div>
+
+                                            <!-- 2. SECONDARY ACTION BUTTONS GRID -->
+                                            <div class="row g-2 mb-2">
+                                                <div class="col-6">
+                                                    <a href="/parent/fees?studentId=<%= child.id %>" class="btn btn-outline-primary action-grid-btn w-100" title="Fee Statement & History">
+                                                        <i class="bi bi-wallet2 text-primary"></i> Fee Statement
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="/parent/reports?studentId=<%= child.id %>&term=<%= encodeURIComponent(currentTerm) %>&academicYear=<%= encodeURIComponent(currentAcademicYear) %>" class="btn btn-outline-info action-grid-btn w-100" title="Term Report Card">
+                                                        <i class="bi bi-file-earmark-bar-graph text-info"></i> Report Card
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="/parent/attendance?studentId=<%= child.id %>&term=<%= encodeURIComponent(currentTerm) %>&academicYear=<%= encodeURIComponent(currentAcademicYear) %>" class="btn btn-outline-success action-grid-btn w-100" title="Attendance Records">
+                                                        <i class="bi bi-calendar-check text-success"></i> Attendance
+                                                    </a>
+                                                </div>
+                                                <div class="col-6">
+                                                    <a href="/parent/grades?studentId=<%= child.id %>&term=<%= encodeURIComponent(currentTerm) %>&academicYear=<%= encodeURIComponent(currentAcademicYear) %>" class="btn btn-outline-warning action-grid-btn w-100" title="Subject Grades">
+                                                        <i class="bi bi-clipboard-data text-warning"></i> Grades & Scores
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <!-- 3. VIEW PROFILE BUTTON -->
+                                            <a href="/parent/student-profile/<%= child.id %>" class="btn btn-light btn-sm text-secondary w-100 border py-1">
+                                                <i class="bi bi-person-badge me-1"></i> View Full Student Profile
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                        <% } else { %>
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm text-center py-5">
+                                    <div class="card-body">
+                                        <i class="bi bi-person-x text-muted display-4 d-block mb-3"></i>
+                                        <h4 class="text-dark fw-bold">No Children Linked</h4>
+                                        <p class="text-muted mx-auto" style="max-width: 450px;">
+                                            There are currently no students linked to your parent portal account. Please contact the school administration office to link your children.
+                                        </p>
+                                        <a href="/parent/contact" class="btn btn-primary btn-sm px-3">
+                                            <i class="bi bi-envelope me-1"></i> Contact School Office
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 text-muted">
+                            &copy; <%= new Date().getFullYear() %> EduSuite Parent Portal
+                        </div>
+                        <div class="col-md-6 text-md-end text-muted">
+                            Academic Session: <%= currentAcademicYear %> · <%= currentTerm %>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Vendor Scripts -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+</body>
+</html>

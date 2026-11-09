@@ -1,0 +1,439 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Manage Book Lists - School Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+    <meta content="Coderthemes" name="author">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <!-- third party css -->
+    <link href="assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
+    <!-- third party css end -->
+
+    <!-- App css -->
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        .filter-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .book-title {
+            font-weight: 500;
+            color: #3f51b5;
+        }
+
+        .badge-level {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+        }
+
+        .action-icon {
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+
+        .action-icon:hover {
+            opacity: 0.7;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .department-badge {
+            font-size: 0.85em;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+
+<body class="loading"
+    data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+
+                <!-- Start Content-->
+                <div class="container-fluid">
+
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Resources</a></li>
+                                        <li class="breadcrumb-item active">Book Lists</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Manage Book Lists</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+
+                    <% if (typeof error !=='undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <%= error %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                        </div>
+                        <% } %>
+
+                            <% if (typeof success !=='undefined' && success) { %>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <%= success %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                </div>
+                                <% } %>
+
+                                    <!-- Filter Section -->
+<div class="filter-card">
+    <form method="GET" action="/manage-book-lists" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label">Academic Year</label>
+            <select class="form-select" name="academicYear">
+                <option value="all">All Years</option>
+                <% if (academicYears && academicYears.length > 0) { %>
+                    <% for (var i = 0; i < academicYears.length; i++) { %>
+                        <% var year = academicYears[i]; %>
+                            <option value="<%= year.year_name %>"
+                                <%= (filters.academicYear === year.year_name) ? 'selected' : '' %>>
+                                <%= year.year_name %>
+                            </option>
+                    <% } %>
+                <% } %>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Class Level</label>
+            <select class="form-select" name="classLevel">
+                <option value="all">All Levels</option>
+                <% if (classLevels && classLevels.length > 0) { %>
+                    <% for (var i = 0; i < classLevels.length; i++) { %>
+                        <% var level = classLevels[i]; %>
+                            <option value="<%= level.level_name %>"
+                                <%= (filters.classLevel === level.level_name) ? 'selected' : '' %>>
+                                <%= level.level_name %>
+                            </option>
+                    <% } %>
+                <% } %>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Department</label>
+            <select class="form-select" name="department">
+                <option value="all">All Departments</option>
+                <% if (departments && departments.length > 0) { %>
+                    <% for (var i = 0; i < departments.length; i++) { %>
+                        <% var dept = departments[i]; %>
+                            <option value="<%= dept.dept_name %>"
+                                <%= (filters.department === dept.dept_name) ? 'selected' : '' %>>
+                                <%= dept.dept_name %>
+                            </option>
+                    <% } %>
+                <% } %>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Subject</label>
+            <select class="form-select" name="subject">
+                <option value="all">All Subjects</option>
+                <% if (subjects && subjects.length > 0) { %>
+                    <% for (var i = 0; i < subjects.length; i++) { %>
+                        <% var sub = subjects[i]; %>
+                            <option value="<%= sub.subject_name %>"
+                                <%= (filters.subject === sub.subject_name) ? 'selected' : '' %>>
+                                <%= sub.subject_name %>
+                            </option>
+                    <% } %>
+                <% } %>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-filter me-1"></i> Filter
+            </button>
+        </div>
+    </form>
+</div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row mb-2">
+                                                        <div class="col-sm-4">
+                                                            <a href="/manage-book-lists/form"
+                                                                class="btn btn-danger mb-2">
+                                                                <i class="mdi mdi-plus-circle me-2"></i> Add Book
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-sm-8">
+                                                            <div class="text-sm-end">
+                                                                <a href="/manage-book-lists/export<%= filters ? '?' + new URLSearchParams(filters).toString() : '' %>"
+                                                                    class="btn btn-success mb-2 me-1">
+                                                                    <i class="mdi mdi-download"></i> Export CSV
+                                                                </a>
+                                                                <a href="/books/print" class="btn btn-light mb-2">
+                                                                    <i class="mdi mdi-printer"></i> Print
+                                                                </a>
+                                                            </div>
+                                                        </div><!-- end col-->
+                                                    </div>
+
+                                                    <div class="table-responsive">
+                                                        <table
+                                                            class="table table-centered table-striped dt-responsive nowrap w-100"
+                                                            id="bookListTable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style="width: 20px;">
+                                                                        <div class="form-check">
+                                                                            <input type="checkbox"
+                                                                                class="form-check-input"
+                                                                                id="customCheckAll">
+                                                                            <label class="form-check-label"
+                                                                                for="customCheckAll">&nbsp;</label>
+                                                                        </div>
+                                                                    </th>
+                                                                    <th>Academic Year</th>
+                                                                    <th>Class Level</th>
+                                                                    <th>Department</th>
+                                                                    <th>Subject</th>
+                                                                    <th>Title</th>
+                                                                    <th>Author</th>
+                                                                    <th>ISBN</th>
+                                                                    <th>Quantity</th>
+                                                                    <th style="width: 130px;">Action</th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                <% if (bookLists && bookLists.length> 0) { %>
+                                                                    <% for (var i=0; i < bookLists.length; i++) { %>
+                                                                        <% var book=bookLists[i]; %>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="form-check">
+                                                                                        <input type="checkbox"
+                                                                                            class="form-check-input"
+                                                                                            id="customCheck<%= book.id %>">
+                                                                                        <label class="form-check-label"
+                                                                                            for="customCheck<%= book.id %>">&nbsp;</label>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <span class="badge bg-info">
+                                                                                        <%= book.academic_year || '-' %>
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <span class="badge bg-primary">
+                                                                                        <%= book.class_level || '-' %>
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= book.department || '-' %>
+                                                                                        <% if (book.department) { %>
+                                                                                            <span
+                                                                                                class="department-badge">
+                                                                                                <%= book.department %>
+                                                                                            </span>
+                                                                                            <% } %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <span class="book-title">
+                                                                                        <%= book.subject || '-' %>
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <a href="javascript:void(0);"
+                                                                                        class="text-body fw-semibold">
+                                                                                        <%= book.title || '-' %>
+                                                                                    </a>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= book.author || '-' %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= book.isbn || '-' %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <span class="badge bg-secondary">
+                                                                                        <%= book.quantity || 0 %>
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td class="text-nowrap">
+                                                                                    <a href="/manage-book-lists/form?id=<%= book.id %>"
+                                                                                        class="action-icon text-primary me-2"
+                                                                                        title="Edit book">
+                                                                                        <i
+                                                                                            class="mdi mdi-square-edit-outline"></i>
+                                                                                    </a>
+                                                                                    <a href="javascript:void(0);"
+                                                                                        class="action-icon text-danger"
+                                                                                        title="Delete book"
+                                                                                        onclick="deleteBook(<%= book.id %>)">
+                                                                                        <i class="mdi mdi-delete"></i>
+                                                                                    </a>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <% } %>
+                                                                                <% } else { %>
+                                                                                    <tr>
+                                                                                        <td colspan="10"
+                                                                                            class="text-center text-muted py-4">
+                                                                                            <i
+                                                                                                class="mdi mdi-book-open-page-variant fs-1 d-block mb-2"></i>
+                                                                                            No books found.
+                                                                                            <a
+                                                                                                href="/manage-book-lists/form">Add
+                                                                                                your first book</a>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <% } %>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div> <!-- end card-body-->
+                                            </div> <!-- end card-->
+                                        </div> <!-- end col -->
+                                    </div>
+                                    <!-- end row -->
+
+                </div> <!-- container -->
+
+            </div> <!-- content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> © EduSuite
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
+
+    </div>
+    <!-- END wrapper -->
+
+    
+    <!-- bundle -->
+    <script src="assets/js/vendor.min.js"></script>
+    <script src="assets/js/app.min.js"></script>
+
+    <!-- third party js -->
+    <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
+    <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
+    <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
+    <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
+    <script src="assets/js/vendor/dataTables.checkboxes.min.js"></script>
+    <!-- third party js ends -->
+
+    <script>
+        $(document).ready(function () {
+            $('#bookListTable').DataTable({
+                responsive: true,
+                columnDefs: [
+                    { orderable: false, targets: [0, 9] },
+                    { searchable: false, targets: [0, 9] }
+                ],
+                order: [[1, 'asc']],
+                pageLength: 10,
+                language: {
+                    paginate: {
+                        previous: "<i class='mdi mdi-chevron-left'>",
+                        next: "<i class='mdi mdi-chevron-right'>"
+                    }
+                },
+                drawCallback: function () {
+                    $('.dataTables_paginate > .pagination').addClass('pagination-rounded');
+                }
+            });
+        });
+
+        function deleteBook(id) {
+            if (confirm('Are you sure you want to delete this book entry?')) {
+                window.location.href = '/manage-book-lists/delete/' + id;
+            }
+        }
+
+        function markRead(id) {
+            fetch('/api/admin/notifications/mark-read/' + id, { method: 'POST' })
+                .then(function (r) { if (r.ok) location.reload(); });
+        }
+
+        function markAllRead() {
+            fetch('/api/admin/notifications/mark-all-read', { method: 'POST' })
+                .then(function (r) { if (r.ok) location.reload(); });
+        }
+
+        // Auto-dismiss alerts
+        setTimeout(function () {
+            document.querySelectorAll('.alert').forEach(function (alert) {
+                setTimeout(function () {
+                    alert.classList.remove('show');
+                    setTimeout(function () { alert.remove(); }, 300);
+                }, 5000);
+            });
+        }, 5000);
+
+        // Check all checkbox
+        document.getElementById('customCheckAll')?.addEventListener('change', function () {
+            var checkboxes = document.querySelectorAll('tbody .form-check-input');
+            checkboxes.forEach(function (cb) {
+                cb.checked = this.checked;
+            }, this);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Mark Attendance - EduSuite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/assets/images/favicon.png">
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .attendance-badge { font-size: 0.85rem; padding: 0.35em 0.65em; }
+        .day-selector .nav-link { padding: 0.5rem 1rem; }
+        .day-selector .nav-link.active { background-color: #0d6efd; color: white; }
+        .session-selector .btn { min-width: 100px; }
+        .student-attendance-row { transition: background-color 0.2s; }
+        .student-attendance-row:hover { background-color: #f8f9fa; }
+        .notification-unread { background-color: #e8f0fe; border-left: 3px solid #3b5de7; }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3b5de7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn-save-loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/app-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/app-navbar') %>
+                <!-- end Topbar -->
+
+                <!-- Start Content-->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="/teacher-dashboard">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="javascript:void(0);">Attendance</a></li>
+                                        <li class="breadcrumb-item active">Mark Attendance</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Mark Attendance</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Success Message -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i> <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <!-- Selection Form -->
+                                    <form id="attendanceSelection" method="GET" action="/mark-attendance" class="row g-3 mb-4">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Academic Year</label>
+                                            <select class="form-select" name="academicYear" required>
+                                                <option value="">Select Academic Year</option>
+                                                <% if (academicYears && academicYears.length > 0) { 
+                                                    for(var i = 0; i < academicYears.length; i++) { 
+                                                        var year = academicYears[i]; %>
+                                                        <option value="<%= year.year_name %>" <%= selectedAcademicYear == year.year_name ? 'selected' : '' %>>
+                                                            <%= year.year_name %>
+                                                        </option>
+                                                <% } 
+                                                } else { %>
+                                                    <option value="">No academic years available</option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">Term</label>
+                                            <select class="form-select" name="term" required>
+                                                <option value="">Select Term</option>
+                                                <% if (terms && terms.length > 0) { 
+                                                    for(var i = 0; i < terms.length; i++) { 
+                                                        var termItem = terms[i]; %>
+                                                        <option value="<%= termItem.term_name %>" <%= selectedTerm == termItem.term_name ? 'selected' : '' %>>
+                                                            <%= termItem.term_name %>
+                                                        </option>
+                                                <% } 
+                                                } else { %>
+                                                    <option value="">No terms available</option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label class="form-label">Week</label>
+                                            <select class="form-select" name="week" <%= !selectedAcademicYear || !selectedTerm ? 'disabled' : '' %>>
+                                                <option value="">Select Week</option>
+                                                <% if (weeks && weeks.length > 0) { 
+                                                    for(var i = 0; i < weeks.length; i++) { 
+                                                        var weekNum = weeks[i]; %>
+                                                        <option value="<%= weekNum %>" <%= selectedWeek == weekNum ? 'selected' : '' %>>
+                                                            Week <%= weekNum %>
+                                                        </option>
+                                                <% } 
+                                                } %>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="form-label">Class</label>
+                                            <select class="form-select" name="classId" required>
+                                                <option value="">Select Class</option>
+                                                <% if (classes && classes.length > 0) { 
+                                                    for(var i = 0; i < classes.length; i++) { 
+                                                        var cls = classes[i]; %>
+                                                        <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>>
+                                                            <%= cls.className %> 
+                                                            <% if (cls.department) { %>(<%= cls.department %>)<% } %>
+                                                        </option>
+                                                <% } 
+                                                } else { %>
+                                                    <option value="">No classes assigned</option>
+                                                <% } %>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                <i class="uil uil-search me-1"></i> Load
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <!-- Day and Session Selector -->
+                                    <% if (selectedAcademicYear && selectedTerm && selectedWeek && selectedClassId && weekDays && weekDays.length > 0) { %>
+                                    <div class="row mb-4">
+                                        <div class="col-md-8">
+                                            <label class="form-label">Select Day:</label>
+                                            <div class="nav nav-pills day-selector">
+                                                <% for(var i = 0; i < weekDays.length; i++) { 
+                                                    var dayItem = weekDays[i]; %>
+                                                    <a class="nav-link <%= selectedDay == dayItem.dayNumber ? 'active' : '' %>" 
+                                                       href="/mark-attendance?academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>&week=<%= selectedWeek %>&day=<%= dayItem.dayNumber %>&classId=<%= selectedClassId %>&session=<%= selectedSession %>">
+                                                        <%= dayItem.formatted %>
+                                                    </a>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-4">
+                                            <label class="form-label">Select Session:</label>
+                                            <div class="btn-group w-100 session-selector" role="group">
+                                                <a class="btn <%= selectedSession == 'morning' ? 'btn-primary' : 'btn-outline-primary' %>"
+                                                   href="/mark-attendance?academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>&week=<%= selectedWeek %>&day=<%= selectedDay %>&classId=<%= selectedClassId %>&session=morning">
+                                                    Morning
+                                                </a>
+                                                <a class="btn <%= selectedSession == 'afternoon' ? 'btn-primary' : 'btn-outline-primary' %>"
+                                                   href="/mark-attendance?academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>&week=<%= selectedWeek %>&day=<%= selectedDay %>&classId=<%= selectedClassId %>&session=afternoon">
+                                                    Afternoon
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+
+                                    <!-- Attendance Form -->
+                                    <% if (selectedDate && students && students.length > 0) { %>
+                                    <form id="attendanceForm">
+                                        <input type="hidden" name="classId" value="<%= selectedClassId %>">
+                                        <input type="hidden" name="date" value="<%= selectedDate %>">
+                                        <input type="hidden" name="academicYear" value="<%= selectedAcademicYear %>">
+                                        <input type="hidden" name="term" value="<%= selectedTerm %>">
+                                        <input type="hidden" name="session" value="<%= selectedSession %>">
+                                        
+                                        <div class="alert alert-info">
+                                            <strong>Marking attendance for:</strong><br>
+                                            Date: <%= moment(selectedDate).format('dddd, MMMM D, YYYY') %><br>
+                                            Session: <%= selectedSession.charAt(0).toUpperCase() + selectedSession.slice(1) %><br>
+                                            Academic Year: <%= selectedAcademicYear %>, Term: <%= selectedTerm %>, Week: <%= selectedWeek %>
+                                        </div>
+                                        
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Admission No</th>
+                                                        <th>Student Name</th>
+                                                        <th>Status</th>
+                                                        <th>Notes</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% for(var i = 0; i < students.length; i++) { 
+                                                        var student = students[i]; %>
+                                                        <tr class="student-attendance-row">
+                                                            <td><%= i + 1 %></td>
+                                                            <td><%= student.admissionNumber || 'N/A' %></td>
+                                                            <td>
+                                                                <%= student.firstName %> 
+                                                                <%= student.middleName ? student.middleName + ' ' : '' %> 
+                                                                <%= student.lastName %>
+                                                            </td>
+                                                            <td>
+                                                                <div class="btn-group btn-group-sm" role="group">
+                                                                    <input type="radio" class="btn-check" name="attendance[<%= student.studentId %>][status]" 
+                                                                        id="present_<%= student.studentId %>" value="present" 
+                                                                        <%= selectedSession === 'morning' ? 
+                                                                            (student.morningStatus === 'present' ? 'checked' : '') : 
+                                                                            (student.afternoonStatus === 'present' ? 'checked' : '') %>>
+                                                                    <label class="btn btn-outline-success" for="present_<%= student.studentId %>">
+                                                                        <i class="bi bi-check-circle"></i> Present
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check" name="attendance[<%= student.studentId %>][status]" 
+                                                                        id="absent_<%= student.studentId %>" value="absent" 
+                                                                        <%= selectedSession === 'morning' ? 
+                                                                            (student.morningStatus === 'absent' ? 'checked' : '') : 
+                                                                            (student.afternoonStatus === 'absent' ? 'checked' : '') %>>
+                                                                    <label class="btn btn-outline-danger" for="absent_<%= student.studentId %>">
+                                                                        <i class="bi bi-x-circle"></i> Absent
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check" name="attendance[<%= student.studentId %>][status]" 
+                                                                        id="late_<%= student.studentId %>" value="late" 
+                                                                        <%= selectedSession === 'morning' ? 
+                                                                            (student.morningStatus === 'late' ? 'checked' : '') : 
+                                                                            (student.afternoonStatus === 'late' ? 'checked' : '') %>>
+                                                                    <label class="btn btn-outline-warning" for="late_<%= student.studentId %>">
+                                                                        <i class="bi bi-clock"></i> Late
+                                                                    </label>
+
+                                                                    <input type="radio" class="btn-check" name="attendance[<%= student.studentId %>][status]" 
+                                                                        id="excused_<%= student.studentId %>" value="excused" 
+                                                                        <%= selectedSession === 'morning' ? 
+                                                                            (student.morningStatus === 'excused' ? 'checked' : '') : 
+                                                                            (student.afternoonStatus === 'excused' ? 'checked' : '') %>>
+                                                                    <label class="btn btn-outline-info" for="excused_<%= student.studentId %>">
+                                                                        <i class="bi bi-check-lg"></i> Excused
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control form-control-sm" 
+                                                                    name="attendance[<%= student.studentId %>][notes]" 
+                                                                    value="<%= student.notes || '' %>" 
+                                                                    placeholder="Optional notes">
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div class="d-grid gap-2 mt-3">
+                                            <button type="submit" class="btn btn-success btn-lg" id="saveAttendanceBtn">
+                                                <i class="uil uil-save me-2"></i> Save <%= selectedSession.charAt(0).toUpperCase() + selectedSession.slice(1) %> Attendance
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <% } else if (selectedAcademicYear && selectedTerm && selectedWeek && selectedClassId && (!selectedDate || students.length === 0)) { %>
+                                    <div class="text-center py-5">
+                                        <i class="uil uil-calendar-alt display-1 text-muted"></i>
+                                        <h5 class="mt-3 text-muted">Select a day to mark attendance</h5>
+                                        <p class="text-muted">Choose a day from the options above to mark attendance for the selected class</p>
+                                    </div>
+                                    <% } else if (!selectedAcademicYear || !selectedTerm || !selectedClassId) { %>
+                                    <div class="text-center py-5">
+                                        <i class="uil uil-setting display-1 text-muted"></i>
+                                        <h5 class="mt-3 text-muted">Select academic year, term, and class</h5>
+                                        <p class="text-muted">Choose the academic year, term, week, and class to begin marking attendance</p>
+                                    </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - Teacher Portal
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <a href="#" class="text-muted text-decoration-none small">Support</a>
+                            <span class="text-muted mx-1">|</span>
+                            <a href="#" class="text-muted text-decoration-none small">Privacy</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+    
+    <script>
+        // Mark notification as read
+        function markNotificationRead(notificationId) {
+            fetch('/teacher/notifications/mark-read/' + notificationId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response) {
+                if (response.ok) {
+                    location.reload();
+                }
+            }).catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+        
+        // Mark all notifications as read
+        function markAllNotificationsRead() {
+            fetch('/teacher/notifications/mark-all-read', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response) {
+                if (response.ok) {
+                    location.reload();
+                }
+            }).catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+        
+        // Show toast notification
+        function showToast(message, type) {
+            var container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                container.style.zIndex = '9999';
+                document.body.appendChild(container);
+            }
+            
+            var toast = document.createElement('div');
+            toast.className = 'toast align-items-center text-white bg-' + type + ' border-0 fade show';
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(function() { toast.remove(); }, 5000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-submit when week is selected
+            const weekSelect = document.querySelector('select[name="week"]');
+            if (weekSelect) {
+                weekSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        document.getElementById('attendanceSelection').submit();
+                    }
+                });
+            }
+            
+            // Enable week dropdown when academic year and term are selected
+            const academicYearSelect = document.querySelector('select[name="academicYear"]');
+            const termSelect = document.querySelector('select[name="term"]');
+            
+            function updateWeekDropdown() {
+                if (weekSelect && academicYearSelect && termSelect) {
+                    if (academicYearSelect.value && termSelect.value) {
+                        weekSelect.disabled = false;
+                    } else {
+                        weekSelect.disabled = true;
+                    }
+                }
+            }
+            
+            if (academicYearSelect) {
+                academicYearSelect.addEventListener('change', updateWeekDropdown);
+            }
+            if (termSelect) {
+                termSelect.addEventListener('change', updateWeekDropdown);
+            }
+            
+            // Attendance form submission
+            const attendanceForm = document.getElementById('attendanceForm');
+            if (attendanceForm) {
+                attendanceForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const submitBtn = document.getElementById('saveAttendanceBtn');
+                    const originalHtml = submitBtn.innerHTML;
+                    
+                    try {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Saving...';
+                        
+                        const formData = new FormData(this);
+                        const response = await fetch('/record-attendance', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            showToast(result.message, 'success');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            showToast('Error: ' + result.error, 'danger');
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalHtml;
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showToast('Failed to save attendance. Please try again.', 'danger');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalHtml;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

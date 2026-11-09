@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8" />
+   <title>Lesson Notes - School Management System</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link href="/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+   <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+   <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+   <style>
+      .filter-section {
+         background: #f8f9fa;
+         padding: 20px;
+         border-radius: 10px;
+         margin-bottom: 25px;
+      }
+
+      .lesson-card {
+         transition: transform 0.2s, box-shadow 0.2s;
+         margin-bottom: 20px;
+         border: none;
+         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .lesson-card:hover {
+         transform: translateY(-3px);
+         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .week-badge {
+         background: linear-gradient(135deg, #3b5de7 0%, #5a7ce8 100%);
+         color: white;
+         padding: 3px 10px;
+         border-radius: 20px;
+         font-size: 0.7rem;
+         font-weight: 600;
+      }
+
+      .status-badge {
+         padding: 3px 10px;
+         border-radius: 20px;
+         font-size: 0.7rem;
+         font-weight: 600;
+      }
+
+      .status-draft {
+         background: #ffc107;
+         color: #856404;
+      }
+
+      .status-published {
+         background: #28a745;
+         color: white;
+      }
+
+      .status-archived {
+         background: #6c757d;
+         color: white;
+      }
+
+      .lesson-title {
+         font-size: 1rem;
+         font-weight: 600;
+         color: #3b5de7;
+      }
+
+      .lesson-meta {
+         font-size: 0.75rem;
+         color: #6c757d;
+      }
+   </style>
+</head>
+
+<body class="loading"
+   data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+   <div class="wrapper">
+      <!-- Left Sidebar -->
+      <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/app-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+
+      <div class="content-page">
+         <div class="content">
+            <!-- Topbar -->
+                <%- include('partials/app-navbar') %>
+                <!-- end Topbar -->
+
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-12">
+                     <div class="page-title-box">
+                        <div class="page-title-right">
+                           <a href="/lesson-notes/create" class="btn btn-primary">
+                              <i class="bi bi-plus-circle me-1"></i> Create Lesson Note
+                           </a>
+                        </div>
+                        <h4 class="page-title">
+                           <%= userRole==='admin' ? 'All Lesson Notes' : 'My Lesson Notes' %>
+                        </h4>
+                     </div>
+                  </div>
+               </div>
+
+               <% if (success) { %>
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                     <i class="bi bi-check-circle me-2"></i>
+                     <%= success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  </div>
+                  <% } %>
+                     <% if (error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                           <i class="bi bi-exclamation-triangle me-2"></i>
+                           <%= error %>
+                              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <% } %>
+
+                           <!-- Filter Section -->
+                           <div class="filter-section">
+                              <form method="GET" action="/lesson-notes" class="row g-3">
+                                 <div class="col-md-3">
+                                    <label class="form-label">Academic Year</label>
+                                    <select class="form-select" name="academicYear">
+                                       <option value="">All Years</option>
+                                       <% academicYears.forEach(function(year) { %>
+                                          <option value="<%= year.year_name %>" <%=selectedAcademicYear===year.year_name
+                                             ? 'selected' : '' %>>
+                                             <%= year.year_name %>
+                                          </option>
+                                          <% }); %>
+                                    </select>
+                                 </div>
+                                 <div class="col-md-2">
+                                    <label class="form-label">Term</label>
+                                    <select class="form-select" name="term">
+                                       <option value="">All Terms</option>
+                                       <% terms.forEach(function(t) { %>
+                                          <option value="<%= t.term_name %>" <%=selectedTerm===t.term_name ? 'selected'
+                                             : '' %>>
+                                             <%= t.term_name %>
+                                          </option>
+                                          <% }); %>
+                                    </select>
+                                 </div>
+                                 <div class="col-md-2">
+                                    <label class="form-label">Week</label>
+                                    <select class="form-select" name="weekNumber">
+                                       <option value="">All Weeks</option>
+                                       <% weeks.forEach(function(w) { %>
+                                          <option value="<%= w %>" <%=selectedWeekNumber==w ? 'selected' : '' %>>
+                                             Week <%= w %>
+                                          </option>
+                                          <% }); %>
+                                    </select>
+                                 </div>
+                                 <div class="col-md-2">
+                                    <label class="form-label">Class</label>
+                                    <select class="form-select" name="classId" id="filterClassId">
+                                       <option value="">All Classes</option>
+                                       <% classes.forEach(function(cls) { %>
+                                          <option value="<%= cls.id %>" <%=selectedClassId==cls.id ? 'selected' : '' %>>
+                                             <%= cls.className %>
+                                          </option>
+                                          <% }); %>
+                                    </select>
+                                 </div>
+                                 <div class="col-md-3">
+                                    <label class="form-label">Subject</label>
+                                    <select class="form-select" name="subjectId" id="filterSubjectId">
+                                       <option value="">All Subjects</option>
+                                       <% if (subjects && subjects.length> 0) { %>
+                                          <% subjects.forEach(function(subj) { %>
+                                             <option value="<%= subj.id %>" <%=selectedSubjectId==subj.id ? 'selected'
+                                                : '' %>>
+                                                <%= subj.name %>
+                                             </option>
+                                             <% }); %>
+                                                <% } %>
+                                    </select>
+                                 </div>
+                                 <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                    <a href="/lesson-notes" class="btn btn-outline-secondary ms-2">Reset</a>
+                                 </div>
+                              </form>
+                           </div>
+
+                           <!-- Lesson Notes Grid -->
+                           <div class="row">
+                              <% if (lessonNotes && lessonNotes.length> 0) { %>
+                                 <% lessonNotes.forEach(function(note) { %>
+                                    <div class="col-md-6 col-lg-4">
+                                       <div class="card lesson-card">
+                                          <div class="card-body">
+                                             <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <span class="week-badge">Week <%= note.week_number %></span>
+                                                <span class="status-badge status-<%= note.status %>">
+                                                   <%= note.status ? note.status.toUpperCase() : 'DRAFT' %>
+                                                </span>
+                                             </div>
+                                             <h5 class="lesson-title mb-2">
+                                                <a href="/lesson-notes/view/<%= note.id %>"
+                                                   class="text-decoration-none">
+                                                   <%= note.title.length> 50 ? note.title.substring(0, 50) + '...' :
+                                                      note.title %>
+                                                </a>
+                                             </h5>
+                                             <div class="lesson-meta mb-2">
+                                                <div><i class="bi bi-building"></i>
+                                                   <%= note.className %>
+                                                </div>
+                                                <div><i class="bi bi-book"></i>
+                                                   <%= note.subject_name %>
+                                                </div>
+                                                <div><i class="bi bi-person"></i>
+                                                   <%= note.teacher_name %>
+                                                </div>
+                                                <div><i class="bi bi-calendar"></i>
+                                                   <%= note.formatted_date %>
+                                                </div>
+                                             </div>
+                                             <div class="mt-3">
+                                                <a href="/lesson-notes/view/<%= note.id %>"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                   <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <a href="/lesson-notes/edit/<%= note.id %>"
+                                                   class="btn btn-sm btn-outline-secondary ms-1">
+                                                   <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                                <a href="/lesson-notes/delete/<%= note.id %>"
+                                                   class="btn btn-sm btn-outline-danger ms-1"
+                                                   onclick="return confirm('Delete this lesson note?')">
+                                                   <i class="bi bi-trash"></i> Delete
+                                                </a>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <% }); %>
+                                       <% } else { %>
+                                          <div class="col-12">
+                                             <div class="text-center py-5">
+                                                <i class="bi bi-journal-bookmark-fill fs-1 text-muted"></i>
+                                                <h5 class="mt-3">No Lesson Notes Found</h5>
+                                                <p class="text-muted">Create your first lesson note by clicking the
+                                                   "Create Lesson Note" button.</p>
+                                                <a href="/lesson-notes/create" class="btn btn-primary mt-2">Create
+                                                   Lesson Note</a>
+                                             </div>
+                                          </div>
+                                          <% } %>
+                           </div>
+
+                           <!-- Pagination -->
+                           <% if (totalPages> 1) { %>
+                              <div class="row mt-4">
+                                 <div class="col-12">
+                                    <nav>
+                                       <ul class="pagination justify-content-center">
+                                          <% if (currentPage> 1) { %>
+                                             <li class="page-item">
+                                                <a class="page-link"
+                                                   href="?page=<%= currentPage-1 %>&academicYear=<%= selectedAcademicYear || '' %>&term=<%= selectedTerm || '' %>&weekNumber=<%= selectedWeekNumber || '' %>&classId=<%= selectedClassId || '' %>&subjectId=<%= selectedSubjectId || '' %>">
+                                                   Previous
+                                                </a>
+                                             </li>
+                                             <% } %>
+                                                <% for (var i=1; i <=totalPages; i++) { %>
+                                                   <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                                      <a class="page-link"
+                                                         href="?page=<%= i %>&academicYear=<%= selectedAcademicYear || '' %>&term=<%= selectedTerm || '' %>&weekNumber=<%= selectedWeekNumber || '' %>&classId=<%= selectedClassId || '' %>&subjectId=<%= selectedSubjectId || '' %>">
+                                                         <%= i %>
+                                                      </a>
+                                                   </li>
+                                                   <% } %>
+                                                      <% if (currentPage < totalPages) { %>
+                                                         <li class="page-item">
+                                                            <a class="page-link"
+                                                               href="?page=<%= currentPage+1 %>&academicYear=<%= selectedAcademicYear || '' %>&term=<%= selectedTerm || '' %>&weekNumber=<%= selectedWeekNumber || '' %>&classId=<%= selectedClassId || '' %>&subjectId=<%= selectedSubjectId || '' %>">
+                                                               Next
+                                                            </a>
+                                                         </li>
+                                                         <% } %>
+                                       </ul>
+                                    </nav>
+                                 </div>
+                              </div>
+                              <% } %>
+            </div>
+         </div>
+
+         <footer class="footer">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <script>document.write(new Date().getFullYear())</script> © EduSuite
+                  </div>
+               </div>
+            </div>
+         </footer>
+      </div>
+   </div>
+
+   <script src="/assets/js/vendor.min.js"></script>
+   <script src="/assets/js/app.min.js"></script>
+   <script>
+      // Dynamic subject loading based on class selection
+      document.getElementById('filterClassId').addEventListener('change', function () {
+         var classId = this.value;
+         var subjectSelect = document.getElementById('filterSubjectId');
+
+         if (classId) {
+            fetch('/api/lesson-notes/subjects/' + classId)
+               .then(response => response.json())
+               .then(data => {
+                  if (data.success) {
+                     subjectSelect.innerHTML = '<option value="">All Subjects</option>';
+                     data.subjects.forEach(function (subject) {
+                        subjectSelect.innerHTML += '<option value="' + subject.id + '">' + subject.name + '</option>';
+                     });
+                  }
+               })
+               .catch(error => console.error('Error:', error));
+         } else {
+            subjectSelect.innerHTML = '<option value="">All Subjects</option>';
+         }
+      });
+   </script>
+</body>
+
+</html>

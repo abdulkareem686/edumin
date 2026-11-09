@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Grade Book - <%= subjectInfo ? (subjectInfo.subjectName || subjectInfo.name) : 'Subject' %> - <%= classInfo ? classInfo.className : 'Class' %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @media print {
+            body { margin: 0; padding: 0; }
+            .no-print { display: none !important; }
+            .page-break { page-break-before: always; }
+            .result-table { border-collapse: collapse; width: 100%; }
+            .result-table th, .result-table td { border: 1px solid #ddd; padding: 8px; }
+            .result-table th { background-color: #f2f2f2; text-align: center; }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        .school-header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 15px;
+        }
+        .school-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1e3a8a;
+        }
+        .result-title {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .result-table th, .result-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+        .result-table th {
+            background-color: #f1f5f9;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print mb-3 text-end">
+        <button class="btn btn-primary" onclick="window.print()">Print Grade Book</button>
+        <button class="btn btn-secondary" onclick="window.close()">Close</button>
+    </div>
+
+    <div class="school-header">
+        <div class="school-name"><%= typeof schoolName !== 'undefined' ? schoolName : 'EduSuite School' %></div>
+        <p class="mb-0 text-muted">Continuous Assessment & Grade Book Report</p>
+    </div>
+
+    <div class="result-title">
+        <h4 class="fw-bold mb-1"><%= subjectInfo ? (subjectInfo.subjectName || subjectInfo.name) : 'Subject' %></h4>
+        <p class="mb-0">
+            <strong>Class:</strong> <%= classInfo ? classInfo.className : '' %> &nbsp;|&nbsp;
+            <strong>Academic Year:</strong> <%= typeof academicYear !== 'undefined' ? academicYear : '' %> &nbsp;|&nbsp;
+            <strong>Term:</strong> <%= typeof term !== 'undefined' ? term : '' %>
+        </p>
+    </div>
+
+    <table class="result-table">
+        <thead>
+            <tr>
+                <th style="width: 40px; text-align: center;">#</th>
+                <th style="width: 130px;">Admission No.</th>
+                <th>Student Name</th>
+                <th style="width: 100px; text-align: center;">C.A. (40)</th>
+                <th style="width: 100px; text-align: center;">Exam (60)</th>
+                <th style="width: 100px; text-align: center;">Total (100)</th>
+                <th style="width: 80px; text-align: center;">Grade</th>
+                <th style="width: 120px; text-align: center;">Remark</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (typeof students !== 'undefined' && students && students.length > 0) { %>
+                <% students.forEach(function(student, idx) { 
+                    var fullName = [student.firstName, student.middleName, student.lastName].filter(Boolean).join(' ');
+                    var test = student.test_score !== null && student.test_score !== undefined ? student.test_score : (student.ca_score || 0);
+                    var exam = student.exam_score !== null && student.exam_score !== undefined ? student.exam_score : 0;
+                    var total = student.total_score !== null && student.total_score !== undefined ? student.total_score : (Number(test) + Number(exam));
+                    var grade = student.grade || (typeof getGrade === 'function' ? getGrade(total) : '-');
+                %>
+                <tr>
+                    <td style="text-align: center;"><%= idx + 1 %></td>
+                    <td><%= student.admission_number || 'N/A' %></td>
+                    <td class="fw-bold"><%= fullName %></td>
+                    <td style="text-align: center;"><%= test %></td>
+                    <td style="text-align: center;"><%= exam %></td>
+                    <td style="text-align: center; font-weight: bold;"><%= total %></td>
+                    <td style="text-align: center; font-weight: bold;"><%= grade %></td>
+                    <td style="text-align: center;"><%= student.remarks || (total >= 50 ? 'Pass' : 'Fail') %></td>
+                </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 20px;">No students enrolled.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+
+    <div class="row mt-5">
+        <div class="col-6">
+            <p><strong>Subject Teacher's Signature:</strong> _______________________</p>
+        </div>
+        <div class="col-6 text-end">
+            <p><strong>Date:</strong> <%= typeof moment !== 'undefined' ? moment().format('DD/MM/YYYY') : new Date().toLocaleDateString() %></p>
+        </div>
+    </div>
+</body>
+</html>

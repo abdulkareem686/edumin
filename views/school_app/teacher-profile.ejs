@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Teacher Profile - School Management System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link href="/assets/css/school-dashboard.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-avatar i {
+            font-size: 4rem;
+            color: #667eea;
+        }
+
+        .info-card {
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #2c3e50;
+            word-break: break-word;
+        }
+
+        .class-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            border-radius: 12px;
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-stat {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .quick-stat .number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .quick-stat .text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .info-warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .subject-chip {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            background: #eef1ff;
+            color: #4c51bf;
+            font-size: 0.85rem;
+            margin: 0 0.4rem 0.4rem 0;
+        }
+
+        .activity-item {
+            border-left: 3px solid #667eea;
+            padding: 0.5rem 0 0.5rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+    </style>
+</head>
+
+<body class="loading"
+    data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <div class="wrapper">
+        <!-- Left Sidebar -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/app-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/app-navbar') %>
+                <!-- end Topbar -->
+                <div class="container-fluid">
+                    <!-- Page Title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title">
+                                    <i class="mdi mdi-account-circle me-2"></i>Teacher Profile
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success/Error Messages -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                            <i class="mdi mdi-check-circle me-2"></i>
+                            <%= success %>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        <% } %>
+                            <% if (typeof error !== 'undefined' && error) { %>
+                                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                                    <i class="mdi mdi-alert-circle me-2"></i>
+                                    <%= error %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                                <% } %>
+
+                                    <!-- Profile Header -->
+                                    <div class="profile-header">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-3 text-center">
+                                                <div class="profile-avatar">
+                                                    <i class="mdi mdi-account-circle"></i>
+                                                </div>
+                                                <h4 class="text-white mb-1">
+                                                    <%= teacherName %>
+                                                </h4>
+                                                <span class="badge bg-light text-dark"><i
+                                                        class="mdi mdi-briefcase"></i> <%= teacherDesignation %></span>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="quick-stat">
+                                                            <div class="number">
+                                                                <%= myClassesCount || 0 %>
+                                                            </div>
+                                                            <div class="text-muted small">Classes Assigned</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="quick-stat">
+                                                            <div class="number">
+                                                                <%= totalStudents || 0 %>
+                                                            </div>
+                                                            <div class="text-muted small">Total Students</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="quick-stat">
+                                                            <div class="number">
+                                                                <%= attendancePercentage || 0 %>%
+                                                            </div>
+                                                            <div class="text-muted small">Attendance (30d)</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Profile Content -->
+                                    <div class="row">
+                                        <!-- Personal Information -->
+                                        <div class="col-lg-6">
+                                            <div class="card info-card">
+                                                <div class="card-body">
+                                                    <h5 class="card-title mb-4">
+                                                        <i class="mdi mdi-account-details text-primary me-2"></i>
+                                                        Personal Information
+                                                    </h5>
+                                                    <div class="row mb-3">
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Full Name</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.firstName %> <%= teacherData.lastName %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Email Address</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.email %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Phone Number</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.phone || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Gender</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.gender || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Designation</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.designation || 'Teacher' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Department</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.department || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Date of Birth</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.dateOfBirth ? moment(teacherData.dateOfBirth).format('MMMM D, YYYY') : 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Joining Date</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.joiningDate ? moment(teacherData.joiningDate).format('MMMM D, YYYY') : 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Education</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.education || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Nationality</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.nationality || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">State of Origin</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.stateOfOrigin || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Local Government</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.localGovernment || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-3">
+                                                        <div class="col-sm-6">
+                                                            <div class="info-label">Emergency Contact</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.emergencyContactName || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="info-label">Emergency Contact Number</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.emergencyContactNumber || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="info-label">Address</div>
+                                                            <div class="info-value">
+                                                                <%= teacherData.address || 'Not provided' %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Performance & Subjects -->
+                                        <div class="col-lg-6">
+                                            <div class="card info-card">
+                                                <div class="card-body">
+                                                    <h5 class="card-title mb-4">
+                                                        <i class="mdi mdi-chart-line text-primary me-2"></i>
+                                                        Performance This Term
+                                                    </h5>
+                                                    <div class="row mb-3">
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Average Score</div>
+                                                            <div class="info-value">
+                                                                <%= performanceMetrics.avg_score ? Number(performanceMetrics.avg_score).toFixed(1) : 'N/A' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Highest Score</div>
+                                                            <div class="info-value">
+                                                                <%= performanceMetrics.max_score != null ? performanceMetrics.max_score : 'N/A' %>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="info-label">Lowest Score</div>
+                                                            <div class="info-value">
+                                                                <%= performanceMetrics.min_score != null ? performanceMetrics.min_score : 'N/A' %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="info-label mb-2">Subjects Taught</div>
+                                                    <div>
+                                                        <% if (subjects && subjects.length> 0) {
+                                                            for (var s = 0; s < subjects.length; s++) { %>
+                                                                <span class="subject-chip">
+                                                                    <i class="mdi mdi-book-open-page-variant me-1"></i>
+                                                                    <%= subjects[s].name %>
+                                                                    <% if (subjects[s].subject_code) { %> (<%= subjects[s].subject_code %>)<% } %>
+                                                                </span>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <span class="text-muted">No subjects assigned yet.</span>
+                                                        <% } %>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="info-warning">
+                                                        <i class="mdi mdi-information-outline me-1"></i>
+                                                        For any profile updates, please contact the school administrator.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <!-- Recent Activity Section -->
+                                    <div class="card mt-3 mb-3">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">
+                                                <i class="mdi mdi-history me-2 text-primary"></i>
+                                                Recent Activity
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <% if (recentActivities && recentActivities.length> 0) {
+                                                for (var a = 0; a < recentActivities.length; a++) { var act=recentActivities[a]; %>
+                                                    <div class="activity-item">
+                                                        <div class="fw-medium">
+                                                            <%= act.activity %><%= act.count %> record<%= act.count == 1 ? '' : 's' %>
+                                                        </div>
+                                                        <small class="text-muted">
+                                                            <i class="mdi mdi-clock-outline"></i>
+                                                            <%= act.date ? moment(act.date).fromNow() : 'Unknown date' %>
+                                                        </small>
+                                                    </div>
+                                                <% } %>
+                                            <% } else { %>
+                                                <div class="text-center text-muted py-3">
+                                                    <i class="mdi mdi-history fs-1"></i>
+                                                    <p class="mt-2 mb-0">No recent activity to show.</p>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> &copy; EduAdmin - School
+                            Management System
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-md-block">
+                                <a href="javascript: void(0);"><i class="mdi mdi-help-circle"></i> Help</a>
+                                <a href="javascript: void(0);"><i class="mdi mdi-email"></i> Support</a>
+                                <a href="javascript: void(0);"><i class="mdi mdi-information"></i> About</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+
+    <script>
+        function viewClass(classId) {
+            window.location.href = '/teacher/class/' + classId;
+        }
+
+        function markRead(notificationId) {
+            fetch('/teacher/notifications/mark-read/' + notificationId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+                if (response.ok) {
+                    location.reload();
+                }
+            }).catch(function (error) {
+                console.error('Error:', error);
+            });
+        }
+
+        function markAllRead() {
+            fetch('/teacher/notifications/mark-all-read', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+                if (response.ok) {
+                    location.reload();
+                }
+            }).catch(function (error) {
+                console.error('Error:', error);
+            });
+        }
+
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert');
+            for (var i = 0; i < alerts.length; i++) {
+                setTimeout(function (alert) {
+                    if (alert) alert.remove();
+                }, 5000, alerts[i]);
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>

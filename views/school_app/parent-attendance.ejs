@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Attendance - Parent Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        .attendance-card {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+        }
+
+        .stat-card {
+            background: #3b5de7;
+            color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .attendance-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto;
+        }
+
+        .attendance-excellent {
+            background: #10b981;
+            color: white;
+        }
+
+        .attendance-good {
+            background: #34d399;
+            color: white;
+        }
+
+        .attendance-average {
+            background: #fbbf24;
+            color: #1e293b;
+        }
+
+        .attendance-poor {
+            background: #ef4444;
+            color: white;
+        }
+
+        .notification-unread {
+            background-color: #e8f0fe;
+            border-left: 3px solid #3b5de7;
+        }
+
+        .status-present {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-absent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-late {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .status-excused {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .attendance-record:hover {
+            background-color: #f8fafd;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        /* Child Switcher */
+        .child-switcher {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .child-switcher .child-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .child-switcher .child-btn:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .child-switcher .child-btn.active {
+            border-color: #667eea;
+            background: #3b5de7;
+            color: white;
+        }
+
+        .child-switcher .child-btn .badge {
+            font-size: 10px;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+
+<body class="loading"
+    data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- Left Sidebar -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/parent-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/parent-navbar') %>
+                <!-- end Topbar -->
+
+                <div class="container-fluid">
+                    <!-- Page Title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title">
+                                    <i class="mdi mdi-calendar-check me-2"></i>Attendance Record
+                                </h4>
+                                <div class="page-title-right">
+                                    <span class="badge bg-primary">
+                                        <i class="mdi mdi-calendar"></i> <%= selectedYear %>
+                                    </span>
+                                    <span class="badge bg-info ms-1">
+                                        <i class="mdi mdi-book-open"></i> <%= selectedTerm %>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <% if (error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Back to All Children Navigation -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                        <a href="/parent/children" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-arrow-left me-1"></i> Back to All Children
+                        </a>
+                        <% if (student) { %>
+                        <div class="d-flex gap-2">
+                            <a href="/parent/reports?studentId=<%= student.id %>" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-file-earmark-text me-1"></i> Report Card
+                            </a>
+                            <a href="/parent/grades?studentId=<%= student.id %>" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-clipboard-data me-1"></i> Grades
+                            </a>
+                        </div>
+                        <% } %>
+                    </div>
+
+                    
+
+            <!-- Filter Section -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="/parent/attendance" class="row g-3 align-items-end">
+                        <input type="hidden" name="studentId" value="<%= student ? student.id : '' %>">
+                        <div class="col-md-3">
+                            <label class="form-label small text-muted">Academic Year</label>
+                            <select name="academicYear" class="form-select" onchange="this.form.submit()">
+                                <option value="">Select Year</option>
+                                <% if (academicYears && academicYears.length) { for(var i=0; i < academicYears.length;
+                                    i++) { var year=academicYears[i]; var isSelected=(selectedYear==year.year_name); %>
+                                    <option value="<%= year.year_name %>" <%=isSelected ? 'selected' : '' %>>
+                                        <%= year.year_name %>
+                                    </option>
+                                    <% } } else { %>
+                                        <option value="2023-2024">2023-2024</option>
+                                        <option value="2024-2025">2024-2025</option>
+                                        <% } %>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small text-muted">Term</label>
+                            <select name="term" class="form-select" onchange="this.form.submit()">
+                                <% if (availableTerms && availableTerms.length) { for(var i=0; i <
+                                    availableTerms.length; i++) { var termItem=availableTerms[i]; var
+                                    isSelected=(selectedTerm==termItem.term_name); %>
+                                    <option value="<%= termItem.term_name %>" <%=isSelected ? 'selected' : '' %>>
+                                        <%= termItem.term_name %>
+                                    </option>
+                                    <% } } else { %>
+                                        <option value="First Term">First Term</option>
+                                        <option value="Second Term">Second Term</option>
+                                        <option value="Third Term">Third Term</option>
+                                        <% } %>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small text-muted">Month (Optional)</label>
+                            <select name="month" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Months</option>
+                                <% if (months) { for(var i=0; i < months.length; i++) { var month=months[i]; var
+                                    isSelected=(selectedMonth==month); %>
+                                    <option value="<%= month %>" <%=isSelected ? 'selected' : '' %>><%= month %>
+                                    </option>
+                                    <% } } %>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary w-100" onclick="window.print()">
+                                <i class="bi bi-printer me-1"></i> Print Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <% if (student) { %>
+                <!-- Student Info -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-lg me-3">
+                                        <div class="avatar-title bg-primary-light rounded-circle text-primary fs-1">
+                                            <i class="mdi mdi-account-circle"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">Student Name</small>
+                                        <h5 class="mb-0">
+                                            <%= student.firstName %>
+                                                <%= student.middleName ? student.middleName + ' ' : '' %>
+                                                    <%= student.lastName %>
+                                        </h5>
+                                        <small class="text-muted"><i class="mdi mdi-school"></i>
+                                            <%= student.className || 'Not Assigned' %>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Admission Number</small>
+                                <h6 class="mb-0">
+                                    <%= student.admission_number || 'N/A' %>
+                                </h6>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Total Days</small>
+                                <h6 class="mb-0">
+                                    <%= attendanceSummary ? attendanceSummary.total : 0 %>
+                                </h6>
+                            </div>
+                            <div class="col-md-2">
+                                <% var attPct=attendanceSummary ? attendanceSummary.percentage : 0; var attClass='' ; if
+                                    (attPct>= 80) attClass = 'attendance-excellent';
+                                    else if (attPct >= 60) attClass = 'attendance-good';
+                                    else if (attPct >= 40) attClass = 'attendance-average';
+                                    else attClass = 'attendance-poor';
+                                    %>
+                                    <div class="attendance-circle <%= attClass %>">
+                                        <%= attPct %>%
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-number">
+                                <%= attendanceSummary ? attendanceSummary.present : 0 %>
+                            </div>
+                            <div>Present Days</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: #ef4444;">
+                            <div class="stat-number">
+                                <%= attendanceSummary ? attendanceSummary.absent : 0 %>
+                            </div>
+                            <div>Absent Days</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: #f59e0b;">
+                            <div class="stat-number">
+                                <%= attendanceSummary ? attendanceSummary.late : 0 %>
+                            </div>
+                            <div>Late Days</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card" style="background: #8b5cf6;">
+                            <div class="stat-number">
+                                <%= attendanceSummary ? attendanceSummary.total : 0 %>
+                            </div>
+                            <div>Total Days</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Attendance Chart -->
+                <% if (weeklyAttendance && weeklyAttendance.length) { %>
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h6 class="mb-0"><i class="bi bi-graph-up me-2 text-primary"></i>Weekly Attendance (Last 4
+                                Weeks)</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <% for(var i=0; i < weeklyAttendance.length; i++) { var week=weeklyAttendance[i]; var
+                                    weekClass='' ; if (week.percentage>= 80) weekClass = 'attendance-excellent';
+                                    else if (week.percentage >= 60) weekClass = 'attendance-good';
+                                    else if (week.percentage >= 40) weekClass = 'attendance-average';
+                                    else weekClass = 'attendance-poor';
+                                    %>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="text-center">
+                                            <div class="fw-bold mb-2">
+                                                <%= week.week %>
+                                            </div>
+                                            <div class="attendance-circle <%= weekClass %>"
+                                                style="width: 80px; height: 80px; font-size: 1.2rem;">
+                                                <%= week.percentage %>%
+                                            </div>
+                                            <div class="mt-2">
+                                                <small>
+                                                    <%= week.present %> / <%= week.total %> days
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
+                        <!-- Detailed Attendance Records -->
+                        <div class="card">
+                            <div class="card-header bg-white">
+                                <h6 class="mb-0"><i class="bi bi-table me-2 text-primary"></i>Detailed Attendance
+                                    Records</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Day</th>
+                                                <th class="text-center">Morning</th>
+                                                <th class="text-center">Afternoon</th>
+                                                <th>Status</th>
+                                                <th>Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if (attendanceRecords && attendanceRecords.length) { for(var i=0; i <
+                                                attendanceRecords.length; i++) { var record=attendanceRecords[i]; var
+                                                morningClass='' ; if (record.morning_status==='present' )
+                                                morningClass='status-present' ; else if
+                                                (record.morning_status==='absent' ) morningClass='status-absent' ; else
+                                                if (record.morning_status==='late' ) morningClass='status-late' ; else
+                                                morningClass='status-excused' ; var afternoonClass='' ; if
+                                                (record.afternoon_status==='present' ) afternoonClass='status-present' ;
+                                                else if (record.afternoon_status==='absent' )
+                                                afternoonClass='status-absent' ; else if
+                                                (record.afternoon_status==='late' ) afternoonClass='status-late' ; else
+                                                afternoonClass='status-excused' ; var overallStatus='' ; var
+                                                overallClass='' ; if (record.morning_status==='present' ||
+                                                record.afternoon_status==='present' ) { overallStatus='Present' ;
+                                                overallClass='status-present' ; } else if
+                                                (record.morning_status==='absent' && record.afternoon_status==='absent'
+                                                ) { overallStatus='Absent' ; overallClass='status-absent' ; } else if
+                                                (record.morning_status==='late' || record.afternoon_status==='late' ) {
+                                                overallStatus='Late' ; overallClass='status-late' ; } else {
+                                                overallStatus='Excused' ; overallClass='status-excused' ; } %>
+                                                <tr>
+                                                    <td>
+                                                        <%= moment(record.date).format('DD MMM YYYY') %>
+                                                    </td>
+                                                    <td>
+                                                        <%= record.day_name %>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge <%= morningClass %>">
+                                                            <%= record.morning_status || '-' %>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge <%= afternoonClass %>">
+                                                            <%= record.afternoon_status || '-' %>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge <%= overallClass %>">
+                                                            <%= overallStatus %>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <%= record.notes || '-' %>
+                                                    </td>
+                                                </tr>
+                                                <% } } else { %>
+                                                    <tr>
+                                                        <td colspan="6" class="text-center text-muted py-4">
+                                                            <i class="bi bi-inbox fs-1"></i>
+                                                            <p class="mt-2 mb-0">No attendance records available for the
+                                                                selected period</p>
+                                                            <small>Attendance records will appear once marked by the
+                                                                school</small>
+                                                        </td>
+                                                    </tr>
+                                                    <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <% } else { %>
+                            <div class="card p-5 text-center shadow-sm border-0 my-4">
+                                <div class="text-muted mb-3">
+                                    <i class="bi bi-calendar-check fs-1 text-primary"></i>
+                                </div>
+                                <h4 class="fw-bold">No Child Selected</h4>
+                                <p class="text-muted mb-4">Please select a child from the All Children page to view their daily attendance breakdown.</p>
+                                <div>
+                                    <a href="/parent/children?select=attendance" class="btn btn-primary px-4">
+                                        <i class="bi bi-arrow-left me-2"></i> Go to All Children
+                                    </a>
+                                </div>
+                            </div>
+                        <% } %>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - Parent Portal
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-muted text-decoration-none small">Support</a>
+                    <span class="text-muted mx-1">|</span>
+                    <a href="#" class="text-muted text-decoration-none small">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+
+    <script>
+        function markRead(notificationId) {
+            fetch('/api/parent-notifications/mark-read/' + notificationId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(function (response) {
+                    if (response.ok) {
+                        location.reload();
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
+        function markAllRead() {
+            fetch('/api/parent-notifications/mark-all-read', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(function (response) {
+                    if (response.ok) {
+                        location.reload();
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert');
+            for (var i = 0; i < alerts.length; i++) {
+                setTimeout(function (alert) {
+                    if (alert) alert.remove();
+                }, 5000, alerts[i]);
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>

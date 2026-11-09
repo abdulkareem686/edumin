@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Class Schedule - Teacher Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        .schedule-card {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            height: 100%;
+        }
+        .day-header {
+            background: linear-gradient(135deg, #3b5de7, #2a4cd0);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+        }
+        .schedule-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+        .schedule-item:last-child {
+            border-bottom: none;
+        }
+        .schedule-item:hover {
+            background-color: #f8fafd;
+            transform: translateX(5px);
+        }
+        .class-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin: 2px;
+        }
+        .event-badge {
+            background: #e8f0fe;
+            color: #3b5de7;
+        }
+        .class-badge-class {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .time-slot {
+            font-weight: 600;
+            color: #3b5de7;
+            font-size: 0.8rem;
+        }
+        .empty-schedule {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+        }
+        .notification-unread {
+            background-color: #e8f0fe;
+            border-left: 3px solid #3b5de7;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        .btn-week-nav {
+            transition: all 0.2s;
+            border-radius: 8px;
+        }
+        .btn-week-nav:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- Left Sidebar -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/teacher-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/teacher-navbar') %>
+                <!-- end Topbar -->
+
+                <div class="container-fluid">
+                    <!-- Page Title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title">
+                                    <i class="mdi mdi-calendar-clock me-2"></i>Class Schedule
+                                </h4>
+                                <div class="page-title-right">
+                                    <span class="badge bg-info p-2">
+                                        <i class="mdi mdi-calendar"></i> Week of <%= moment(weekStart).format('MMM D, YYYY') %> - <%= moment(weekEnd).format('MMM D, YYYY') %>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Teacher Info Card -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card bg-gradient-primary text-white">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="text-white mb-1"><%= teacherName %></h5>
+                                            <p class="mb-0 text-white-50">
+                                                <i class="mdi mdi-briefcase me-1"></i> <%= teacher.designation || 'Teacher' %>
+                                                <% if (teacher.department) { %>
+                                                    | <i class="mdi mdi-domain me-1"></i> <%= teacher.department %>
+                                                <% } %>
+                                            </p>
+                                        </div>
+                                        <div class="d-none d-md-block">
+                                            <i class="mdi mdi-calendar-clock fs-1 text-white-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week Navigation -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                        <a href="/teacher/class-schedule?week=<%= weekOffset - 1 %>" class="btn btn-outline-primary btn-week-nav">
+                                            <i class="mdi mdi-chevron-left"></i> Previous Week
+                                        </a>
+                                        <div class="text-center">
+                                            <strong><%= moment(weekStart).format('MMMM D, YYYY') %></strong> - 
+                                            <strong><%= moment(weekEnd).format('MMMM D, YYYY') %></strong>
+                                        </div>
+                                        <a href="/teacher/class-schedule?week=<%= weekOffset + 1 %>" class="btn btn-outline-primary btn-week-nav">
+                                            Next Week <i class="mdi mdi-chevron-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schedule Grid -->
+                    <div class="row">
+                        <% for(var i = 0; i < weekDays.length; i++) { 
+                            var day = weekDays[i];
+                            var scheduleItems = scheduleByDay[day] || [];
+                        %>
+                            <div class="col-md-6 col-xl mb-4">
+                                <div class="card schedule-card">
+                                    <div class="day-header">
+                                        <h5 class="mb-0"><%= day %></h5>
+                                        <small><%= moment(weekStart).add(i, 'days').format('MMM D') %></small>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <% if (scheduleItems && scheduleItems.length > 0) { 
+                                            for(var j = 0; j < scheduleItems.length; j++) { 
+                                                var item = scheduleItems[j]; %>
+                                                <div class="schedule-item">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div>
+                                                            <div class="time-slot">
+                                                                <i class="mdi mdi-clock-outline me-1"></i>
+                                                                <%= item.startTime || 'TBD' %> - <%= item.endTime || 'TBD' %>
+                                                            </div>
+                                                            <div class="fw-semibold mt-1"><%= item.title %></div>
+                                                            <% if (item.type === 'class') { %>
+                                                                <div>
+                                                                    <span class="class-badge class-badge-class">
+                                                                        <i class="mdi mdi-school me-1"></i> <%= item.className %>
+                                                                    </span>
+                                                                    <% if (item.room) { %>
+                                                                        <span class="class-badge class-badge-class">
+                                                                            <i class="mdi mdi-home me-1"></i> <%= item.room %>
+                                                                        </span>
+                                                                    <% } %>
+                                                                </div>
+                                                            <% } else { %>
+                                                                <div>
+                                                                    <span class="class-badge event-badge">
+                                                                        <i class="mdi mdi-calendar-star me-1"></i> School Event
+                                                                    </span>
+                                                                </div>
+                                                            <% } %>
+                                                        </div>
+                                                        <% if (item.type === 'class') { %>
+                                                            <button class="btn btn-sm btn-link text-primary" onclick="viewClassDetails('<%= item.className %>')">
+                                                                <i class="mdi mdi-arrow-right"></i>
+                                                            </button>
+                                                        <% } %>
+                                                    </div>
+                                                    <% if (item.description) { %>
+                                                        <div class="text-muted small mt-1"><%= item.description %></div>
+                                                    <% } %>
+                                                </div>
+                                        <% } 
+                                        } else { %>
+                                            <div class="empty-schedule">
+                                                <i class="mdi mdi-calendar-blank fs-2 text-muted"></i>
+                                                <p class="mb-0 mt-2 text-muted">No classes scheduled</p>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <!-- My Classes Summary -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-white">
+                                    <h6 class="mb-0"><i class="mdi mdi-school me-2 text-primary"></i>My Classes</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <% if (teacherClasses && teacherClasses.length > 0) { 
+                                            for(var i = 0; i < teacherClasses.length; i++) { 
+                                                var cls = teacherClasses[i]; %>
+                                                <div class="col-md-4 col-lg-3 mb-2">
+                                                    <div class="stat-card">
+                                                        <div class="fw-bold"><%= cls.className %></div>
+                                                        <small class="text-muted"><%= cls.level || '' %> <%= cls.department || '' %></small>
+                                                    </div>
+                                                </div>
+                                        <% } 
+                                        } else { %>
+                                            <div class="col-12 text-center text-muted">
+                                                No classes assigned
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - Teacher Portal
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <a href="#" class="text-muted text-decoration-none small">Support</a>
+                            <span class="text-muted mx-1">|</span>
+                            <a href="#" class="text-muted text-decoration-none small">Privacy</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+    
+    <script>
+        function markNotificationRead(notificationId) {
+            fetch('/teacher/notifications/mark-read/' + notificationId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response) {
+                if (response.ok) {
+                    location.reload();
+                }
+            }).catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+        
+        function markAllNotificationsRead() {
+            fetch('/teacher/notifications/mark-all-read', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(function(response) {
+                if (response.ok) {
+                    location.reload();
+                }
+            }).catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+        
+        function viewClassDetails(className) {
+            // Redirect to class details or show modal
+            window.location.href = '/teacher/my-classes?class=' + encodeURIComponent(className);
+        }
+        
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            for (var i = 0; i < alerts.length; i++) {
+                setTimeout(function(alert) {
+                    if (alert) alert.remove();
+                }, 5000, alerts[i]);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

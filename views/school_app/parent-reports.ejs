@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        <%= reportTitle %> | Parent Portal - EduSuite
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    <link href="/assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <style>
+        .report-card-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .school-header {
+            text-align: center;
+            padding: 2rem 0;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 2rem;
+        }
+
+        .school-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .school-address {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .report-title {
+            background: #f8f9fa;
+            text-align: center;
+            padding: 0.75rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .student-info-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .score-table thead th {
+            background: #f8fafd;
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 1rem;
+            border-bottom: 2px solid #e9ecef;
+            text-align: center;
+        }
+
+        .score-table tbody td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .score-table tbody tr:hover {
+            background-color: #f8fafd;
+        }
+
+        .subject-name {
+            font-weight: 600;
+            color: #3b5de7;
+            text-align: left !important;
+        }
+
+        .grade-A {
+            background: #10b981;
+            color: white;
+        }
+
+        .grade-B {
+            background: #34d399;
+            color: white;
+        }
+
+        .grade-C {
+            background: #fbbf24;
+            color: #1e293b;
+        }
+
+        .grade-D {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .grade-E {
+            background: #f97316;
+            color: white;
+        }
+
+        .grade-F {
+            background: #ef4444;
+            color: white;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-align: center;
+            min-width: 45px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #3b5de7 0%, #2a4cd0 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            height: 100%;
+        }
+
+        .summary-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .term-selector {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-select-custom {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-print {
+            background: #10b981;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: white;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-print:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .child-switcher {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .child-switcher .child-btn {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .child-switcher .child-btn:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .child-switcher .child-btn.active {
+            border-color: #667eea;
+            background: #3b5de7;
+            color: white;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            .student-info-card {
+                background: none;
+                border: 1px solid #ddd;
+            }
+
+            .summary-card {
+                background: #f8f9fa;
+                color: #1e293b;
+                border: 1px solid #ddd;
+            }
+
+            .summary-card .summary-value {
+                color: #1e293b;
+            }
+
+            .score-table thead th {
+                background: #e9ecef;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .summary-value {
+                font-size: 1.25rem;
+            }
+
+            .school-name {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="loading"
+    data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <div class="wrapper">
+        <!-- Left Sidebar -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/parent-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <!-- Topbar -->
+                <%- include('partials/parent-navbar') %>
+                <!-- end Topbar -->
+
+                
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <h4 class="page-title"><i class="mdi mdi-file-document me-2"></i>Academic Reports</h4>
+                                <div class="page-title-right">
+                                    <span class="badge bg-primary"><i class="mdi mdi-calendar"></i> <%= selectedYear %></span>
+                                    <span class="badge bg-info ms-1"><i class="mdi mdi-book-open"></i> <%= selectedTerm %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card-container">
+                        <% if (error) { %>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="bi bi-exclamation-triangle me-2"></i> <%= error %><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+                        <% } %>
+
+                        <!-- Back to All Children Navigation -->
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2 no-print">
+                            <a href="/parent/children" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i> Back to All Children
+                            </a>
+                            <% if (student) { %>
+                            <div class="d-flex gap-2">
+                                <a href="/parent/grades?studentId=<%= student.id %>" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-clipboard-data me-1"></i> Grades
+                                </a>
+                                <a href="/parent/attendance?studentId=<%= student.id %>" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-calendar-check me-1"></i> Attendance
+                                </a>
+                                <a href="/parent/make-payment?studentId=<%= student.id %>" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-credit-card me-1"></i> Pay Fees
+                                </a>
+                            </div>
+                            <% } %>
+                        </div>
+
+                        
+
+            <!-- Term Selector -->
+            <div class="term-selector no-print">
+                <form method="GET" action="/parent/reports" class="row g-3 align-items-end">
+                    <input type="hidden" name="studentId" value="<%= student ? student.id : '' %>">
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Academic Year</label>
+                        <select name="academicYear" class="form-select form-select-custom"
+                            onchange="this.form.submit()">
+                            <% if (academicYears && academicYears.length> 0) { %>
+                                <% for(var i=0; i < academicYears.length; i++) { %>
+                                    <% var year=academicYears[i]; %>
+                                        <% var isSelected=(selectedYear==year.year_name); %>
+                                            <option value="<%= year.year_name %>" <%=isSelected ? 'selected' : '' %>><%=
+                                                    year.year_name %>
+                                            </option>
+                                            <% } %>
+                                                <% } %>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Term</label>
+                        <select name="term" class="form-select form-select-custom" onchange="this.form.submit()">
+                            <% if (availableTerms && availableTerms.length> 0) { %>
+                                <% for(var i=0; i < availableTerms.length; i++) { %>
+                                    <% var termItem=availableTerms[i]; %>
+                                        <% var isSelected=(selectedTerm==termItem.term_name); %>
+                                            <option value="<%= termItem.term_name %>" <%=isSelected ? 'selected' : '' %>
+                                                ><%= termItem.term_name %>
+                                            </option>
+                                            <% } %>
+                                                <% } %>
+                                                    <option value="session" <%=(viewType==='session' ) ? 'selected' : ''
+                                                        %>>Session Summary</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">View Type</label>
+                        <select name="viewType" class="form-select form-select-custom" onchange="this.form.submit()">
+                            <option value="term" <%=(viewType==='term' ) ? 'selected' : '' %>>Term Report</option>
+                            <option value="session" <%=(viewType==='session' ) ? 'selected' : '' %>>Session Report
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-print w-100" onclick="window.print()"><i
+                                class="bi bi-printer me-1"></i> Print</button>
+                    </div>
+                </form>
+            </div>
+
+            <% if (student) { %>
+                <!-- School Header -->
+                <div class="school-header">
+                    <h2 class="school-name">
+                        <%= school.name %>
+                    </h2>
+                    <div class="school-address">
+                        <%= school.address %>
+                    </div>
+                    <div class="school-address">
+                        <%= school.email %> | <%= school.phone %>
+                    </div>
+                    <div class="report-title">
+                        <h5 class="mb-0">
+                            <%= reportTitle %>
+                        </h5>
+                    </div>
+                </div>
+
+                <!-- Student Information -->
+                <div class="student-info-card">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="info-label">Student Name</div>
+                            <div class="info-value">
+                                <%= student.firstName %>
+                                    <%= student.middleName ? student.middleName + ' ' : '' %>
+                                        <%= student.lastName %>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-label">Admission Number</div>
+                            <div class="info-value">
+                                <%= student.admission_number || 'N/A' %>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-label">Class</div>
+                            <div class="info-value">
+                                <%= student.className || 'Not Assigned' %>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="info-label">Level</div>
+                            <div class="info-value">
+                                <%= student.level || 'N/A' %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scores Table -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="score-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Subject</th>
+                                        <th>Code</th>
+                                        <% if (viewType==='session' ) { %>
+                                            <th>First Term</th>
+                                            <th>Second Term</th>
+                                            <th>Third Term</th>
+                                            <th>Average</th>
+                                            <% } else { %>
+                                                <th>Test (40)</th>
+                                                <th>Exam (60)</th>
+                                                <th>Total (100)</th>
+                                                <% } %>
+                                                    <th>Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (scores && scores.length> 0) { %>
+                                        <% for(var i=0; i < scores.length; i++) { %>
+                                            <% var score=scores[i]; %>
+                                                <tr>
+                                                    <td>
+                                                        <%= i + 1 %>
+                                                    </td>
+                                                    <td class="subject-name">
+                                                        <%= score.subject_name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= score.subject_code || 'N/A' %>
+                                                    </td>
+                                                    <% if (viewType==='session' ) { %>
+                                                        <td>
+                                                            <%= (score.first_term !==null && score.first_term
+                                                                !==undefined) ? score.first_term : '-' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= (score.second_term !==null && score.second_term
+                                                                !==undefined) ? score.second_term : '-' %>
+                                                        </td>
+                                                        <td>
+                                                            <%= (score.third_term !==null && score.third_term
+                                                                !==undefined) ? score.third_term : '-' %>
+                                                        </td>
+                                                        <td><strong>
+                                                                <%= score.average %>
+                                                            </strong></td>
+                                                        <% } else { %>
+                                                            <td>
+                                                                <%= score.test_score || 0 %>
+                                                            </td>
+                                                            <td>
+                                                                <%= score.exam_score || 0 %>
+                                                            </td>
+                                                            <td><strong>
+                                                                    <%= score.total_score %>
+                                                                </strong></td>
+                                                            <% } %>
+                                                                <td><span class="grade-badge grade-<%= score.grade %>">
+                                                                        <%= score.grade %>
+                                                                    </span></td>
+                                                </tr>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <tr>
+                                                            <td colspan="<%= (viewType === 'session') ? '8' : '7' %>"
+                                                                class="text-center text-muted py-4">
+                                                                <i class="bi bi-inbox fs-1"></i>
+                                                                <p class="mt-2 mb-0">No scores available</p>
+                                                            </td>
+                                                        </tr>
+                                                        <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Summary -->
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <div class="summary-label">Overall Average</div>
+                            <div class="summary-value">
+                                <%= overallAverage %>%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <div class="summary-label">Overall Grade</div>
+                            <div class="summary-value"><span class="grade-badge grade-<%= overallGrade %>"
+                                    style="font-size: 1.5rem; padding: 0.25rem 1rem;">
+                                    <%= overallGrade %>
+                                </span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <div class="summary-label">Performance</div>
+                            <div class="summary-value" style="font-size: 1.25rem;">
+                                <% if (overallAverage>= 80) { %>Excellent
+                                    <% } else if (overallAverage>= 70) { %>Very Good
+                                        <% } else if (overallAverage>= 60) { %>Good
+                                            <% } else if (overallAverage>= 50) { %>Satisfactory
+                                                <% } else if (overallAverage>= 40) { %>Fair
+                                                    <% } else { %>Needs Improvement
+                                                        <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remarks -->
+                <div class="card mt-4">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0"><i class="bi bi-chat-text me-2 text-primary"></i>Teacher's Remarks</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">
+                            <% if (overallAverage>= 70) { %>Excellent performance! Keep up the good work.
+                                <% } else if (overallAverage>= 60) { %>Good performance. Continue to work hard.
+                                    <% } else if (overallAverage>= 50) { %>Satisfactory performance. More effort needed.
+                                        <% } else if (overallAverage>= 40) { %>Fair performance. Needs significant
+                                            improvement.
+                                            <% } else { %>Needs improvement. Please encourage your child to work harder.
+                                                <% } %>
+                        </p>
+                    </div>
+                </div>
+                <% } else { %>
+                        <div class="card p-5 text-center shadow-sm border-0 my-4 no-print">
+                            <div class="text-muted mb-3">
+                                <i class="bi bi-file-earmark-text fs-1 text-primary"></i>
+                            </div>
+                            <h4 class="fw-bold">No Child Selected</h4>
+                            <p class="text-muted mb-4">Please select a child from the All Children page to view their terminal academic report card.</p>
+                            <div>
+                                <a href="/parent/children?select=reports" class="btn btn-primary px-4">
+                                    <i class="bi bi-arrow-left me-2"></i> Go to All Children
+                                </a>
+                            </div>
+                        </div>
+                    <% } %>
+    </div>
+    </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">&copy;
+                    <script>document.write(new Date().getFullYear())</script> EduSuite - Parent Portal
+                </div>
+                <div class="col-md-6 text-md-end"><a href="#"
+                        class="text-muted text-decoration-none small">Support</a><span
+                        class="text-muted mx-1">|</span><a href="#"
+                        class="text-muted text-decoration-none small">Privacy</a></div>
+            </div>
+        </div>
+    </footer>
+    </div>
+    </div>
+
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+        function markRead(notificationId) {
+            fetch('/api/parent-notifications/mark-read/' + notificationId, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+                .then(function (response) { if (response.ok) { location.reload(); } })
+                .catch(function (error) { console.error('Error:', error); });
+        }
+        function markAllRead() {
+            fetch('/api/parent-notifications/mark-all-read', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+                .then(function (response) { if (response.ok) { location.reload(); } })
+                .catch(function (error) { console.error('Error:', error); });
+        }
+        $(document).ready(function () { setTimeout(function () { $('.alert').fadeOut('slow'); }, 5000); });
+    </script>
+</body>
+
+</html>

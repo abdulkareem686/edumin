@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Term Report Card - <%= student.firstName %>
+            <%= student.lastName %>
+    </title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        /* ===== PRINT STYLES ===== */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .report-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 12px 15px !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                background: white !important;
+            }
+
+            .page-break {
+                page-break-after: avoid;
+            }
+
+            .print-btn {
+                display: none !important;
+            }
+        }
+
+        /* ===== REPORT CARD CONTAINER ===== */
+        .report-card {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ===== SCHOOL HEADER ===== */
+        .school-header {
+            text-align: center;
+            border-bottom: 3px double #1a2332;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .school-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #1a2332;
+            margin: 0;
+        }
+
+        .school-header p {
+            font-size: 10px;
+            color: #333;
+            margin: 1px 0;
+        }
+
+        .school-header .motto {
+            font-style: italic;
+            font-size: 11px;
+            color: #555;
+            margin-top: 2px;
+        }
+
+        /* ===== REPORT TITLE ===== */
+        .report-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #1a2332;
+            margin: 2px 0 1px;
+            text-transform: uppercase;
+        }
+
+        .report-subtitle {
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        /* ===== STUDENT INFO ===== */
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 2px 12px;
+            font-size: 10px;
+            padding: 4px 0;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 6px;
+        }
+
+        .student-info .label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .student-info .value {
+            font-weight: 500;
+        }
+
+        /* ===== SCORES TABLE ===== */
+        .scores-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+            margin-bottom: 6px;
+        }
+
+        .scores-table th {
+            background: #1a2332;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 7px;
+            letter-spacing: 0.3px;
+            padding: 3px 4px;
+            border: 1px solid #1a2332;
+            text-align: center;
+        }
+
+        .scores-table td {
+            padding: 2px 4px;
+            border: 1px solid #ccc;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .scores-table td.subject-name {
+            text-align: left;
+            font-weight: 500;
+            padding-left: 6px;
+        }
+
+        .scores-table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .scores-table tfoot td {
+            background: #e9ecef;
+            font-weight: 700;
+            border-top: 2px solid #1a2332;
+            padding: 3px 4px;
+            font-size: 8.5px;
+        }
+
+        /* ===== GRADE BADGES ===== */
+        .grade-badge {
+            display: inline-block;
+            padding: 0 6px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 8px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .grade-badge.A {
+            background: #28a745;
+            color: white;
+        }
+
+        .grade-badge.B {
+            background: #20c997;
+            color: white;
+        }
+
+        .grade-badge.C {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .grade-badge.D {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .grade-badge.E {
+            background: #6c757d;
+            color: white;
+        }
+
+        .grade-badge.F {
+            background: #dc3545;
+            color: white;
+        }
+
+        .grade-A {
+            background-color: #d4edda !important;
+        }
+
+        .grade-B {
+            background-color: #c3e6cb !important;
+        }
+
+        .grade-C {
+            background-color: #fff3cd !important;
+        }
+
+        .grade-D {
+            background-color: #ffeaa7 !important;
+        }
+
+        .grade-E {
+            background-color: #f8d7da !important;
+        }
+
+        .grade-F {
+            background-color: #f5c6cb !important;
+        }
+
+        /* ===== SUMMARY BOXES ===== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin: 4px 0 6px;
+        }
+
+        .summary-box {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 4px 8px;
+            background: #fafafa;
+        }
+
+        .summary-box h6 {
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #1a2332;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 2px;
+            margin-bottom: 3px;
+        }
+
+        .summary-box table {
+            width: 100%;
+            font-size: 8px;
+        }
+
+        .summary-box table td {
+            padding: 1px 2px;
+        }
+
+        .summary-box table .label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .summary-box table .value {
+            font-weight: 500;
+        }
+
+        /* ===== COMMENTS ===== */
+        .comments-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin: 4px 0 6px;
+        }
+
+        .comment-box {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 4px 8px;
+            background: #fafafa;
+            min-height: 40px;
+        }
+
+        .comment-box h6 {
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #1a2332;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 2px;
+            margin-bottom: 3px;
+        }
+
+        .comment-box p {
+            font-size: 8.5px;
+            font-style: italic;
+            margin-bottom: 1px;
+        }
+
+        .comment-box .author {
+            font-size: 7px;
+            font-weight: 600;
+            text-align: right;
+            font-style: normal;
+            margin-bottom: 0;
+        }
+
+        /* ===== SIGNATURES ===== */
+        .signatures {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid #ccc;
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1px solid #1a2332;
+            margin: 0 auto 2px;
+            width: 80%;
+        }
+
+        .signature-box p {
+            font-size: 7px;
+            color: #555;
+            margin: 0;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            font-size: 6.5px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 4px;
+            margin-top: 6px;
+        }
+
+        /* ===== PRINT BUTTON ===== */
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            padding: 12px 24px;
+            background: #1a2332;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-family: Arial, sans-serif;
+        }
+
+        .print-btn:hover {
+            background: #2a3a4a;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .student-info {
+                grid-template-columns: 1fr 1fr;
+                font-size: 9px;
+            }
+
+            .summary-grid,
+            .comments-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .signatures {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        @media print {
+            .student-info {
+                font-size: 8px;
+                padding: 2px 0;
+            }
+
+            .scores-table {
+                font-size: 7.5px;
+            }
+
+            .scores-table th {
+                font-size: 6px;
+                padding: 2px 3px;
+            }
+
+            .scores-table td {
+                padding: 1.5px 3px;
+            }
+
+            .summary-box table {
+                font-size: 7px;
+            }
+
+            .summary-box h6 {
+                font-size: 7px;
+            }
+
+            .comment-box p {
+                font-size: 7px;
+            }
+
+            .comment-box h6 {
+                font-size: 7px;
+            }
+
+            .signature-box p {
+                font-size: 6px;
+            }
+
+            .footer {
+                font-size: 5px;
+            }
+
+            .school-header h1 {
+                font-size: 18px;
+            }
+
+            .report-title {
+                font-size: 13px;
+            }
+
+            .report-subtitle {
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="window.print()" class="print-btn no-print">
+        <i class="bi bi-printer"></i> 🖨️ Print Report Card
+    </button>
+
+    <div class="report-card">
+        <!-- ===== SCHOOL HEADER ===== -->
+        <div class="school-header">
+            <h1>
+                <%= school.name %>
+            </h1>
+            <p>
+                <%= school.address %>
+            </p>
+            <p>📞 <%= school.phone %> &nbsp;|&nbsp; ✉ <%= school.email %>
+            </p>
+            <% if (school.motto) { %>
+                <p class="motto">"<%= school.motto %>"</p>
+                <% } %>
+        </div>
+
+        <!-- ===== REPORT TITLE ===== -->
+        <div class="report-title">
+            <%= term.toUpperCase() %> REPORT CARD
+        </div>
+        <div class="report-subtitle">
+            <%= term %> Term &nbsp;|&nbsp; Academic Year: <%= academicYear %>
+        </div>
+
+        <!-- ===== STUDENT INFO ===== -->
+        <div class="student-info">
+            <div><span class="label">Name:</span> <span class="value">
+                    <%= student.firstName %>
+                        <%= student.middleName || '' %>
+                            <%= student.lastName %>
+                </span></div>
+            <div><span class="label">Admission:</span> <span class="value">
+                    <%= student.admission_number %>
+                </span></div>
+            <div><span class="label">Class:</span> <span class="value">
+                    <%= student.className %>
+                </span></div>
+            <div><span class="label">Gender:</span> <span class="value">
+                    <%= student.gender || 'N/A' %>
+                </span></div>
+        </div>
+
+        <!-- ===== SCORES TABLE ===== -->
+        <table class="scores-table">
+            <thead>
+                <tr>
+                    <th style="width:25px;">#</th>
+                    <th style="text-align:left; width:30%;">Subject</th>
+                    <th style="width:35px;">Code</th>
+                    <th style="width:45px;">Test (40)</th>
+                    <th style="width:45px;">Exam (60)</th>
+                    <th style="width:50px;">Total (100)</th>
+                    <th style="width:30px;">Gr</th>
+                    <th style="text-align:left; width:18%;">Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% var overallTest=0, overallExam=0, overallTotal=0; var count=0; scores.forEach(function(score) { var
+                    testVal=parseFloat(score.test_score) || 0; var examVal=parseFloat(score.exam_score) || 0; var
+                    totalVal=testVal + examVal; overallTest +=testVal; overallExam +=examVal; overallTotal +=totalVal;
+                    count++; %>
+                    <tr class="grade-<%= score.grade %>">
+                        <td>
+                            <%= count %>
+                        </td>
+                        <td class="subject-name">
+                            <%= score.subject_name %>
+                        </td>
+                        <td>
+                            <%= score.subject_code || 'N/A' %>
+                        </td>
+                        <td>
+                            <%= testVal %>
+                        </td>
+                        <td>
+                            <%= examVal %>
+                        </td>
+                        <td><strong>
+                                <%= totalVal.toFixed(1) %>
+                            </strong></td>
+                        <td><span class="grade-badge <%= score.grade %>">
+                                <%= score.grade %>
+                            </span></td>
+                        <td style="text-align:left; font-size:7.5px;">
+                            <%= score.remark %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="text-align:right; padding-right:8px;"><strong>OVERALL TOTAL</strong></td>
+                    <td></td>
+                    <td><strong>
+                            <%= overallTest.toFixed(1) %>
+                        </strong></td>
+                    <td><strong>
+                            <%= overallExam.toFixed(1) %>
+                        </strong></td>
+                    <td><strong>
+                            <%= overallTotal.toFixed(1) %>
+                        </strong></td>
+                    <td></td>
+                    <td style="text-align:left; font-size:7.5px;"><strong>Subjects: <%= count %></strong></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- ===== SUMMARY GRID ===== -->
+        <div class="summary-grid">
+            <div class="summary-box">
+                <h6>📊 Academic Summary</h6>
+                <table>
+                    <tr>
+                        <td class="label">Average:</td>
+                        <td class="value">
+                            <%= termAverage %>
+                        </td>
+                        <td class="label">Grade:</td>
+                        <td class="value"><strong>
+                                <%= termGrade %>
+                            </strong></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Percentage:</td>
+                        <td class="value">
+                            <%= termPercentage %>%
+                        </td>
+                        <td class="label">Subjects:</td>
+                        <td class="value">
+                            <%= count %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Total Test:</td>
+                        <td class="value">
+                            <%= overallTest.toFixed(1) %>
+                        </td>
+                        <td class="label">Total Exam:</td>
+                        <td class="value">
+                            <%= overallExam.toFixed(1) %>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="summary-box">
+                <h6>📋 Attendance Summary</h6>
+                <table>
+                    <tr>
+                        <td class="label">Present:</td>
+                        <td class="value">
+                            <%= attendance.present_days %>
+                        </td>
+                        <td class="label">Absent:</td>
+                        <td class="value">
+                            <%= attendance.absent_days %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Late:</td>
+                        <td class="value">
+                            <%= attendance.late_days %>
+                        </td>
+                        <td class="label">Excused:</td>
+                        <td class="value">
+                            <%= attendance.excused_days %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Total Days:</td>
+                        <td class="value">
+                            <%= attendance.total_days %>
+                        </td>
+                        <td class="label">Rate:</td>
+                        <td class="value">
+                            <%= attendance.total_days> 0 ? ((attendance.present_days / attendance.total_days) *
+                                100).toFixed(1) : 0 %>%
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== COMMENTS ===== -->
+        <div class="comments-grid">
+            <div class="comment-box">
+                <h6>Class Teacher's Remark</h6>
+                <p>"<%= teacherComment.comment %>"</p>
+                <p class="author">
+                    <%= teacherComment.comment_by %> &nbsp;|&nbsp; <%=
+                            moment(teacherComment.comment_date).format('DD/MM/YYYY') %>
+                </p>
+            </div>
+            <div class="comment-box">
+                <h6>Management Remark</h6>
+                <p>"<%= principalComment.comment %>"</p>
+                <p class="author">
+                    <%= principalComment.comment_by %> &nbsp;|&nbsp; <%=
+                            moment(principalComment.comment_date).format('DD/MM/YYYY') %>
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== SIGNATURES ===== -->
+        <div class="signatures">
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <p>Class Teacher</p>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <p>Principal</p>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <p>Parent/Guardian</p>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer">
+            Generated: <%= moment().format('DD/MM/YYYY h:mm A') %> &nbsp;|&nbsp; <%= school.name %> &nbsp;|&nbsp; <%=
+                        school.website || '' %>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.location.search.includes('print=true')) {
+                setTimeout(function () { window.print(); }, 500);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
