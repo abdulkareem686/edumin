@@ -117,128 +117,111 @@ exports.getLogin = (req, res) => {
 exports.postLogin = async (req, res) => {
     const { email, credential } = req.body; // credential can be password or first name
 
+    if (!email || !credential) {
+        return res.render('page-login', {
+            error: 'Email and credential are required'
+        });
+    }
+
     try {
         const connection = await getConnection();
+        let sessionValues;
+        let redirectTo;
 
-        if (!email || !credential) {
-            return res.render('page-login', { 
-                error: 'Email and credential are required' 
+        // Verify credentials before rotating the session; a failed login must
+        // not invalidate an existing authenticated session.
+        const [users] = await connection.execute(
+            'SELECT * FROM users WHERE email = ?',
+            [email]
+        );
+        if (users.length && await comparePassword(credential, users[0].password)) {
+            const user = users[0];
+            sessionValues = {
+                userId: user.id,
+                username: user.username,
+                role: user.role,
+                email: user.email || null,
+                schoolId: user.school_id || null
+            };
+            redirectTo = '/';
+        }
+
+        if (!sessionValues) {
+            const [parents] = await connection.execute(
+                'SELECT * FROM parents WHERE email = ? AND status = "active"',
+                [email]
+            );
+            if (parents.length && await comparePassword(credential, parents[0].password)) {
+                const parent = parents[0];
+                const [linkedStudents] = await connection.execute(`
+                    SELECT s.*, c.className, c.level
+                    FROM parent_students ps
+                    JOIN students s ON ps.student_id = s.id
+                    LEFT JOIN classes c ON s.classId = c.id
+                    WHERE ps.parent_id = ? AND ps.can_receive_notifications = TRUE
+                `, [parent.id]);
+                const parentName = `${parent.first_name} ${parent.last_name}`;
+                sessionValues = {
+                    parentId: parent.id,
+                    userId: parent.id,
+                    username: parentName,
+                    parentName,
+                    parentEmail: parent.email,
+                    role: 'parent',
+                    linkedStudents,
+                    schoolId: parent.school_id
+                };
+                redirectTo = '/parent/parent-dashboard';
+            }
+        }
+
+        if (!sessionValues) {
+            const [teachers] = await connection.execute(
+                'SELECT * FROM teachers WHERE email = ?',
+                [email]
+            );
+            if (teachers.length && await comparePassword(credential, teachers[0].password)) {
+                const teacher = teachers[0];
+                sessionValues = {
+                    userId: teacher.id,
+                    username: `${teacher.firstName} ${teacher.lastName}`,
+                    role: 'teacher',
+                    schoolId: teacher.school_id || null,
+                    teacherData: teacher
+                };
+                redirectTo = '/teacher-dashboard';
+            }
+        }
+
+        if (!sessionValues) {
+            const [students] = await connection.execute(
+                'SELECT * FROM students WHERE email = ? AND firstName = ?',
+                [email, credential]
+            );
+            if (students.length) {
+                const student = students[0];
+                sessionValues = {
+                    userId: student.id,
+                    username: studentDisplayName(student),
+                    role: 'student',
+                    schoolId: student.school_id || null,
+                    studentData: student
+                };
+                redirectTo = '/student-dashboard';
+            }
+        }
+
+        if (!sessionValues) {
+            return res.render('page-login', {
+                error: 'Invalid credentials. Please check your email and password/first name.'
             });
         }
 
-        // Regenerate session to ensure fresh session
-        req.session.regenerate(async (err) => {
-            if (err) {
-                console.error('Session regenerate error:', err);
-                return res.render('page-login', { 
-                    error: 'Login failed. Please try again.' 
-                });
-            }
-
-            try { 
-                // First, try admin login (users table with password)
-                const [users] = await connection.execute(
-                    'SELECT * FROM users WHERE email = ?',
-                    [email]
-                );
-
-                if (users.length > 0) {
-                    const user = users[0];
-                    const passwordMatch = await comparePassword(credential, user.password);
-
-                    if (passwordMatch) {
-                        // Admin login successful
-                        req.session.userId = user.id;
-                        req.session.username = user.username;
-                        req.session.role = user.role;
-                        req.session.email = user.email || null;
-                        req.session.schoolId = user.school_id || null;
-                        return res.redirect('/');
-                    }
-                }
-
-                // Second, try parent login (parents table with password) - set role to 'parent'
-                const [parents] = await connection.execute(
-                    'SELECT * FROM parents WHERE email = ? AND status = "active"',
-                    [email]
-                );
-
-                if (parents.length > 0) {
-                    const parent = parents[0];
-                    const passwordMatch = await comparePassword(credential, parent.password);
-
-                    if (passwordMatch) {
-                        // Get linked students for this parent
-                        const [linkedStudents] = await connection.execute(`
-                            SELECT s.*, c.className, c.level 
-                            FROM parent_students ps
-                            JOIN students s ON ps.student_id = s.id
-                            LEFT JOIN classes c ON s.classId = c.id
-                            WHERE ps.parent_id = ? AND ps.can_receive_notifications = TRUE
-                        `, [parent.id]);
-
-                        req.session.parentId = parent.id;
-                        req.session.userId = parent.id;
-                        req.session.username = `${parent.first_name} ${parent.last_name}`;
-                        req.session.parentName = `${parent.first_name} ${parent.last_name}`;
-                        req.session.parentEmail = parent.email;
-                        req.session.role = 'parent';
-                        req.session.linkedStudents = linkedStudents;
-                        req.session.schoolId = parent.school_id;
-                        return res.redirect('/parent/parent-dashboard');
-                    }
-                }
-
-                // Third, try teacher login (email + password)
-                const [teachers] = await connection.execute(
-                    'SELECT * FROM teachers WHERE email = ?',
-                    [email]
-                );
-
-                if (teachers.length > 0) {
-                    const teacher = teachers[0];
-                    const passwordMatch = await comparePassword(credential, teacher.password);
-
-                    if (passwordMatch) {
-                        // Teacher login successful
-                        req.session.userId = teacher.id;
-                        req.session.username = `${teacher.firstName} ${teacher.lastName}`;
-                        req.session.role = 'teacher';
-                        req.session.schoolId = teacher.school_id || null;
-                        req.session.teacherData = teacher;
-                        return res.redirect('/teacher-dashboard');
-                    }
-                }
-
-                // Fourth, try student login (email + first name)
-                const [students] = await connection.execute(
-                    'SELECT * FROM students WHERE email = ? AND firstName = ?',
-                    [email, credential] // credential is the first name for students
-                );
-
-                if (students.length > 0) {
-                    const student = students[0];
-                    
-                    // Student login successful
-                    req.session.userId = student.id;
-                    req.session.username = studentDisplayName(student);
-                    req.session.role = 'student';
-                    req.session.schoolId = student.school_id || null;
-                    req.session.studentData = student;
-                    return res.redirect('/student-dashboard');
-                }
-
-                // If nothing matches, show generic error
-                res.render('page-login', { 
-                    error: 'Invalid credentials. Please check your email and password/first name.' 
-                });
-            } catch (innerError) {
-                console.error('Login inner error:', innerError);
-                res.render('page-login', { 
-                    error: 'Login failed. Please try again.' 
-                });
-            }
+        await new Promise((resolve, reject) => {
+            req.session.regenerate((err) => err ? reject(err) : resolve());
         });
+        Object.assign(req.session, sessionValues);
+        return res.redirect(redirectTo);
 
     } catch (error) {
         console.error('Login error:', error);
@@ -253,6 +236,7 @@ exports.logout = (req, res) => {
         if (err) {
             console.error('Logout error:', err);
         }
+        res.clearCookie('connect.sid', { path: '/' });
         res.redirect('/login');
     });
 };
