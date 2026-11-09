@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title><%= isPrintView ? 'Print Class Bill' : 'Class Bills' %> - edu admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+
+        <!-- App css -->
+        <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+        <link rel="stylesheet" href="/vendor/bootstrap-select/dist/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+        <style>
+            <% if (isPrintView) { %>
+                @media print {
+                    .no-print {
+                        display: none !important;
+                    }
+                    .print-section {
+                        display: block !important;
+                    }
+                    body {
+                        background: white !important;
+                        font-size: 12pt;
+                        margin: 0;
+                        padding: 20px;
+                    }
+                    .container-fluid {
+                        padding: 0 !important;
+                    }
+                    .card {
+                        border: none !important;
+                        box-shadow: none !important;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    th, td {
+                        border: 1px solid #000;
+                        padding: 8px;
+                    }
+                    .table-light th {
+                        background-color: #f8f9fa !important;
+                    }
+                }
+                .print-section {
+                    display: none;
+                }
+            <% } %>
+        </style>
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+<!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+                <!-- Start Content-->
+                   <div class="container-fluid">
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Bills</a></li>
+                                            <li class="breadcrumb-item active"><%= isPrintView ? 'Print Class Bill' : 'Class Bills' %></li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title"><%= isPrintView ? 'Print Class Bill' : 'Class Bills' %></h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <div class="container-fluid">
+                            <% if (!isPrintView) { %>
+                            <!-- Selection Form - Only show in list view -->
+                            <div class="row no-print">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="header-title">Select Class and Term</h4>
+                                            <!-- Form with JavaScript handling -->
+                                            <form class="row g-3" id="billPrintForm">
+                                                <div class="col-md-4">
+                                                    <label for="classId" class="form-label">Class</label>
+                                                    <select class="form-select" id="classId" name="classId" required>
+                                                        <option value="">Select Class</option>
+                                                        <% if (classes && classes.length > 0) { %>
+                                                            <% classes.forEach(cls => { %>
+                                                                <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>>
+                                                                    <%= cls.className %> 
+                                                                    <% if (cls.department) { %>(<%= cls.department %>)<% } %>
+                                                                </option>
+                                                            <% }); %>
+                                                        <% } else { %>
+                                                            <option value="">No classes available</option>
+                                                        <% } %>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="col-md-4">
+                                                    <label for="academicYear" class="form-label">Academic Year</label>
+                                                    <select class="form-select" id="academicYear" name="academicYear" required>
+                                                        <option value="">Select Academic Year</option>
+                                                        <% if (academicYears && academicYears.length > 0) { %>
+                                                            <% academicYears.forEach(year => { %>
+                                                                <option value="<%= year.year_name %>" <%= selectedAcademicYear == year.year_name ? 'selected' : '' %>>
+                                                                    <%= year.year_name %>
+                                                                </option>
+                                                            <% }); %>
+                                                        <% } else { %>
+                                                            <option value="">No academic years available</option>
+                                                        <% } %>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="col-md-4">
+                                                    <label for="term" class="form-label">Term</label>
+                                                    <select class="form-select" id="term" name="term" required>
+                                                        <option value="">Select Term</option>
+                                                        <option value="First Term" <%= selectedTerm == 'First Term' ? 'selected' : '' %>>First Term</option>
+                                                        <option value="Second Term" <%= selectedTerm == 'Second Term' ? 'selected' : '' %>>Second Term</option>
+                                                        <option value="Third Term" <%= selectedTerm == 'Third Term' ? 'selected' : '' %>>Third Term</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="col-12 mt-3">
+                                                    <button type="button" class="btn btn-primary" id="showBillsBtn">
+                                                        <i class="mdi mdi-magnify me-1"></i> Show Bills
+                                                    </button>
+                                                    <button type="button" class="btn btn-success ms-2" id="printBtn" style="display: none;">
+                                                        <i class="mdi mdi-printer me-1"></i> Print Bill
+                                                    </button>
+                                                    <a href="/class-bills" class="btn btn-secondary ms-2">
+                                                        <i class="mdi mdi-arrow-left me-1"></i> Back to Bills List
+                                                    </a>
+                                                    <a href="/class-bills/create" class="btn btn-danger ms-2">
+                                                        <i class="mdi mdi-plus-circle me-2"></i> Create bill
+                                                    </a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+
+                            <!-- Bills Display -->
+                            <% if (bills && bills.length > 0) { %>
+                                <% if (isPrintView) { %>
+                                <!-- Print View -->
+                                <div class="print-section">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- School Header -->
+                                            <div class="text-center mb-4">
+                                                <h2 class="mb-1"><%= school.name %></h2>
+                                                <p class="mb-1"><%= school.address %></p>
+                                                <p class="mb-1">Tel: <%= school.phone %> | Email: <%= school.email %></p>
+                                                <% if (school.website) { %>
+                                                    <p class="mb-3">Website: <%= school.website %></p>
+                                                <% } %>
+                                                <h4 class="mt-3 text-decoration-underline">CLASS BILL STATEMENT</h4>
+                                                <p class="mb-2">
+                                                    Academic Year: <strong><%= selectedAcademicYear %></strong> | 
+                                                    Term: <strong><%= selectedTerm %></strong>
+                                                </p>
+                                                <p>
+                                                    Class: <strong><%= bills[0].class_display_name %></strong>
+                                                    <% if (bills[0].class_level) { %>
+                                                        | Level: <strong><%= bills[0].class_level %></strong>
+                                                    <% } %>
+                                                    <% if (bills[0].class_department) { %>
+                                                        | Department: <strong><%= bills[0].class_department %></strong>
+                                                    <% } %>
+                                                </p>
+                                            </div>
+
+                                            <!-- Bills Table -->
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>S/N</th>
+                                                            <th>Fee Type</th>
+                                                            <th>Amount (₦)</th>
+                                                            <th>Due Date</th>
+                                                            <th>Description</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% 
+                                                        let totalAmount = 0;
+                                                        let counter = 1;
+                                                        bills.forEach(bill => { 
+                                                            totalAmount += parseFloat(bill.amount);
+                                                        %>
+                                                        <tr>
+                                                            <td><%= counter++ %></td>
+                                                            <td><%= bill.fee_type %></td>
+                                                            <td>₦<%= Number(bill.amount).toLocaleString('en-NG') %></td>
+                                                            <td><%= bill.due_date ? moment(bill.due_date).format('DD MMM YYYY') : 'N/A' %></td>
+                                                            <td><%= bill.description || 'N/A' %></td>
+                                                        </tr>
+                                                        <% }); %>
+                                                    </tbody>
+                                                    <tfoot class="table-light">
+                                                        <tr>
+                                                            <th colspan="2" class="text-end">TOTAL AMOUNT:</th>
+                                                            <th colspan="3">₦<%= Number(totalAmount).toLocaleString('en-NG') %></th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                            <!-- Payment Instructions -->
+                                            <div class="mt-4">
+                                                <h5>Payment Instructions:</h5>
+                                                <ol>
+                                                    <li>All payments should be made to the school bank account or at the bursary office</li>
+                                                    <li>Please quote the student's admission number as reference when making payment</li>
+                                                    <li>Payment deadline: <%= bills[0].due_date ? moment(bills[0].due_date).format('DD MMMM YYYY') : 'As specified by school' %></li>
+                                                    <li>Late payments may attract additional charges</li>
+                                                    <li>Keep this bill statement for your records</li>
+                                                </ol>
+                                            </div>
+
+                                            <!-- Footer -->
+                                            <div class="row mt-5">
+                                                <div class="col-md-6">
+                                                    <p>Generated on: <%= moment().format('DD MMMM YYYY, h:mm A') %></p>
+                                                    <p>Generated by: <%= school.name %> Management System</p>
+                                                </div>
+                                                <div class="col-md-6 text-end">
+                                                    <div class="border-top pt-4 mt-2">
+                                                        <p>_________________________</p>
+                                                        <p>Authorized Signature</p>
+                                                        <p><%= school.name %> Management</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Print Button for Print View -->
+                                    <div class="no-print mt-3 text-center">
+                                        <button onclick="window.print()" class="btn btn-success">
+                                            <i class="mdi mdi-printer me-1"></i> Print Bill
+                                        </button>
+                                        <a href="/class-bills" class="btn btn-secondary ms-2">
+                                            <i class="mdi mdi-arrow-left me-1"></i> Back to Bills List
+                                        </a>
+                                    </div>
+                                </div>
+                                <% } else { %>
+                                <!-- List View -->
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4 class="header-title">Class Bills</h4>
+                                                <div class="table-responsive">
+                                                    <table class="table table-centered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Class</th>
+                                                                <th>Fee Type</th>
+                                                                <th>Amount</th>
+                                                                <th>Academic Year</th>
+                                                                <th>Term</th>
+                                                                <th>Students</th>
+                                                                <th>Collected</th>
+                                                                <th>Due Date</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% bills.forEach(bill => { %>
+                                                            <tr>
+                                                                <td><%= bill.class_display_name %></td>
+                                                                <td><%= bill.fee_type %></td>
+                                                                <td>₦<%= bill.amount.toLocaleString() %></td>
+                                                                <td><%= bill.academic_year %></td>
+                                                                <td><%= bill.term %></td>
+                                                                <td><%= bill.student_count || 0 %></td>
+                                                                <td>₦<%= (bill.amount_collected || 0).toLocaleString() %></td>
+                                                                <td><%= bill.due_date ? moment(bill.due_date).format('DD MMM YYYY') : 'N/A' %></td>
+                                                                <td>
+                                                                    <a href="/class-bills?print=true&classId=<%= selectedClassId %>&academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>" class="btn btn-sm btn-outline-primary">
+                                                                        <i class="mdi mdi-printer"></i> Print
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <% }); %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+                            <% } else if (selectedClassId && selectedAcademicYear && selectedTerm) { %>
+                            <div class="row mt-3 no-print">
+                                <div class="col-12">
+                                    <div class="alert alert-warning">
+                                        <i class="mdi mdi-alert-circle-outline me-1"></i>
+                                        <strong>No bills found!</strong> There are no bills for:
+                                        <ul class="mt-2 mb-0">
+                                            <li>Class: <%= (classes.find(c => c.id == selectedClassId) || {}).className || 'Unknown Class' %></li>
+                                            <li>Academic Year: <%= selectedAcademicYear %></li>
+                                            <li>Term: <%= selectedTerm %></li>
+                                        </ul>
+                                        <p class="mt-2 mb-0">Please check if bills have been created for this class and term.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer no-print">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © <%= school.name || 'School Management System' %>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript:void(0);">Help</a>
+                                    <a href="javascript:void(0);">Support</a>
+                                    <a href="javascript:void(0);">Contact</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+        </div>
+
+        <!-- bundle -->
+        <script src="/assets/js/vendor.min.js"></script>
+        <script src="/assets/js/app.min.js"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Show print button when bills are available (for list view)
+                <% if (bills && bills.length > 0 && !isPrintView) { %>
+                    document.getElementById('printBtn').style.display = 'inline-block';
+                <% } %>
+                
+                // Print functionality
+                const printBtn = document.getElementById('printBtn');
+                if (printBtn) {
+                    printBtn.addEventListener('click', function() {
+                        window.print();
+                    });
+                }
+                
+                // Show bills button functionality (only in list view)
+                const showBillsBtn = document.getElementById('showBillsBtn');
+                if (showBillsBtn) {
+                    showBillsBtn.addEventListener('click', function() {
+                        const classId = document.getElementById('classId').value;
+                        const academicYear = document.getElementById('academicYear').value;
+                        const term = document.getElementById('term').value;
+                        
+                        if (!classId || !academicYear || !term) {
+                            alert('Please select Class, Academic Year, and Term before submitting.');
+                            return;
+                        }
+                        
+                        // Show loading state
+                        showBillsBtn.innerHTML = '<i class="mdi mdi-loading mdi-spin me-1"></i> Loading...';
+                        showBillsBtn.disabled = true;
+                        
+                        // Redirect to the print view with query parameters
+                        window.location.href = `/class-bills?print=true&classId=${classId}&academicYear=${academicYear}&term=${term}`;
+                    });
+                }
+                
+                // Auto-enable button if page is reloaded with values (list view only)
+                if (document.getElementById('classId') && 
+                    document.getElementById('academicYear') && 
+                    document.getElementById('term') &&
+                    document.getElementById('showBillsBtn')) {
+                    
+                    const classId = document.getElementById('classId').value;
+                    const academicYear = document.getElementById('academicYear').value;
+                    const term = document.getElementById('term').value;
+                    const showBillsBtn = document.getElementById('showBillsBtn');
+                    
+                    if (classId && academicYear && term) {
+                        showBillsBtn.disabled = false;
+                        showBillsBtn.innerHTML = '<i class="mdi mdi-magnify me-1"></i> Show Bills';
+                    }
+                }
+                
+                // Auto-print functionality for print view
+                <% if (isPrintView && bills && bills.length > 0) { %>
+                    // Auto-print after a short delay when in print view
+                    setTimeout(function() {
+                        window.print();
+                    }, 500);
+                    
+                    // Add keyboard shortcut for printing (Ctrl+P)
+                    document.addEventListener('keydown', function(e) {
+                        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                            e.preventDefault();
+                            window.print();
+                        }
+                    });
+                <% } %>
+                
+                // Form auto-submit when all fields are selected (optional)
+                const classSelect = document.getElementById('classId');
+                const yearSelect = document.getElementById('academicYear');
+                const termSelect = document.getElementById('term');
+                
+                if (classSelect && yearSelect && termSelect) {
+                    [classSelect, yearSelect, termSelect].forEach(select => {
+                        select.addEventListener('change', function() {
+                            const classId = document.getElementById('classId').value;
+                            const academicYear = document.getElementById('academicYear').value;
+                            const term = document.getElementById('term').value;
+                            
+                            // Auto-submit form when all fields are selected
+                            if (classId && academicYear && term) {
+                                const showBillsBtn = document.getElementById('showBillsBtn');
+                                if (showBillsBtn) {
+                                    showBillsBtn.click();
+                                }
+                            }
+                        });
+                    });
+                }
+                
+                // Handle browser back button for print view
+                <% if (isPrintView) { %>
+                    window.addEventListener('pageshow', function(event) {
+                        // If user navigated back to this page, reload to show the list view
+                        if (event.persisted) {
+                            window.location.href = '/class-bills';
+                        }
+                    });
+                <% } %>
+            });
+        </script>
+    </body>
+</html>

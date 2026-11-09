@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>edu admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.png">
+
+        <!-- third party css -->
+        <link href="assets/css/vendor/dataTables.bootstrap5.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/vendor/responsive.bootstrap5.css" rel="stylesheet" type="text/css">
+        <!-- third party css end -->
+
+        <!-- App css -->
+        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    
+    <style>
+        /* Enable smooth, guaranteed scrolling for all modal dialogs */
+        .modal-dialog-scrollable {
+            max-height: calc(100vh - 2rem) !important;
+        }
+        .modal-dialog-scrollable form.modal-content,
+        .modal-dialog-scrollable .modal-content {
+            max-height: calc(100vh - 2rem) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
+        .modal-dialog-scrollable .modal-body {
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            flex: 1 1 auto !important;
+            max-height: calc(100vh - 180px) !important;
+        }
+        .modal-dialog-scrollable .modal-header,
+        .modal-dialog-scrollable .modal-footer {
+            flex-shrink: 0 !important;
+        }
+    </style>
+
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+<!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+ 
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <div class="page-title-right">
+                                        <ol class="breadcrumb m-0">
+                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="/all-library">Library</a></li>
+                                            <li class="breadcrumb-item active">All Books</li>
+                                        </ol>
+                                    </div>
+                                    <h4 class="page-title">Library Books</h4>
+                                </div>
+                            </div>
+                        </div>     
+                        <!-- end page title --> 
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row mb-2">
+                                            <div class="col-sm-4">
+                                                <button type="button" class="btn btn-danger mb-2" data-bs-toggle="modal" data-bs-target="#addBookModal"><i class="mdi mdi-plus-circle me-2"></i> Add Book</button>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <div class="text-sm-end">
+                                                    <button type="button" class="btn btn-success mb-2 me-1"><i class="mdi mdi-cog"></i></button>
+                                                    <button type="button" class="btn btn-light mb-2 me-1">Import</button>
+                                                    <button type="button" class="btn btn-light mb-2">Export</button>
+                                                </div>
+                                            </div><!-- end col-->
+                                        </div>
+                
+                                        <div class="table-responsive">
+                                            <table class="table table-centered table-striped dt-responsive nowrap w-100" id="products-datatable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 20px;">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" class="form-check-input" id="customCheck1">
+                                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
+                                                            </div>
+                                                        </th>
+                                                        <th>Title</th>
+                                                        <th>Author</th>
+                                                        <th>ISBN</th>
+                                                        <th>Available Qty</th>
+                                                        <th style="width: 75px;">Action</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                   <% books.forEach(book => { %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="form-check">
+                                                                <input type="checkbox" class="form-check-input" id="customCheck2">
+                                                                <label class="form-check-label" for="customCheck2">&nbsp;</label>
+                                                            </div>
+                                                        </td>
+                                                        <td class="table-user">
+                                                            <a href="javascript:void(0);" class="text-body fw-semibold"><%= book.title %></a>
+                                                        </td>
+                                                        <td>
+                                                            <%= book.author %>
+                                                        </td>
+                                                        <td>
+                                                            <%= book.isbn %>
+                                                        </td>
+                                                        <td>
+                                                            <%= book.quantity %>
+                                                        </td>
+                    
+                                                        <td>
+                                                            <a href="/edit-book/<%= book.id %>" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                                            <a href="/delete-book/<%= book.id %>" class="action-icon"> <i class="mdi mdi-delete"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                <% }); %> 
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div> <!-- end card-body-->
+                                </div> <!-- end card-->
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row -->
+
+                        <!-- Enhanced Add Book Modal -->
+                        <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+<form class="modal-content border-0 shadow" action="/add-library" method="post" enctype="multipart/form-data">
+                                        <div class="modal-header bg-light py-3">
+                                            <div>
+                                                <h5 class="modal-title fw-bold text-primary mb-1" id="addBookModalLabel">
+                                                    <i class="bi bi-book-half me-2"></i>Add New Library Book
+                                                </h5>
+                                                <p class="text-muted small mb-0">Record book title, author, catalog ISBN, stock count, and optional cover image.</p>
+                                            </div>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body p-4" style="overflow-y: auto; max-height: calc(85vh - 130px);">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Book Title <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" name="title" placeholder="e.g. New General Mathematics for SS 1" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-medium">Author <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" name="author" placeholder="e.g. M.F. Macrae et al." required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-medium">ISBN</label>
+                                                    <input type="text" class="form-control" name="isbn" placeholder="978-3-16-148410-0">
+                                                    <div class="form-text">International standard book number.</div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-medium">Quantity in Stock <span class="text-danger">*</span></label>
+                                                    <input type="number" class="form-control" name="quantity" value="1" min="1" required>
+                                                    <div class="form-text">Number of copies available.</div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label fw-medium">Category</label>
+                                                    <select class="form-select" name="category">
+                                                        <option value="">Select Category</option>
+                                                        <option value="Textbook">Textbook</option>
+                                                        <option value="Fiction">Fiction</option>
+                                                        <option value="Non-Fiction">Non-Fiction</option>
+                                                        <option value="Reference">Reference</option>
+                                                        <option value="Magazine">Magazine</option>
+                                                        <option value="Journal">Journal</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label fw-medium">Book Cover Image</label>
+                                                    <input type="file" class="form-control" name="bookCover" accept="image/*">
+                                                    <div class="form-text">Optional. Supported formats: JPG, PNG, WEBP.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer bg-light py-2">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                                                <i class="bi bi-plus-circle me-1"></i> Add Book
+                                            </button>
+                                        </div>
+                                    </form>
+</div>
+</div>
+
+                        
+                    </div> <!-- container -->
+
+                </div> <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © abdulkareem
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+
+        </div>
+        <!-- END wrapper -->
+
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Settings</h5>
+            </div>
+
+            <div class="rightbar-content h-100" data-simplebar="">
+
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+
+                    <!-- Settings -->
+                    <h5 class="mt-3">Color Scheme</h5>
+                    <hr class="mt-1">
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+       
+
+                    <!-- Width -->
+                    <h5 class="mt-4">Width</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+        
+
+                    <!-- Left Sidebar-->
+                    <h5 class="mt-4">Left Sidebar</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                        <label class="form-check-label" for="default-check">Default</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                        <label class="form-check-label" for="light-check">Light</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                        <label class="form-check-label" for="dark-check">Dark</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked="">
+                        <label class="form-check-label" for="fixed-check">Fixed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                        <label class="form-check-label" for="condensed-check">Condensed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+                        <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+            
+                        <a href="../../product/hyper-responsive-admin-dashboard-template/index.htm" class="btn btn-danger mt-3" target="_blank"><i class="mdi mdi-basket me-1"></i> Purchase Now</a>
+                    </div>
+                </div> <!-- end padding-->
+
+            </div>
+        </div>
+
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+
+
+        <!-- bundle -->
+        <script src="assets/js/vendor.min.js"></script>
+        <script src="assets/js/app.min.js"></script>
+
+        <!-- third party js -->
+        <script src="assets/js/vendor/jquery.dataTables.min.js"></script>
+        <script src="assets/js/vendor/dataTables.bootstrap5.js"></script>
+        <script src="assets/js/vendor/dataTables.responsive.min.js"></script>
+        <script src="assets/js/vendor/responsive.bootstrap5.min.js"></script>
+        <script src="assets/js/vendor/dataTables.checkboxes.min.js"></script>
+        <!-- third party js ends -->
+
+        <!-- demo app -->
+        <script src="assets/js/pages/demo.customers.js"></script>
+        <!-- end demo js-->
+
+    </body>
+</html>

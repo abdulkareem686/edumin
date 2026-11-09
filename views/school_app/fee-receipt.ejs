@@ -1,0 +1,995 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Fee Receipt - <%= receipt.receiptNumber %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ============================================================
+                   RESET & BASE
+                   ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #e8ecf1;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ============================================================
+                   A4 PAPER CONTAINER
+                   ============================================================ */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            background: #ffffff;
+            margin: 0 auto;
+            padding: 12mm 14mm 10mm 14mm;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ============================================================
+                   BORDER FRAME
+                   ============================================================ */
+        .receipt-border {
+            border: 2px solid #1a2332;
+            padding: 8mm 10mm 7mm 10mm;
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Corner decorations */
+        .corner {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-color: #1a2332;
+            border-style: solid;
+            border-width: 0;
+        }
+        .corner-tl { top: -2px; left: -2px; border-top-width: 3px; border-left-width: 3px; }
+        .corner-tr { top: -2px; right: -2px; border-top-width: 3px; border-right-width: 3px; }
+        .corner-bl { bottom: -2px; left: -2px; border-bottom-width: 3px; border-left-width: 3px; }
+        .corner-br { bottom: -2px; right: -2px; border-bottom-width: 3px; border-right-width: 3px; }
+
+        /* ============================================================
+                   WATERMARK
+                   ============================================================ */
+        .watermark {
+            position: absolute;
+            font-size: 90px;
+            font-weight: 900;
+            color: rgba(26, 35, 50, 0.04);
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+        }
+        .watermark-top {
+            top: 18%;
+            right: -20px;
+            transform: rotate(30deg);
+        }
+        .watermark-bottom {
+            bottom: 20%;
+            left: -20px;
+            transform: rotate(-30deg);
+        }
+
+        /* ============================================================
+                   HEADER
+                   ============================================================ */
+        .receipt-header {
+            text-align: center;
+            padding-bottom: 6mm;
+            border-bottom: 2px solid #1a2332;
+            margin-bottom: 6mm;
+            position: relative;
+            z-index: 1;
+        }
+
+        .school-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a2332;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .school-address {
+            font-size: 12px;
+            color: #4a5568;
+            letter-spacing: 0.5px;
+        }
+
+        .school-contact {
+            font-size: 11px;
+            color: #4a5568;
+            margin-top: 2px;
+        }
+
+        .school-contact a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+        /* ============================================================
+                   RECEIPT TITLE
+                   ============================================================ */
+        .receipt-title {
+            text-align: center;
+            margin: 3mm 0 5mm 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .receipt-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a2332;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .receipt-title .title-underline {
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: #1a2332;
+            margin: 4px auto 0;
+        }
+
+        /* ============================================================
+                   RECEIPT NUMBER
+                   ============================================================ */
+        .receipt-number-box {
+            text-align: center;
+            padding: 3mm 0;
+            margin-bottom: 5mm;
+            border: 1px dashed #b0b8c4;
+            background: #f8f9fa;
+            position: relative;
+            z-index: 1;
+        }
+
+        .receipt-number-box .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #6c7a8a;
+            font-weight: 600;
+        }
+
+        .receipt-number-box .number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a2332;
+            letter-spacing: 1px;
+        }
+
+        /* ============================================================
+                   DETAIL GRID
+                   ============================================================ */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3mm 6mm;
+            margin-bottom: 5mm;
+            position: relative;
+            z-index: 1;
+        }
+
+        .detail-item {
+            padding: 2mm 0;
+            border-bottom: 1px dotted #dde1e6;
+        }
+
+        .detail-item .label {
+            font-size: 9px;
+            font-weight: 600;
+            color: #6c7a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .detail-item .value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a2332;
+            margin-top: 1px;
+        }
+
+        .detail-item .value .status-badge {
+            display: inline-block;
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-badge.paid {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-badge.partial {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .status-badge.overpaid {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-badge.default {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* ============================================================
+                   PAYMENT STATUS CARD
+                   ============================================================ */
+        .payment-status-card {
+            padding: 4mm 6mm;
+            border: 2px solid;
+            border-radius: 4px;
+            margin: 4mm 0 5mm 0;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .payment-status-card.status-paid {
+            background: #f0faf0;
+            border-color: #28a745;
+        }
+        .payment-status-card.status-partial {
+            background: #fffcf0;
+            border-color: #ffc107;
+        }
+        .payment-status-card.status-overpaid {
+            background: #f0f9fc;
+            border-color: #17a2b8;
+        }
+        .payment-status-card.status-pending {
+            background: #fff8f0;
+            border-color: #ff9800;
+        }
+
+        .payment-status-card .status-icon {
+            font-size: 22px;
+        }
+        .payment-status-card.status-paid .status-icon { color: #28a745; }
+        .payment-status-card.status-partial .status-icon { color: #ffc107; }
+        .payment-status-card.status-overpaid .status-icon { color: #17a2b8; }
+        .payment-status-card.status-pending .status-icon { color: #ff9800; }
+
+        .payment-status-card .status-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .payment-status-card.status-paid .status-title { color: #155724; }
+        .payment-status-card.status-partial .status-title { color: #856404; }
+        .payment-status-card.status-overpaid .status-title { color: #0c5460; }
+        .payment-status-card.status-pending .status-title { color: #856404; }
+
+        .payment-status-card .status-message {
+            font-size: 12px;
+            margin-top: 2px;
+            color: #4a5568;
+        }
+
+        /* ============================================================
+                   AMOUNT SECTION
+                   ============================================================ */
+        .amount-section {
+            background: #f8f9fa;
+            border: 1px solid #dde1e6;
+            padding: 4mm 6mm;
+            border-radius: 4px;
+            margin: 4mm 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .amount-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2mm 0;
+            border-bottom: 1px solid #e8ecf0;
+        }
+        .amount-row:last-child {
+            border-bottom: none;
+        }
+
+        .amount-row .label {
+            font-size: 12px;
+            color: #4a5568;
+        }
+        .amount-row .value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+        }
+
+        .amount-row.total {
+            border-top: 2px solid #1a2332;
+            padding-top: 3mm;
+            margin-top: 2mm;
+        }
+        .amount-row.total .label {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .amount-row.total .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a73e8;
+        }
+
+        .amount-row.balance .value {
+            color: #dc3545;
+        }
+        .amount-row.credit .value {
+            color: #17a2b8;
+        }
+
+        .amount-words {
+            background: #ffffff;
+            padding: 3mm 4mm;
+            border-radius: 4px;
+            margin-top: 3mm;
+            border-left: 3px solid #28a745;
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        .amount-words strong {
+            color: #1a2332;
+        }
+
+        /* ============================================================
+                   NOTES
+                   ============================================================ */
+        .notes-section {
+            background: #fffcf0;
+            padding: 3mm 5mm;
+            border-radius: 4px;
+            margin: 3mm 0;
+            border-left: 3px solid #ffc107;
+            position: relative;
+            z-index: 1;
+        }
+        .notes-section .label {
+            font-size: 9px;
+            font-weight: 600;
+            color: #6c7a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+        .notes-section .value {
+            font-size: 12px;
+            color: #4a5568;
+            margin-top: 1px;
+        }
+
+        /* ============================================================
+                   SECURITY FOOTER
+                   ============================================================ */
+        .security-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 2.5mm 4mm;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 4mm;
+            font-size: 9px;
+            color: #6c7a8a;
+            border: 1px solid #e8ecf0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .security-footer i {
+            margin-right: 3px;
+        }
+
+        /* ============================================================
+                   FOOTER
+                   ============================================================ */
+        .receipt-footer {
+            margin-top: 5mm;
+            padding-top: 4mm;
+            border-top: 2px solid #1a2332;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .terms-text {
+            font-size: 10px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 3mm;
+        }
+        .terms-text strong {
+            color: #1a2332;
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 4mm;
+        }
+
+        .signature-box {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .signature-box .line {
+            width: 120px;
+            border-top: 1.5px solid #1a2332;
+            margin: 0 auto 2px auto;
+            padding-top: 4px;
+        }
+
+        .signature-box .label {
+            font-size: 9px;
+            color: #6c7a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .signature-box .title {
+            font-size: 9px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-top: 1px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            font-size: 9px;
+            color: #8a9aa8;
+            margin-top: 4mm;
+            padding-top: 2mm;
+            border-top: 1px solid #e8ecf0;
+        }
+
+        /* ============================================================
+                   PRINT BUTTON (screen only)
+                   ============================================================ */
+        .print-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-print {
+            background: #1a2332;
+            color: #fff;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 4px 16px rgba(26, 35, 50, 0.3);
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(26, 35, 50, 0.4);
+        }
+
+        .btn-print:active {
+            transform: scale(0.96);
+        }
+
+        .btn-print i {
+            margin-right: 10px;
+        }
+
+        /* ============================================================
+                   PRINT STYLES
+                   ============================================================ */
+        @media print {
+            html, body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+                width: 100% !important;
+                height: 100% !important;
+            }
+
+            .a4-page {
+                width: 100% !important;
+                min-height: 100% !important;
+                padding: 10mm 12mm 8mm 12mm !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+            }
+
+            .receipt-border {
+                padding: 6mm 8mm 5mm 8mm !important;
+                border-color: #1a2332 !important;
+            }
+
+            .corner {
+                border-color: #1a2332 !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .btn-print {
+                display: none !important;
+            }
+
+            .detail-item {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .payment-status-card {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .status-badge {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .amount-section {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .security-footer {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .receipt-number-box {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .watermark {
+                color: rgba(26, 35, 50, 0.04) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .notes-section {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Ensure page breaks properly */
+            .receipt-footer {
+                page-break-inside: avoid;
+            }
+
+            /* Force background colors on print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media screen and (max-width: 800px) {
+            .a4-page {
+                width: 100%;
+                min-height: auto;
+                padding: 6mm 8mm;
+            }
+
+            .receipt-border {
+                padding: 4mm 5mm;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 2mm 4mm;
+            }
+
+            .school-name {
+                font-size: 20px;
+            }
+
+            .receipt-title h1 {
+                font-size: 18px;
+            }
+
+            .watermark {
+                font-size: 50px;
+            }
+            .watermark-top {
+                top: 20%;
+                right: -10px;
+            }
+            .watermark-bottom {
+                bottom: 25%;
+                left: -10px;
+            }
+
+            .signature-area {
+                flex-wrap: wrap;
+                gap: 6mm;
+                justify-content: center;
+            }
+
+            .signature-box .line {
+                width: 100px;
+            }
+
+            .payment-status-card .status-title {
+                font-size: 15px;
+            }
+
+            .amount-row.total .value {
+                font-size: 16px;
+            }
+
+            .security-footer {
+                flex-wrap: wrap;
+                gap: 3px;
+                font-size: 8px;
+                justify-content: center;
+            }
+        }
+
+        @media screen and (max-width: 500px) {
+            .a4-page {
+                padding: 4mm 5mm;
+            }
+
+            .receipt-border {
+                padding: 3mm 3mm;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 1mm;
+            }
+
+            .detail-item .value {
+                font-size: 12px;
+            }
+
+            .school-name {
+                font-size: 17px;
+            }
+
+            .receipt-title h1 {
+                font-size: 15px;
+            }
+
+            .receipt-number-box .number {
+                font-size: 16px;
+            }
+
+            .amount-row .value {
+                font-size: 12px;
+            }
+            .amount-row.total .value {
+                font-size: 14px;
+            }
+
+            .payment-status-card .status-title {
+                font-size: 13px;
+            }
+
+            .watermark {
+                font-size: 35px;
+            }
+
+            .signature-box .line {
+                width: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    A4 PAGE
+    ============================================================ -->
+    <div class="a4-page">
+
+        <!-- Receipt Border with Corners -->
+        <div class="receipt-border">
+
+            <!-- Corner Decorations -->
+            <span class="corner corner-tl"></span>
+            <span class="corner corner-tr"></span>
+            <span class="corner corner-bl"></span>
+            <span class="corner corner-br"></span>
+
+            <!-- Watermarks -->
+            <div class="watermark watermark-top">RECEIPT</div>
+            <div class="watermark watermark-bottom">OFFICIAL</div>
+
+            <!-- ============================================================
+            HEADER
+            ============================================================ -->
+            <div class="receipt-header">
+                <div class="school-name"><%= school.name || 'Excel College' %></div>
+                <div class="school-address"><%= school.address || '12 Education Road, Lagos, Nigeria' %></div>
+                <div class="school-contact">
+                    Tel: <%= school.phone || '+234 812 345 6789' %> &nbsp;|&nbsp;
+                    Email: <a href="mailto:<%= school.email || 'info@excelcollege.edu.ng' %>"><%= school.email || 'info@excelcollege.edu.ng' %></a>
+                    <% if (school.website) { %>&nbsp;|&nbsp;Web: <a href="http://<%= school.website %>" target="_blank"><%= school.website %></a><% } %>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            TITLE
+            ============================================================ -->
+            <div class="receipt-title">
+                <h1>Official Fee Receipt</h1>
+                <span class="title-underline"></span>
+            </div>
+
+            <!-- ============================================================
+            RECEIPT NUMBER
+            ============================================================ -->
+            <div class="receipt-number-box">
+                <div class="label">Receipt Number</div>
+                <div class="number"><%= receipt.receiptNumber %></div>
+            </div>
+
+            <!-- ============================================================
+            DETAIL GRID
+            ============================================================ -->
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="label">Student Name</div>
+                    <div class="value"><strong><%= receipt.studentName %></strong></div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="label">Payment Date</div>
+                    <div class="value"><%= moment(receipt.paymentDate).format('MMMM D, YYYY') %></div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="label">Class / Department</div>
+                    <div class="value">
+                        <%= receipt.className || 'N/A' %>
+                        <% if (receipt.department) { %>— <%= receipt.department %><% } %>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="label">Academic Period</div>
+                    <div class="value"><%= receipt.academicYear %> — <%= receipt.term %></div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="label">Fee Type</div>
+                    <div class="value"><%= receipt.feeType %></div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="label">Payment Method</div>
+                    <div class="value"><%= receipt.paymentType %></div>
+                </div>
+                
+            <!-- ============================================================
+            AMOUNT SECTION
+            ============================================================ -->
+            <div class="amount-section">
+                <% if (receipt.hasBill) { %>
+                <div class="amount-row">
+                    <span class="label">Original Bill Amount:</span>
+                    <span class="value"><%= formatNaira(receipt.billAmount) %></span>
+                </div>
+                <% } %>
+
+                <div class="amount-row">
+                    <span class="label">Amount Paid:</span>
+                    <span class="value"><%= formatNaira(receipt.actualAmountPaid || receipt.amountPaid) %></span>
+                </div>
+
+                <% if (receipt.hasBill) { %>
+                    <% if (receipt.isPartial) { %>
+                    <div class="amount-row balance">
+                        <span class="label">Balance Due:</span>
+                        <span class="value"><%= formatNaira(receipt.balanceAmount || receipt.balance) %></span>
+                    </div>
+                    <% } else if (receipt.isOverpaid) { %>
+                    <div class="amount-row credit">
+                        <span class="label">Overpayment Credit:</span>
+                        <span class="value"><%= formatNaira(Math.abs(receipt.balanceAmount || receipt.balance)) %></span>
+                    </div>
+                    <% } %>
+                <% } %>
+
+                <div class="amount-row total">
+                    <span class="label">NET AMOUNT RECEIVED:</span>
+                    <span class="value"><%= formatNaira(receipt.actualAmountPaid || receipt.amountPaid) %></span>
+                </div>
+
+                <div class="amount-words">
+                    <strong>Amount in Words:</strong><br>
+                    <%= receipt.amountInWords || 'Zero Naira Only' %>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            NOTES
+            ============================================================ -->
+            <% if (receipt.notes) { %>
+            <div class="notes-section">
+                <div class="label">Additional Notes</div>
+                <div class="value"><%= receipt.notes %></div>
+            </div>
+            <% } %>
+
+            <!-- ============================================================
+            FOOTER
+            ============================================================ -->
+            <div class="receipt-footer">
+
+                <div class="terms-text">
+                    <strong>Payment Terms &amp; Conditions:</strong><br>
+                    <%= school.terms || 'All payments are in Nigerian Naira (₦). This is an official receipt. Payment once made is non-refundable. Please keep this receipt for your records.' %>
+                </div>
+
+                <!-- Signature Area -->
+                <div class="signature-area">
+                    <div class="signature-box">
+                        <div class="line"></div>
+                        <div class="label">Student / Parent Signature</div>
+                        <div class="title">Name: _________________</div>
+                    </div>
+
+                    <div class="signature-box">
+                        <div class="line"></div>
+                        <div class="label">Authorized Signature</div>
+                        <div class="title">School Accountant</div>
+                    </div>
+
+                    <div class="signature-box">
+                        <div class="line"></div>
+                        <div class="label">School Stamp</div>
+                        <div class="title">Official</div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <%= school.name || 'Excel College' %> &bull; <%= school.address || '12 Education Road, Lagos, Nigeria' %> &bull; <%= school.phone || '+234 812 345 6789' %>
+                    <br>
+                    <em>This is a computer-generated receipt. No signature required.</em>
+                </div>
+
+            </div>
+            <!-- /receipt-footer -->
+
+        </div>
+        <!-- /receipt-border -->
+
+    </div>
+    <!-- /a4-page -->
+
+
+    <!-- ============================================================
+    PRINT BUTTON (screen only)
+    ============================================================ -->
+    <div class="print-actions no-print">
+        <button class="btn-print" onclick="handlePrint()">
+            <i class="fas fa-print"></i> Print Receipt
+        </button>
+        <button class="btn-print" onclick="window.close()" style="background: #6c7a8a; margin-left: 10px;">
+            <i class="fas fa-times"></i> Close
+        </button>
+    </div>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script>
+        function handlePrint() {
+            const btn = document.querySelector('.btn-print');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Printing...';
+            btn.disabled = true;
+
+            setTimeout(function() {
+                window.print();
+                btn.innerHTML = '<i class="fas fa-print"></i> Print Receipt';
+                btn.disabled = false;
+            }, 400);
+        }
+
+        // Auto-print if requested via URL parameter
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('print') === 'true') {
+                setTimeout(function() {
+                    window.print();
+                }, 600);
+            }
+        })();
+
+        // After print notification
+        window.addEventListener('afterprint', function() {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                        position: fixed; bottom: 30px; right: 30px;
+                        background: #28a745; color: #fff;
+                        padding: 14px 28px; border-radius: 10px;
+                        font-family: 'Segoe UI', sans-serif; font-weight: 500;
+                        box-shadow: 0 4px 16px rgba(40, 167, 69, 0.35);
+                        z-index: 9999;
+                        animation: slideUp 0.4s ease;
+                    `;
+            toast.innerHTML = '<i class="fas fa-check-circle"></i> Receipt printed successfully!';
+            document.body.appendChild(toast);
+
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.4s';
+                setTimeout(function() {
+                    toast.remove();
+                }, 500);
+            }, 3000);
+        });
+
+        // Add animation keyframes
+        (function() {
+            if (!document.getElementById('toast-anim')) {
+                const style = document.createElement('style');
+                style.id = 'toast-anim';
+                style.textContent = `
+                            @keyframes slideUp {
+                                from { opacity: 0; transform: translateY(30px); }
+                                to { opacity: 1; transform: translateY(0); }
+                            }
+                        `;
+                document.head.appendChild(style);
+            }
+        })();
+    </script>
+
+</body>
+</html>

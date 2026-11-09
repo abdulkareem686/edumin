@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Academic Years - edu admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+    <meta content="Coderthemes" name="author">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.png">
+
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-current {
+            background: #10b981;
+            color: white;
+        }
+        .status-past {
+            background: #6c757d;
+            color: white;
+        }
+        .status-upcoming {
+            background: #f59e0b;
+            color: white;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f8fafd;
+        }
+        .btn-action {
+            margin: 0 2px;
+        }
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <!-- Begin page -->
+    <div class="wrapper">
+        <!-- ========== Left Sidebar Start ========== -->
+<!-- ========== Left Sidebar Start ========== -->
+        <%- include('partials/admin-sidebar') %>
+        <!-- Left Sidebar End -->
+
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+                <!-- end Topbar -->
+                <!-- Start Content-->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                        <li class="breadcrumb-item active">Academic Years</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">Academic Years</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Button -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800"></h1>
+                        <a href="/add-academic-year" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i> Add Academic Year
+                        </a>
+                    </div>
+
+                    <!-- Error Message -->
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Success Message -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle me-2"></i> <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Academic Years Table -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="bi bi-calendar-event me-2"></i>Academic Years
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Year Name</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th class="text-center">Terms</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (academicYears && academicYears.length > 0) { 
+                                            for(var i = 0; i < academicYears.length; i++) { 
+                                                var year = academicYears[i]; %>
+                                                <tr>
+                                                    <td><strong><%= year.year_name %></strong></td>
+                                                    <td><%= moment(year.start_date).format('MMM D, YYYY') %></td>
+                                                    <td><%= moment(year.end_date).format('MMM D, YYYY') %></td>
+                                                    <td class="text-center"><span class="badge bg-info"><%= year.term_count || 0 %> Terms</span></td>
+                                                    <td class="text-center">
+                                                        <% if (year.is_current) { %>
+                                                            <span class="status-badge status-current">
+                                                                <i class="bi bi-star-fill me-1"></i> Current
+                                                            </span>
+                                                        <% } else { %>
+                                                            <span class="status-badge status-past">
+                                                                <i class="bi bi-calendar me-1"></i> Inactive
+                                                            </span>
+                                                        <% } %>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <% if (!year.is_current) { %>
+                                                            <a href="/set-current-academic-year/<%= year.id %>" class="btn btn-sm btn-outline-success btn-action" title="Set as Current">
+                                                                <i class="bi bi-star"></i>
+                                                            </a>
+                                                        <% } %>
+                                                        <a href="/edit-academic-year/<%= year.id %>" class="btn btn-sm btn-outline-primary btn-action" title="Edit">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <a href="/delete-academic-year/<%= year.id %>" class="btn btn-sm btn-outline-danger btn-action" 
+                                                           onclick="return confirm('Are you sure you want to delete this academic year? This action cannot be undone.')" title="Delete">
+                                                            <i class="bi bi-trash"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                        <% } 
+                                        } else { %>
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-4">
+                                                    <i class="bi bi-inbox fs-1"></i>
+                                                    <p class="mt-2 mb-0">No academic years found</p>
+                                                    <small>Click "Add Academic Year" to create one</small>
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Academic Terms Table -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="bi bi-calendar-week me-2"></i>Academic Terms
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Academic Year</th>
+                                            <th>Term</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (terms && terms.length > 0) { 
+                                            for(var i = 0; i < terms.length; i++) { 
+                                                var term = terms[i]; %>
+                                                <tr>
+                                                    <td><strong><%= term.year_name %></strong></td>
+                                                    <td><%= term.term_name %></td>
+                                                    <td><%= moment(term.start_date).format('MMM D, YYYY') %></td>
+                                                    <td><%= moment(term.end_date).format('MMM D, YYYY') %></td>
+                                                    <td class="text-center">
+                                                        <% if (term.is_current) { %>
+                                                            <span class="status-badge status-current">
+                                                                <i class="bi bi-star-fill me-1"></i> Current Term
+                                                            </span>
+                                                        <% } else { %>
+                                                            <span class="status-badge status-past">
+                                                                <i class="bi bi-calendar me-1"></i> Inactive
+                                                            </span>
+                                                        <% } %>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <% if (!term.is_current) { %>
+                                                            <a href="/set-current-term/<%= term.id %>" class="btn btn-sm btn-outline-success btn-action" title="Set as Current Term">
+                                                                <i class="bi bi-star"></i>
+                                                            </a>
+                                                        <% } %>
+                                                        <button type="button" 
+                                                                class="btn btn-sm btn-outline-primary btn-action edit-term-btn" 
+                                                                data-id="<%= term.id %>"
+                                                                data-year-name="<%= term.year_name %>"
+                                                                data-term-name="<%= term.term_name %>"
+                                                                data-start-date="<%= moment(term.start_date).format('YYYY-MM-DD') %>"
+                                                                data-end-date="<%= moment(term.end_date).format('YYYY-MM-DD') %>"
+                                                                data-is-current="<%= term.is_current ? '1' : '0' %>"
+                                                                title="Edit Term">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                        <% } 
+                                        } else { %>
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-4">
+                                                    <i class="bi bi-inbox fs-1"></i>
+                                                    <p class="mt-2 mb-0">No terms found</p>
+                                                    <small>Terms are created when you add an academic year</small>
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end Content -->
+
+                <!-- Edit Term Modal -->
+                <div class="modal fade" id="editTermModal" tabindex="-1" aria-labelledby="editTermModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="editTermModalLabel">
+                                    <i class="bi bi-calendar-week me-2"></i>Edit Academic Term
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form id="editTermForm" method="POST" action="">
+                                <div class="modal-body">
+                                    <input type="hidden" id="edit_term_id" name="term_id">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Academic Year</label>
+                                        <input type="text" class="form-control bg-light" id="edit_term_year_name" readonly disabled>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="edit_term_name" class="form-label fw-bold">Term Name</label>
+                                        <select class="form-select" id="edit_term_name" name="term_name" required>
+                                            <option value="First Term">First Term</option>
+                                            <option value="Second Term">Second Term</option>
+                                            <option value="Third Term">Third Term</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="edit_term_start_date" class="form-label fw-bold">Start Date</label>
+                                            <input type="date" class="form-control" id="edit_term_start_date" name="start_date" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="edit_term_end_date" class="form-label fw-bold">End Date</label>
+                                            <input type="date" class="form-control" id="edit_term_end_date" name="end_date" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input" type="checkbox" id="edit_term_is_current" name="is_current" value="on">
+                                            <label class="form-check-label fw-semibold" for="edit_term_is_current">
+                                                <i class="bi bi-star-fill text-warning me-1"></i> Set as Current Active Term
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Setting this as active will automatically activate its academic year.</small>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="bi bi-x-circle me-1"></i> Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" id="saveTermSubmitBtn">
+                                        <i class="bi bi-save me-1"></i> Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> &copy; EduSuite - School Management System
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <a href="javascript: void(0);" class="text-muted text-decoration-none small">About</a>
+                            <span class="text-muted mx-1">|</span>
+                            <a href="javascript: void(0);" class="text-muted text-decoration-none small">Support</a>
+                            <span class="text-muted mx-1">|</span>
+                            <a href="javascript: void(0);" class="text-muted text-decoration-none small">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- end Footer -->
+        </div>
+        <!-- End Page content -->
+    </div>
+    <!-- END wrapper -->
+
+    <!-- Right Sidebar -->
+    <div class="end-bar">
+        <div class="rightbar-title">
+            <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                <i class="dripicons-cross noti-icon"></i>
+            </a>
+            <h5 class="m-0">Settings</h5>
+        </div>
+        <div class="rightbar-content h-100" data-simplebar="">
+            <div class="p-3">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Customize</strong> the overall color scheme, sidebar menu, etc.
+                </div>
+                <h5 class="mt-3">Color Scheme</h5>
+                <hr class="mt-1">
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                    <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                    <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                </div>
+                <h5 class="mt-4">Width</h5>
+                <hr class="mt-1">
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                    <label class="form-check-label" for="fluid-check">Fluid</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                    <label class="form-check-label" for="boxed-check">Boxed</label>
+                </div>
+                <h5 class="mt-4">Left Sidebar</h5>
+                <hr class="mt-1">
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                    <label class="form-check-label" for="default-check">Default</label>
+                </div>
+                <div class="form-check form-switch mb-1">
+                    <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                    <label class="form-check-label" for="light-check">Light</label>
+                </div>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                    <label class="form-check-label" for="dark-check">Dark</label>
+                </div>
+                <div class="d-grid mt-4">
+                    <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="rightbar-overlay"></div>
+    <!-- /End-bar -->
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <!-- bundle -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            for (var i = 0; i < alerts.length; i++) {
+                setTimeout(function(alert) {
+                    if (alert) alert.remove();
+                }, 5000, alerts[i]);
+            }
+        }, 1000);
+        
+        // Show toast notification
+        function showToast(message, type) {
+            var container = document.querySelector('.toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                container.style.zIndex = '9999';
+                document.body.appendChild(container);
+            }
+            
+            var toast = document.createElement('div');
+            toast.className = 'toast align-items-center text-white bg-' + type + ' border-0 fade show';
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(function() { toast.remove(); }, 5000);
+        }
+
+        // Edit Term Modal Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            var editTermModalEl = document.getElementById('editTermModal');
+            var editTermModal = editTermModalEl && typeof bootstrap !== 'undefined' ? new bootstrap.Modal(editTermModalEl) : null;
+            var editTermForm = document.getElementById('editTermForm');
+
+            document.querySelectorAll('.edit-term-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var termId = this.getAttribute('data-id');
+                    var yearName = this.getAttribute('data-year-name');
+                    var termName = this.getAttribute('data-term-name');
+                    var startDate = this.getAttribute('data-start-date');
+                    var endDate = this.getAttribute('data-end-date');
+                    var isCurrent = this.getAttribute('data-is-current') === '1';
+
+                    var idInput = document.getElementById('edit_term_id');
+                    var yearInput = document.getElementById('edit_term_year_name');
+                    var nameInput = document.getElementById('edit_term_name');
+                    var startInput = document.getElementById('edit_term_start_date');
+                    var endInput = document.getElementById('edit_term_end_date');
+                    var currentInput = document.getElementById('edit_term_is_current');
+
+                    if (idInput) idInput.value = termId;
+                    if (yearInput) yearInput.value = yearName;
+                    if (nameInput) nameInput.value = termName;
+                    if (startInput) startInput.value = startDate;
+                    if (endInput) endInput.value = endDate;
+                    if (currentInput) currentInput.checked = isCurrent;
+
+                    if (editTermForm) {
+                        editTermForm.action = '/edit-term/' + termId;
+                    }
+
+                    if (editTermModal) {
+                        editTermModal.show();
+                    } else if (typeof $ !== 'undefined') {
+                        $('#editTermModal').modal('show');
+                    }
+                });
+            });
+
+            // Date validation on form submit
+            if (editTermForm) {
+                editTermForm.addEventListener('submit', function(e) {
+                    var startDate = document.getElementById('edit_term_start_date').value;
+                    var endDate = document.getElementById('edit_term_end_date').value;
+
+                    if (startDate && endDate && startDate > endDate) {
+                        e.preventDefault();
+                        showToast('Start date must be before or equal to end date', 'danger');
+                        return false;
+                    }
+                });
+            }
+
+            // Auto-open modal if URL has ?editTerm=ID
+            var urlParams = new URLSearchParams(window.location.search);
+            var editTermId = urlParams.get('editTerm');
+            if (editTermId) {
+                var targetBtn = document.querySelector('.edit-term-btn[data-id="' + editTermId + '"]');
+                if (targetBtn) {
+                    setTimeout(function() {
+                        targetBtn.click();
+                    }, 300);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

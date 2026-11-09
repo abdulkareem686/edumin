@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>School Bank Details - Admin Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="Configure school bank and fee payment account details for parents" name="description" />
+    <link rel="shortcut icon" href="/images/favicon.png">
+
+    <!-- App css -->
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/assets/css/school-dashboard.css">
+
+    <style>
+        .bank-card-preview {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #112d60 100%);
+            border-radius: 18px;
+            padding: 26px 28px;
+            color: #ffffff;
+            box-shadow: 0 16px 36px rgba(30, 60, 114, 0.28);
+            position: relative;
+            overflow: hidden;
+            min-height: 230px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .bank-card-preview::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+        .bank-card-preview::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -30px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+        .chip-icon {
+            width: 44px;
+            height: 32px;
+            background: linear-gradient(135deg, #e5c07b 0%, #d4a359 50%, #f7dfa5 100%);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.4);
+            display: inline-block;
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.25);
+            position: relative;
+        }
+        .chip-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(0,0,0,0.3);
+        }
+        .card-number-display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.55rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+        }
+        .bank-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.85;
+        }
+        .preset-badge {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .preset-badge:hover {
+            transform: translateY(-2px);
+            background-color: #3b5de7 !important;
+            color: white !important;
+        }
+    </style>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <div class="wrapper">
+        <!-- Admin Sidebar -->
+        <%- include('partials/admin-sidebar') %>
+
+        <div class="content-page">
+            <div class="content">
+                <!-- Topbar -->
+                <%- include('partials/admin-navbar') %>
+
+                <div class="container-fluid">
+                    <!-- Page Header -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                                        <li class="breadcrumb-item"><a href="/fees-collection">Fees</a></li>
+                                        <li class="breadcrumb-item active">Bank Details</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title"><i class="uil-university me-2 text-primary"></i>School Bank Account Details</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts -->
+                    <% if (success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2 fs-5 align-middle"></i>
+                            <strong>Success:</strong> <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <% if (error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2 fs-5 align-middle"></i>
+                            <strong>Error:</strong> <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <div class="row">
+                        <!-- Left Column: Form Configuration -->
+                        <div class="col-xl-7 col-lg-6">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0 text-dark">
+                                        <i class="bi bi-gear-fill me-2 text-primary"></i>Configure Payment Account
+                                    </h5>
+                                    <span class="badge bg-primary-light text-primary">Fee Collection Channel</span>
+                                </div>
+                                <div class="card-body p-4">
+                                    <p class="text-muted small mb-4">
+                                        Set up the official school bank account where parents will transfer school fees.
+                                        These details will be displayed prominently on the Parent Portal when parents make fee payments.
+                                    </p>
+
+                                    <!-- Quick select popular Nigerian banks -->
+                                    <div class="mb-3">
+                                        <label class="form-label text-muted small fw-bold">POPULAR BANKS QUICK-SELECT</label>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('Zenith Bank')">Zenith Bank</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('Guaranty Trust Bank (GTBank)')">GTBank</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('First Bank of Nigeria')">First Bank</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('Access Bank')">Access Bank</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('United Bank for Africa (UBA)')">UBA</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('Stanbic IBTC Bank')">Stanbic IBTC</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('Fidelity Bank')">Fidelity</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('Moniepoint MFB')">Moniepoint</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('OPay')">OPay</span>
+                                            <span class="badge bg-light text-dark border preset-badge" onclick="selectBank('Kuda Bank')">Kuda</span>
+                                        </div>
+                                    </div>
+
+                                    <form action="/admin/payment-settings" method="POST" id="bankForm">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Bank Name <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-bank"></i></span>
+                                                <input type="text" class="form-control" name="bank_name" id="bank_name" 
+                                                       placeholder="e.g. Zenith Bank Plc" 
+                                                       value="<%= (activeAccount && activeAccount.bank_name) || (school && school.bank_name) || '' %>" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Account Name <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                                <input type="text" class="form-control" name="account_name" id="account_name" 
+                                                       placeholder="e.g. <%= (school && school.name) ? school.name + ' - Fee Account' : 'School Fee Account' %>" 
+                                                       value="<%= (activeAccount && activeAccount.account_name) || (school && school.account_name) || '' %>" required>
+                                            </div>
+                                            <div class="form-text small">Exact account name registered with your bank.</div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Account Number <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                                <input type="text" class="form-control font-monospace fs-5" name="account_number" id="account_number" 
+                                                       placeholder="e.g. 1012345678" maxlength="20"
+                                                       value="<%= (activeAccount && activeAccount.account_number) || (school && school.account_number) || '' %>" required>
+                                            </div>
+                                            <div class="form-text small">10-digit NUBAN or school collection account number.</div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">Payment Instructions & Description for Parents</label>
+                                            <textarea class="form-control" name="instructions" id="instructions" rows="4" 
+                                                      placeholder="e.g. Please use your child's Admission Number and Name as payment reference / description. After making the bank transfer, upload your payment receipt here for verification."><%= (activeAccount && activeAccount.instructions) || (school && school.payment_instructions) || '' %></textarea>
+                                            <div class="form-text small">This message will appear directly above the parent fee payment form.</div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a href="/admin/pending-payments" class="btn btn-outline-secondary">
+                                                <i class="bi bi-clock-history me-1"></i> Review Pending Payments
+                                            </a>
+                                            <button type="submit" class="btn btn-primary px-4">
+                                                <i class="bi bi-check2-circle me-1"></i> Save Account Details
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Live Card Preview & Info -->
+                        <div class="col-xl-5 col-lg-6">
+                            <div class="card shadow-sm border-0 mb-4">
+                                <div class="card-header bg-white border-bottom py-3">
+                                    <h5 class="mb-0 text-dark">
+                                        <i class="bi bi-credit-card-2-front me-2 text-primary"></i>Live Parent Preview
+                                    </h5>
+                                </div>
+                                <div class="card-body p-4">
+                                    <p class="text-muted small mb-3">This is how the bank account card appears to parents in their portal:</p>
+                                    
+                                    <!-- Visual Bank Card -->
+                                    <div class="bank-card-preview mb-4">
+                                        <div class="d-flex justify-content-between align-items-start position-relative" style="z-index: 2;">
+                                            <div>
+                                                <span class="bank-tag" id="previewSchoolName"><%= (school && school.name) ? school.name : 'School Fee Account' %></span>
+                                                <h4 class="mb-0 text-white fw-bold" id="previewBankName">
+                                                    <%= (activeAccount && activeAccount.bank_name) || (school && school.bank_name) || 'BANK NAME' %>
+                                                </h4>
+                                            </div>
+                                            <div class="chip-icon"></div>
+                                        </div>
+
+                                        <div class="my-3 position-relative" style="z-index: 2;">
+                                            <div class="small opacity-75 text-uppercase" style="letter-spacing: 1px;">Account Number</div>
+                                            <div class="card-number-display text-white mt-1" id="previewAccountNumber">
+                                                <%= (activeAccount && activeAccount.account_number) || (school && school.account_number) || '•••• •••• ••' %>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-end position-relative" style="z-index: 2;">
+                                            <div>
+                                                <div class="small opacity-75 text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px;">Account Holder</div>
+                                                <div class="fw-bold text-white text-uppercase" id="previewAccountName">
+                                                    <%= (activeAccount && activeAccount.account_name) || (school && school.account_name) || 'ACCOUNT HOLDER NAME' %>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-warning text-dark px-2 py-1" style="font-size: 0.72rem;">
+                                                    <i class="bi bi-shield-check"></i> VERIFIED
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick Copy Test -->
+                                    <div class="p-3 bg-light rounded-3 border d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="text-muted small d-block">Quick Copy Test</span>
+                                            <span class="fw-bold font-monospace" id="copyAccountNumberText">
+                                                <%= (activeAccount && activeAccount.account_number) || (school && school.account_number) || 'No Account Set' %>
+                                            </span>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" onclick="copyCardAccount()">
+                                            <i class="bi bi-clipboard me-1"></i> Copy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rules & Policy Card -->
+                            <div class="card shadow-sm border-0 border-start border-4 border-info">
+                                <div class="card-body p-4">
+                                    <h6 class="text-info fw-bold mb-2">
+                                        <i class="bi bi-info-circle-fill me-1"></i> Term Payment Policy Reminder
+                                    </h6>
+                                    <ul class="text-muted small mb-0 ps-3">
+                                        <li class="mb-1">Parents can make up to <strong>2 payments per academic term</strong> for each registered child.</li>
+                                        <li class="mb-1">All payments submitted by parents start in <strong>Pending</strong> status until verified by school admin.</li>
+                                        <li>Once you approve a payment from the <a href="/admin/pending-payments" class="text-primary fw-bold">Approval Queue</a>, an official fee receipt is automatically created in the fees ledger.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> &copy; EduSuite Management System
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Bundle js -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+
+    <script>
+        function selectBank(name) {
+            document.getElementById('bank_name').value = name;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const bank = document.getElementById('bank_name').value.trim();
+            const name = document.getElementById('account_name').value.trim();
+            const number = document.getElementById('account_number').value.trim();
+
+            document.getElementById('previewBankName').textContent = bank || 'BANK NAME';
+            document.getElementById('previewAccountName').textContent = name || 'ACCOUNT HOLDER NAME';
+            
+            // Format number in chunks of 3 or 4
+            if (number) {
+                document.getElementById('previewAccountNumber').textContent = number;
+                document.getElementById('copyAccountNumberText').textContent = number;
+            } else {
+                document.getElementById('previewAccountNumber').textContent = '•••• •••• ••';
+                document.getElementById('copyAccountNumberText').textContent = 'No Account Set';
+            }
+        }
+
+        document.getElementById('bank_name').addEventListener('input', updatePreview);
+        document.getElementById('account_name').addEventListener('input', updatePreview);
+        document.getElementById('account_number').addEventListener('input', updatePreview);
+
+        function copyCardAccount() {
+            const num = document.getElementById('account_number').value.trim();
+            if (num) {
+                navigator.clipboard.writeText(num).then(() => {
+                    alert('Account number copied to clipboard: ' + num);
+                });
+            } else {
+                alert('Please enter an account number first.');
+            }
+        }
+    </script>
+</body>
+</html>
