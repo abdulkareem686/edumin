@@ -1,0 +1,209 @@
+<!-- Left Sidebar Start -->
+<div class="leftside-menu">
+    <a href="/teacher-dashboard" class="logo text-center logo-light">
+        <span class="logo-lg">
+            <h3><i class="mdi mdi-school"></i> EduSuite</h3>
+        </span>
+        <span class="logo-sm">
+            <h3><i class="mdi mdi-school"></i></h3>
+        </span>
+    </a>
+
+    <a href="/teacher-dashboard" class="logo text-center logo-dark">
+        <span class="logo-lg">
+            <h3><i class="mdi mdi-school"></i> EduSuite</h3>
+        </span>
+        <span class="logo-sm">
+            <h3><i class="mdi mdi-school"></i></h3>
+        </span>
+    </a>
+
+    <div class="h-100" id="leftside-menu-container" data-simplebar="">
+        <ul class="side-nav">
+            <li class="side-nav-title side-nav-item">Teacher Portal</li>
+
+            <li class="side-nav-item">
+                <a href="/teacher-dashboard" class="side-nav-link">
+                    <i class="uil-home-alt"></i>
+                    <span> Dashboard </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Teaching</li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/my-classes" class="side-nav-link">
+                    <i class="uil-users-alt"></i>
+                    <span> My Classes </span>
+                    <% if (typeof classesCount !== 'undefined' && classesCount > 0) { %>
+                        <span class="badge bg-primary float-end"><%= classesCount %></span>
+                    <% } %>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/my-subjects" class="side-nav-link">
+                    <i class="uil-book-open"></i>
+                    <span> My Subjects </span>
+                    <% if (typeof totalSubjects !== 'undefined' && totalSubjects > 0) { %>
+                        <span class="badge bg-primary float-end"><%= totalSubjects %></span>
+                    <% } %>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/class-schedule" class="side-nav-link">
+                    <i class="uil-calendar-alt"></i>
+                    <span> Class Schedule </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Assessments</li>
+
+            <li class="side-nav-item">
+                <a href="/enter-scores" class="side-nav-link">
+                    <i class="bi bi-pencil"></i>
+                    <span> Enter Scores </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/manage-scores" class="side-nav-link">
+                    <i class="uil-edit-alt"></i>
+                    <span> Manage Scores </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/grade-books" class="side-nav-link">
+                    <i class="uil-clipboard-notes"></i>
+                    <span> Grade Books </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/result-sheets" class="side-nav-link">
+                    <i class="uil-file-alt"></i>
+                    <span> Result Sheets </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Attendance</li>
+
+            <li class="side-nav-item">
+                <a href="/mark-attendance" class="side-nav-link">
+                    <i class="uil-check-circle"></i>
+                    <span> Mark Attendance </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/attendance-summary" class="side-nav-link">
+                    <i class="uil-chart-line"></i>
+                    <span> Attendance Summary </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Communication</li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/notifications" class="side-nav-link">
+                    <i class="uil-bell"></i>
+                    <span> Notifications </span>
+                    <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+                        <span class="badge bg-danger float-end"><%= unreadCount %></span>
+                    <% } %>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/messages" class="side-nav-link">
+                    <i class="uil-envelope"></i>
+                    <span> Messages </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/announcements" class="side-nav-link">
+                    <i class="uil-megaphone"></i>
+                    <span> Announcements </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/parent-contact" class="side-nav-link">
+                    <i class="uil-phone"></i>
+                    <span> Contact Parents </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Resources</li>
+
+            <li class="side-nav-item">
+                <a href="/school-calendar" class="side-nav-link">
+                    <i class="uil-calender"></i>
+                    <span> School Calendar </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/teaching-materials" class="side-nav-link">
+                    <i class="uil-book-alt"></i>
+                    <span> Teaching Materials </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/assignments" class="side-nav-link">
+                    <i class="uil-file-download"></i>
+                    <span> Assignments </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/teacher/lesson-notes" class="side-nav-link">
+                    <i class="uil-notes"></i>
+                    <span> Lesson Notes </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">System</li>
+
+            <li class="side-nav-item">
+                <a href="/logout" class="side-nav-link">
+                    <i class="uil-sign-out-alt"></i>
+                    <span> Logout </span>
+                </a>
+            </li>
+        </ul>
+
+        <% if (typeof teacherData !== 'undefined' && teacherData) { %>
+        <div class="help-box p-3 text-white text-center mt-4">
+            <div class="help-box-icon">
+                <i class="mdi mdi-teach h3"></i>
+            </div>
+            <h6 class="text-white mt-2">
+                <%= teacherData.firstName + ' ' + teacherData.lastName %>
+            </h6>
+            <p class="small mb-0">
+                <i class="mdi mdi-email"></i> <%= teacherData.email || 'N/A' %><br>
+                <i class="mdi mdi-badge-account"></i> <%= teacherData.designation || 'Teacher' %>
+            </p>
+            <hr class="bg-light">
+            <div class="row small">
+                <div class="col-6">
+                    <strong><%= typeof classesCount !== 'undefined' ? classesCount : 0 %></strong><br>
+                    <span>Classes</span>
+                </div>
+                <div class="col-6">
+                    <strong><%= typeof totalStudents !== 'undefined' ? totalStudents : 0 %></strong><br>
+                    <span>Students</span>
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+<!-- Left Sidebar End -->

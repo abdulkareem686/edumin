@@ -1,0 +1,263 @@
+<script>
+                        // Toast notification function
+                        function showToast(message, type) {
+                            const container = document.getElementById('toastContainer');
+                            const toast = document.createElement('div');
+                            const icons = {
+                                success: 'bi bi-check-circle-fill',
+                                error: 'bi bi-exclamation-circle-fill',
+                                warning: 'bi bi-exclamation-triangle-fill',
+                                info: 'bi bi-info-circle-fill'
+                            };
+                            toast.className = 'toast-notification toast-' + type;
+                            toast.innerHTML = '<i class="' + (icons[type] || icons.info) + ' me-2"></i> ' + message;
+                            container.appendChild(toast);
+                            
+                            // Auto remove after 5 seconds
+                            setTimeout(function() {
+                                toast.style.animation = 'fadeOut 0.5s ease';
+                                setTimeout(function() {
+                                    toast.remove();
+                                }, 500);
+                            }, 5000);
+                        }
+
+                        // Date validation to ensure term dates are within academic year
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Check for success/error messages from server and show as popups
+                            <% if (typeof success !== 'undefined' && success) { %>
+                                showToast('<%= success %>', 'success');
+                            <% } %>
+                            <% if (typeof error !== 'undefined' && error) { %>
+                                showToast('<%= error %>', 'error');
+                            <% } %>
+
+                            const startDate = document.getElementById('start_date');
+                            const endDate = document.getElementById('end_date');
+
+                            const termStartDates = [
+                                document.getElementById('first_term_start'),
+                                document.getElementById('second_term_start'),
+                                document.getElementById('third_term_start')
+                            ];
+
+                            const termEndDates = [
+                                document.getElementById('first_term_end'),
+                                document.getElementById('second_term_end'),
+                                document.getElementById('third_term_end')
+                            ];
+
+                            function validateTermDates() {
+                                if (!startDate || !endDate || !startDate.value || !endDate.value) return true;
+
+                                const startVal = startDate.value;
+                                const endVal = endDate.value;
+                                let isValid = true;
+
+                                if (startVal > endVal) {
+                                    endDate.classList.add('is-invalid');
+                                    endDate.setCustomValidity('Academic year start date must be before end date');
+                                    isValid = false;
+                                } else {
+                                    endDate.classList.remove('is-invalid');
+                                    endDate.setCustomValidity('');
+                                }
+
+                                for (let i = 0; i < termStartDates.length; i++) {
+                                    const termStartInput = termStartDates[i];
+                                    const termEndInput = termEndDates[i];
+
+                                    if (termStartInput && termStartInput.value) {
+                                        if (termStartInput.value < startVal) {
+                                            termStartInput.classList.add('is-invalid');
+                                            termStartInput.setCustomValidity('Term start date cannot be before academic year start date');
+                                            isValid = false;
+                                        } else if (termStartInput.value > endVal) {
+                                            termStartInput.classList.add('is-invalid');
+                                            termStartInput.setCustomValidity('Term start date cannot be after academic year end date');
+                                            isValid = false;
+                                        } else {
+                                            termStartInput.classList.remove('is-invalid');
+                                            termStartInput.setCustomValidity('');
+                                        }
+                                    }
+
+                                    if (termEndInput && termEndInput.value) {
+                                        if (termEndInput.value > endVal) {
+                                            termEndInput.classList.add('is-invalid');
+                                            termEndInput.setCustomValidity('Term end date cannot be after academic year end date');
+                                            isValid = false;
+                                        } else if (termEndInput.value < startVal) {
+                                            termEndInput.classList.add('is-invalid');
+                                            termEndInput.setCustomValidity('Term end date cannot be before academic year start date');
+                                            isValid = false;
+                                        } else {
+                                            termEndInput.classList.remove('is-invalid');
+                                            termEndInput.setCustomValidity('');
+                                        }
+                                    }
+
+                                    if (termStartInput && termEndInput && termStartInput.value && termEndInput.value) {
+                                        if (termStartInput.value > termEndInput.value) {
+                                            termEndInput.classList.add('is-invalid');
+                                            termEndInput.setCustomValidity('Term end date must be after term start date');
+                                            isValid = false;
+                                        }
+                                    }
+                                }
+
+                                return isValid;
+                            }
+
+                            if (startDate) startDate.addEventListener('change', validateTermDates);
+                            if (endDate) endDate.addEventListener('change', validateTermDates);
+
+                            termStartDates.forEach(function (input) {
+                                if (input) {
+                                    input.addEventListener('change', validateTermDates);
+                                    input.addEventListener('input', validateTermDates);
+                                }
+                            });
+                            termEndDates.forEach(function (input) {
+                                if (input) {
+                                    input.addEventListener('change', validateTermDates);
+                                    input.addEventListener('input', validateTermDates);
+                                }
+                            });
+
+                            // Form submission with SweetAlert confirmation
+                            const form = document.getElementById('academicYearForm');
+                            const submitBtn = document.getElementById('submitBtn');
+                            
+                            if (form) {
+                                form.addEventListener('submit', function (e) {
+                                    e.preventDefault();
+
+                                    const yearName = document.getElementById('year_name').value.trim();
+                                    const startDateVal = document.getElementById('start_date').value;
+                                    const endDateVal = document.getElementById('end_date').value;
+
+                                    if (!yearName || !startDateVal || !endDateVal) {
+                                        Swal.fire({
+                                            title: 'Missing Fields',
+                                            text: 'Please fill in all required fields marked with *',
+                                            icon: 'error',
+                                            confirmButtonColor: '#3b5de7',
+                                            confirmButtonText: 'OK'
+                                        });
+                                        return;
+                                    }
+
+                                    // Run validation
+                                    validateTermDates();
+
+                                    // Check if any term dates are invalid
+                                    const invalidInputs = form.querySelectorAll('.is-invalid');
+                                    if (invalidInputs.length > 0) {
+                                        Swal.fire({
+                                            title: 'Invalid Dates',
+                                            text: 'Some term dates are outside the academic year range or end date is before start date. Please fix them before saving.',
+                                            icon: 'warning',
+                                            confirmButtonColor: '#3b5de7',
+                                            confirmButtonText: 'OK'
+                                        });
+                                        return;
+                                    }
+
+                                    const isEdit = <%= typeof isEdit !== 'undefined' && isEdit ? 'true' : 'false' %>;
+                                    const actionText = isEdit ? 'update' : 'save';
+                                    const titleText = isEdit ? 'Update Academic Year' : 'Save New Academic Year';
+                                    const confirmText = isEdit ? 'Yes, update it' : 'Yes, save it';
+
+                                    Swal.fire({
+                                        title: titleText,
+                                        text: 'Are you sure you want to ' + actionText + ' "' + yearName + '"?',
+                                        icon: 'question',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3b5de7',
+                                        cancelButtonColor: '#6c757d',
+                                        confirmButtonText: confirmText,
+                                        cancelButtonText: 'Cancel'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // Show loading state on button
+                                            if (submitBtn) {
+                                                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...';
+                                                submitBtn.disabled = true;
+                                            }
+                                            
+                                            // Submit the form
+                                            form.submit();
+                                        }
+                                    });
+                                });
+                            }
+
+                            // Auto-dismiss alerts after 5 seconds and show as toast
+                            setTimeout(function () {
+                                var alerts = document.querySelectorAll('.alert.alert-dismissible');
+                                for (var i = 0; i < alerts.length; i++) {
+                                    var alert = alerts[i];
+                                    var message = alert.textContent.trim();
+                                    var isSuccess = alert.classList.contains('alert-success');
+                                    var isError = alert.classList.contains('alert-danger');
+                                    if (isSuccess) {
+                                        showToast(message, 'success');
+                                    } else if (isError) {
+                                        showToast(message, 'error');
+                                    }
+                                    setTimeout(function (al) {
+                                        if (al) al.remove();
+                                    }, 4000, alert);
+                                }
+                            }, 100);
+                        });
+
+                        // Mark notification as read
+                        function markRead(notificationId) {
+                            fetch('/teacher/notifications/mark-read/' + notificationId, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' }
+                            }).then(function (response) {
+                                return response.json();
+                            }).then(function (data) {
+                                if (data.success) {
+                                    showToast('Notification marked as read', 'success');
+                                    location.reload();
+                                }
+                            }).catch(function (error) {
+                                console.error('Error:', error);
+                                showToast('Error marking notification as read', 'error');
+                            });
+                        }
+
+                        // Mark all notifications as read
+                        function markAllRead() {
+                            Swal.fire({
+                                title: 'Mark All as Read?',
+                                text: 'This will mark all your notifications as read.',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3b5de7',
+                                cancelButtonColor: '#6c757d',
+                                confirmButtonText: 'Yes, mark all as read',
+                                cancelButtonText: 'Cancel'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    fetch('/teacher/notifications/mark-all-read', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' }
+                                    }).then(function (response) {
+                                        return response.json();
+                                    }).then(function (data) {
+                                        if (data.success) {
+                                            showToast('All notifications marked as read', 'success');
+                                            location.reload();
+                                        }
+                                    }).catch(function (error) {
+                                        showToast('Error marking notifications as read', 'error');
+                                    });
+                                }
+                            });
+                        }
+                    </script>

@@ -1,0 +1,24 @@
+<script>
+        document.getElementById('classBillForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var form = this;
+            var formData = new FormData(form);
+
+            fetch('/save-class-bill', {
+                method: 'POST',
+                body: formData
+            })
+                .then(function (response) { return response.json(); })
+                .then(function (result) {
+                    if (result.success) {
+                        alert(result.message);
+                        window.location.href = '/class-bills';
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
+                })
+                .catch(function (error) {
+                    alert('Failed to save bill. Please try again.');
+                });
+        });
+    </script>

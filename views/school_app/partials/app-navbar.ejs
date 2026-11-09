@@ -1,0 +1,15 @@
+<% 
+    var activeRole = (typeof role !== 'undefined' && role) 
+                  || (typeof userRole !== 'undefined' && userRole) 
+                  || (typeof session !== 'undefined' && session && session.role)
+                  || (typeof session !== 'undefined' && session && session.parentId ? 'parent' : '')
+                  || 'admin';
+
+    if (activeRole === 'teacher') { 
+%>
+<%- include('teacher-navbar') %>
+<% } else if (activeRole === 'parent') { %>
+<%- include('parent-navbar') %>
+<% } else { %>
+<%- include('admin-navbar') %>
+<% } %>

@@ -1,0 +1,234 @@
+<% 
+    var activeRole = (typeof role !== 'undefined' && role) 
+                  || (typeof userRole !== 'undefined' && userRole) 
+                  || (typeof session !== 'undefined' && session && session.role)
+                  || '';
+
+    if (activeRole === 'teacher') { 
+%>
+<%- include('teacher-sidebar') %>
+<% } else if (activeRole === 'parent') { %>
+<%- include('parent-sidebar') %>
+<% } else { %>
+
+</style>
+<!-- Left Sidebar -->
+<div class="leftside-menu">
+    <a href="/" class="logo text-center logo-light">
+       <span class="logo-lg">
+            <h3><i class="mdi mdi-school"></i> EduSuite</h3>
+        </span>
+        <span class="logo-sm">
+            <h3><i class="mdi mdi-school"></i></h3>
+        </span>
+    </a>
+    <div class="h-100" id="leftside-menu-container" data-simplebar="">
+        <ul class="side-nav">
+            <li class="side-nav-title side-nav-item">Main</li>
+            <li class="side-nav-item">
+                <a href="/" class="side-nav-link">
+                    <i class="uil-home-alt"></i><span> Dashboard </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Academic</li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#academicYearMenu" class="side-nav-link">
+                    <i class="uil-calendar-alt"></i><span> Academic Calendar </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="academicYearMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/academic-years">Manage Academic Years</a></li>
+                        <li><a href="/add-academic-year">Setup New Academic Year</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#classesMenu" class="side-nav-link">
+                    <i class="uil-building"></i><span> Classes </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="classesMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/all-classes">All Classes</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#subjectsMenu" class="side-nav-link">
+                    <i class="uil-book-open"></i><span> Subjects </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="subjectsMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/register-subjects">Register New Subjects</a></li>
+                        <li><a href="/view-subjects">Subject Assignments</a></li>
+                        <li><a href="/assign-teachers">Assign Teachers to Subjects</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#lessonNotesMenu" class="side-nav-link">
+                    <i class="uil-notes"></i><span> Lesson Notes </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="lessonNotesMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/lesson-notes">All Lesson Notes</a></li>
+                        <li><a href="/lesson-notes/create">Create Lesson Note</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Students</li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#studentsMenu" class="side-nav-link">
+                    <i class="uil-users-alt"></i><span> Student Management </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="studentsMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/all-students">Active Students</a></li>
+                        <li><a href="/graduated-students"><i class="bi bi-award me-1 text-success"></i>Graduated Students</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Examinations</li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#examsMenu" class="side-nav-link">
+                    <i class="uil-clipboard-notes"></i><span> Scores & Results </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="examsMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/enter-scores">Enter Student Scores</a></li>
+                        <li><a href="/broadsheet">Generate Broadsheet</a></li>
+                        <li><a href="/term-reports">Term Reports</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Attendance</li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#attendanceMenu" class="side-nav-link">
+                    <i class="uil-check-circle"></i><span> Attendance Tracking </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="attendanceMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/mark-attendance">Mark Attendance</a></li>
+                        <li><a href="/attendance-reports">Attendance Reports</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Staff</li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#teachersMenu" class="side-nav-link">
+                    <i class="uil-chalkboard"></i><span> Teachers </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="teachersMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/all-teachers">Teachers</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#staffMenu" class="side-nav-link">
+                    <i class="uil-user-circle"></i><span> Staff </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="staffMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/all-staff">Staff Members</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#parentsMenu" class="side-nav-link">
+                    <i class="uil-family"></i><span> Parents </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="parentsMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/all-parents">All Parents/Guardians</a></li>
+                        <li><a href="/link-student-parent">Link Student & Parent</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Finance</li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#feesMenu" class="side-nav-link">
+                    <i class="uil-wallet"></i><span> Fee Management </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="feesMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/fees-collection">Fee Collections</a></li>
+                        <li><a href="/admin/pending-payments">Parent Payments Approval</a></li>
+                        <li><a href="/admin/payment-settings">School Bank Details</a></li>
+                        <li><a href="/add-fees">Record Fee Payment</a></li>
+                        <li><a href="/class-bills">Class Fee Configuration</a></li>
+                        <li><a href="/class-bills/create">Create Class Bill</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Resources</li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#libraryMenu" class="side-nav-link">
+                    <i class="uil-book-alt"></i><span> Library </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="libraryMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/all-library">Book Inventory</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#bookListsMenu" class="side-nav-link">
+                    <i class="uil-list-ul"></i><span> Book Lists </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="bookListsMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/manage-book-lists">Manage Book Lists</a></li>
+                        <li><a href="/books/print">Print Book List</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#calendarMenu" class="side-nav-link">
+                    <i class="uil-calendar-alt"></i><span> School Calendar </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="calendarMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/school-calendar">View Calendar</a></li>
+                        <li><a href="/add-event">Add Event</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title side-nav-item">Reports</li>
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#reportsMenu" class="side-nav-link">
+                    <i class="uil-chart-line"></i><span> Reports & Analytics </span><span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="reportsMenu">
+                    <ul class="side-nav-second-level">
+                        <li><a href="/term-reports">Term Summary Reports</a></li>
+                        <li><a href="/attendance-reports">Attendance Analytics</a></li>
+                        <li><a href="/broadsheet">Performance Broadsheet</a></li>
+                        <li><a href="/fees-collection">Fee Collection Reports</a></li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="side-nav-title side-nav-item">System</li>
+            <li class="side-nav-item">
+                <a href="/logout" class="side-nav-link">
+                    <i class="uil-sign-out-alt"></i><span> Logout </span>
+                </a>
+            </li>
+        </ul>
+        <div class="help-box p-3 text-white text-center mt-4">
+            <i class="mdi mdi-help-circle-outline h3"></i>
+            <h5 class="text-white mt-2">Need Help?</h5>
+            <a href="javascript: void(0);" class="btn btn-sm btn-secondary">Support Center</a>
+        </div>
+    </div>
+</div>
+<% } %>

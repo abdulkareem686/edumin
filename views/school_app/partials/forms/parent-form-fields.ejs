@@ -1,0 +1,145 @@
+<form action="/add-parent" method="post" id="parentForm">
+                                          <!-- Personal Information Section -->
+                                          <div class="form-section">
+                                             <h5 class="form-section-title"><i
+                                                   class="bi bi-person-badge me-2"></i>Personal Information</h5>
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">First Name</label>
+                                                      <input type="text" class="form-control" name="firstName"
+                                                         value="<%= formData.firstName || '' %>" required>
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Last Name</label>
+                                                      <input type="text" class="form-control" name="lastName"
+                                                         value="<%= formData.lastName || '' %>" required>
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Email Address</label>
+                                                      <input type="email" class="form-control" name="email"
+                                                         value="<%= formData.email || '' %>" required>
+                                                      <small class="text-muted">Parent will use this email to
+                                                         login</small>
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Phone Number</label>
+                                                      <input type="tel" class="form-control" name="phone"
+                                                         value="<%= formData.phone || '' %>" required>
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Password</label>
+                                                      <div class="input-group">
+                                                         <input type="text" class="form-control" name="password"
+                                                            id="password" value="password123" required>
+                                                         <button class="btn btn-outline-secondary" type="button"
+                                                            onclick="generateRandomPassword()">
+                                                            <i class="bi bi-shuffle"></i> Generate
+                                                         </button>
+                                                      </div>
+                                                      <small class="text-muted">Default: password123 (parent can change
+                                                         after login)</small>
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Relationship to Student</label>
+                                                      <select class="form-control" name="relationship">
+                                                         <option value="Father" <%=(formData.relationship==='Father' )
+                                                            ? 'selected' : '' %>>Father</option>
+                                                         <option value="Mother" <%=(formData.relationship==='Mother' )
+                                                            ? 'selected' : '' %>>Mother</option>
+                                                         <option value="Guardian" <%=(formData.relationship==='Guardian'
+                                                            ) ? 'selected' : '' %>>Guardian</option>
+                                                         <option value="Grandparent"
+                                                            <%=(formData.relationship==='Grandparent' ) ? 'selected'
+                                                            : '' %>>Grandparent</option>
+                                                         <option value="Other" <%=(formData.relationship==='Other' )
+                                                            ? 'selected' : '' %>>Other</option>
+                                                      </select>
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Occupation</label>
+                                                      <input type="text" class="form-control" name="occupation"
+                                                         value="<%= formData.occupation || '' %>"
+                                                         placeholder="e.g., Teacher, Doctor, Business">
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Emergency Contact</label>
+                                                      <input type="text" class="form-control" name="emergencyContact"
+                                                         value="<%= formData.emergencyContact || '' %>"
+                                                         placeholder="Alternate phone number">
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-12">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Address</label>
+                                                      <textarea class="form-control" rows="2" name="address"
+                                                         placeholder="Full address of parent/guardian"><%= formData.address || '' %></textarea>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+
+                                          <!-- Link to Students Section -->
+                                          <div class="form-section">
+                                             <h5 class="form-section-title"><i
+                                                   class="bi bi-person-lines-fill me-2"></i>Link to Students</h5>
+                                             <div class="alert alert-info mb-3">
+                                                <i class="bi bi-info-circle me-2"></i>
+                                                <strong>Optional:</strong> You can link this parent to existing students
+                                                now or do it later from the "Link Student & Parent" page.
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-12">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Search students to link</label>
+                                                      <input type="search" class="form-control mb-2" id="studentSearchInput" placeholder="Type at least 2 letters (name or admission no.)" autocomplete="off">
+                                                      <div id="studentSearchResults" class="list-group mb-2" style="max-height:180px;overflow:auto;"></div>
+                                                      <div id="selectedStudents" class="mb-2"></div>
+                                                      <select class="form-control d-none" name="studentIds" multiple size="5" id="studentSelect"></select>
+                                                      <small class="text-muted">Search and click a student to add them. They are linked when you save.</small>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+
+                                          <div class="row mt-4">
+                                             <div class="col-md-12">
+                                                <button type="submit" class="btn btn-primary">
+                                                   <i class="bi bi-person-plus me-1"></i> Register Parent
+                                                </button>
+                                                <button type="reset" class="btn btn-light ms-2">
+                                                   <i class="bi bi-x-circle me-1"></i> Reset Form
+                                                </button>
+                                                <a href="/all-parents" class="btn btn-outline-secondary ms-2">
+                                                   <i class="bi bi-list me-1"></i> View All Parents
+                                                </a>
+                                             </div>
+                                          </div>
+                                       </form>

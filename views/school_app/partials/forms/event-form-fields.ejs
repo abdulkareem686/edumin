@@ -1,0 +1,62 @@
+<form action="/add-event" method="post">
+    <div class="mb-3">
+        <label class="form-label">Event Title*</label>
+        <input type="text" class="form-control" name="title" required>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" name="description" rows="3"></textarea>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label">Event Date*</label>
+                <input type="date" class="form-control" name="eventDate" required>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">Start Time</label>
+                <input type="time" class="form-control" name="startTime">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">End Time</label>
+                <input type="time" class="form-control" name="endTime">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Academic Year Selection -->
+    <div class="mb-3">
+        <label class="form-label">Academic Year*</label>
+        <select class="form-control" name="academicYear" required>
+            <option value="">Select Academic Year</option>
+            <% academicYears.forEach(year => { %>
+                <option value="<%= year.year_name %>" 
+                    <%= (currentAcademicYear && year.id === currentAcademicYear.id) ? 'selected' : '' %>>
+                    <%= year.year_name %>
+                </option>
+            <% }); %>
+        </select>
+    </div>
+    
+    <!-- Term Selection -->
+    <div class="mb-3">
+        <label class="form-label">Term*</label>
+        <select class="form-control" name="term" required>
+    <option value="">Select Term</option>
+    <% terms.forEach(term => { %>
+        <option value="<%= term.term_name %>" 
+            <%= term.is_current ? 'selected' : '' %>>
+            <%= term.term_name %>
+        </option>
+    <% }); %>
+</select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Add Event</button>
+</form>

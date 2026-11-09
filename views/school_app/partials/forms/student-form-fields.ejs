@@ -1,0 +1,340 @@
+<form action="/save-student" method="post" id="studentForm">
+                    <!-- Hidden field for student ID in edit mode -->
+
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title"><i class="bi bi-person-circle me-2"></i>Personal Information</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label required-field">Surname</label>
+                                    <input type="text" class="form-control" name="firstName" 
+                                        value="<%= formData.firstName || '' %>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label required-field">Middle Name</label>
+                                    <input type="text" class="form-control" name="middleName" 
+                                        value="<%= formData.middleName || '' %>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label required-field">Last Name</label>
+                                    <input type="text" class="form-control" name="lastName" 
+                                        value="<%= formData.lastName || '' %>" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label required-field">Email</label>
+                                    <input type="email" class="form-control" name="email" 
+                                        value="<%= formData.email || '' %>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-control" name="gender">
+                                        <option value="">-- Select Gender --</option>
+                                        <option value="Male" <%= (formData.gender === 'Male') ? 'selected' : '' %>>Male</option>
+                                        <option value="Female" <%= (formData.gender === 'Female') ? 'selected' : '' %>>Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" name="dateOfBirth" 
+                                        value="<%= formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString().split('T')[0] : '' %>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nationality</label>
+                                    <select class="form-control" name="nationality">
+                                        <option value="">-- Select Nationality --</option>
+                                        <option value="Nigerian" <%= (formData.nationality === 'Nigerian') ? 'selected' : '' %>>Nigerian</option>
+                                        <option value="Other" <%= (formData.nationality === 'Other') ? 'selected' : '' %>>Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- State of Origin and LGA Selection -->
+                        <div class="state-lga-container">
+                            <div class="state-lga-title">State of Origin Information</div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">State of Origin</label>
+                                        <select class="form-control" name="stateOfOrigin" id="stateOfOrigin">
+                                            <option value="">-- Select State --</option>
+                                            <!-- States will be populated by JavaScript -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Local Government Area</label>
+                                        <select class="form-control" name="localGovernment" id="localGovernment">
+                                            <option value="">-- Select LGA --</option>
+                                            <!-- LGAs will be populated by JavaScript based on state selection -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Residential State and LGA Selection -->
+                        <div class="state-lga-container">
+                            <div class="state-lga-title">Residential Information</div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Residential State</label>
+                                        <select class="form-control" name="residentialState" id="residentialState">
+                                            <option value="">-- Select State --</option>
+                                            <!-- States will be populated by JavaScript -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Residential Local Government Area</label>
+                                        <select class="form-control" name="residentialLGA" id="residentialLGA">
+                                            <option value="">-- Select LGA --</option>
+                                            <!-- LGAs will be populated by JavaScript based on state selection -->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Parent/Guardian Registration Section -->
+<div class="form-section">
+    <h5 class="form-section-title"><i class="bi bi-people me-2"></i>Parent/Guardian Information</h5>
+    <div class="alert alert-info mb-3">
+        <i class="bi bi-info-circle me-2"></i>
+        <strong>Note:</strong> You can either link to an existing parent or register a new parent. 
+        For new students, at least one parent must be registered.
+    </div>
+    
+    <!-- Parent Selection Tabs -->
+    <ul class="nav nav-tabs mb-3" id="parentTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="existing-parent-tab" data-bs-toggle="tab" data-bs-target="#existing-parent" type="button" role="tab">
+                <i class="bi bi-search me-1"></i> Link Existing Parent
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="new-parent-tab" data-bs-toggle="tab" data-bs-target="#new-parent" type="button" role="tab">
+                <i class="bi bi-person-plus me-1"></i> Register New Parent
+            </button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="parentTabContent">
+        <!-- Tab 1: Link Existing Parent -->
+        <div class="tab-pane fade show active" id="existing-parent" role="tabpanel">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Search for Parent</label>
+                                <div class="typeahead-input">
+                                    <input type="text" class="form-control" id="parentSearch" 
+                                           placeholder="Search by name, email, or phone..." autocomplete="off">
+                                    <div class="spinner-border spinner-border-sm text-primary search-loading" id="parentLoading" style="display: none;"></div>
+                                    <div class="typeahead-results" id="parentResults" style="display: none;"></div>
+                                </div>
+                                <small class="text-muted">Type at least 2 characters to search</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="selectedParentDisplay" class="selected-badge mt-2" style="display: none;">
+                        <span class="selected-info"></span>
+                        <span class="remove-selection text-danger" onclick="clearParentSelection()" style="cursor: pointer;">✕ Remove</span>
+                    </div>
+                    <input type="hidden" name="existingParentId" id="existingParentId" value="">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab 2: Register New Parent -->
+        <div class="tab-pane fade" id="new-parent" role="tabpanel">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <strong><i class="bi bi-person-plus me-1"></i> Parent/Guardian Registration Form</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label required-field">First Name</label>
+                                <input type="text" class="form-control" name="parentFirstName" id="parentFirstName" value="<%= formData.parentFirstName || '' %>">
+                                <small class="text-muted">Parent's first name</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label required-field">Last Name</label>
+                                <input type="text" class="form-control" name="parentLastName" id="parentLastName" value="<%= formData.parentLastName || '' %>">
+                                <small class="text-muted">Parent's last name</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label required-field">Email Address</label>
+                                <input type="email" class="form-control" name="parentEmail" id="parentEmail" value="<%= formData.parentEmail || '' %>">
+                                <small class="text-muted">Parent will use this email to login</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label required-field">Phone Number</label>
+                                <input type="text" class="form-control" name="parentPhone" id="parentPhone" value="<%= formData.parentPhone || '' %>" placeholder="e.g., 08012345678">
+                                <small class="text-muted">Primary contact number</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="parentPassword" id="parentPassword" value="password123">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="generateRandomPassword()">
+                                        <i class="bi bi-shuffle"></i> Generate
+                                    </button>
+                                </div>
+                                <small class="text-muted">Default: password123 (parent can change after login)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Relationship to Student</label>
+                                <select class="form-control" name="parentRelationship" id="parentRelationship">
+                                    <option value="Father" <%= (formData.parentRelationship === 'Father') ? 'selected' : '' %>>Father</option>
+                                    <option value="Mother" <%= (formData.parentRelationship === 'Mother') ? 'selected' : '' %>>Mother</option>
+                                    <option value="Guardian" <%= (formData.parentRelationship === 'Guardian') ? 'selected' : '' %>>Guardian</option>
+                                    <option value="Grandparent" <%= (formData.parentRelationship === 'Grandparent') ? 'selected' : '' %>>Grandparent</option>
+                                    <option value="Other" <%= (formData.parentRelationship === 'Other') ? 'selected' : '' %>>Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Occupation</label>
+                                <input type="text" class="form-control" name="parentOccupation" id="parentOccupation" value="<%= formData.parentOccupation || '' %>" placeholder="e.g., Teacher, Doctor, Business">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Emergency Contact</label>
+                                <input type="text" class="form-control" name="parentEmergencyContact" id="parentEmergencyContact" value="<%= formData.parentEmergencyContact || '' %>" placeholder="Alternate phone number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <textarea class="form-control" rows="2" name="parentAddress" id="parentAddress" placeholder="Full address of parent/guardian"><%= formData.parentAddress || '' %></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" name="setAsPrimary" value="1" id="setAsPrimary" <%= (formData.setAsPrimary === '1' || formData.setAsPrimary === 'on' || !formData.setAsPrimary) ? 'checked' : '' %>>
+                        <label class="form-check-label" for="setAsPrimary">
+                            <i class="bi bi-star-fill text-warning me-1"></i> Set this parent as primary contact
+                        </label>
+                        <small class="d-block text-muted">Primary contact will receive priority notifications about the student</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                    
+                    <!-- Academic Information Section -->
+                    <div class="form-section">
+                        <h5 class="form-section-title"><i class="bi bi-book me-2"></i>Academic Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label required-field">Select Class</label>
+                                    <select class="form-control" name="classId" required id="class-select">
+                                        <option value="">Select a class</option>
+                                        <% classes.forEach(cls => { %>
+                                            <% if (cls.level === 'SENIOR SECONDARY' && cls.department) { %>
+                                                <option value="<%= cls.id %>" 
+                                                    <%= formData.classId == cls.id ? 'selected' : '' %>
+                                                    data-level="<%= cls.level %>"
+                                                    data-department="<%= cls.department %>">
+                                                    <%= cls.className %> (<%= cls.department %>)
+                                                </option>
+                                            <% } else { %>
+                                                <option value="<%= cls.id %>" 
+                                                    <%= formData.classId == cls.id ? 'selected' : '' %>
+                                                    data-level="<%= cls.level %>">
+                                                    <%= cls.className %>
+                                                </option>
+                                            <% } %>
+                                        <% }); %>
+                                    </select>
+                                    <small id="department-display" class="text-muted"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Admission Number Display -->
+                                <div class="mb-3">
+                                    <label class="form-label">Admission Number</label>
+                                    <% if (mode === 'edit' && formData.admission_number) { %>
+                                        <input type="text" class="form-control" value="<%= formData.admission_number %>" disabled readonly>
+                                        <small class="text-muted">Admission number cannot be changed</small>
+                                    <% } else { %>
+                                        <input type="text" class="form-control" value="Will be generated automatically" disabled readonly>
+                                        <small class="text-muted">This will be generated automatically upon submission</small>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary">
+                                <% if (mode === 'edit') { %>
+                                    <i class="bi bi-check-circle me-1"></i> Update Student
+                                <% } else { %>
+                                    <i class="bi bi-person-plus me-1"></i> Add Student
+                                <% } %>
+                            </button>
+                            <button type="reset" class="btn btn-light ms-2">
+                                <i class="bi bi-x-circle me-1"></i> Reset Form
+                            </button>
+                            <a href="/all-students" class="btn btn-outline-secondary ms-2">
+                                <i class="bi bi-list me-1"></i> View All Students
+                            </a>
+                            <% if (mode === 'edit') { %>
+                                <a href="/student-profile/<%= studentId %>" class="btn btn-outline-info ms-2">
+                                    <i class="bi bi-eye me-1"></i> View Profile
+                                </a>
+                            <% } %>
+                        </div>
+                    </div>
+                </form>

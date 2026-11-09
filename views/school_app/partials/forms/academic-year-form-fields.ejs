@@ -1,0 +1,137 @@
+<form method="POST"
+                                action="<%= typeof isEdit !== 'undefined' && isEdit ? '/edit-academic-year/' + academicYearId : '/add-academic-year' %>"
+                                id="academicYearForm">
+                                <!-- Academic Year Details -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="year_name" class="form-label required-field">Academic Year
+                                            Name</label>
+                                        <input type="text" class="form-control" id="year_name" name="year_name"
+                                            value="<%= formData.year_name %>" required placeholder="e.g., 2023/2024">
+                                        <small class="text-muted">Example: 2023/2024, 2024/2025</small>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Status</label>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" id="is_current"
+                                                name="is_current" <%=formData.is_current ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="is_current">
+                                                <i class="bi bi-star-fill text-warning me-1"></i> Set as current
+                                                academic year
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">Only one academic year can be current at a
+                                            time</small>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="start_date" class="form-label required-field">Start Date</label>
+                                        <input type="date" class="form-control" id="start_date" name="start_date"
+                                            value="<%= formData.start_date %>" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="end_date" class="form-label required-field">End Date</label>
+                                        <input type="date" class="form-control" id="end_date" name="end_date"
+                                            value="<%= formData.end_date %>" required>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <!-- First Term -->
+                                <div class="card term-card">
+                                    <div class="card-header bg-white">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="bi bi-calendar-week me-2"></i>First Term
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="first_term_start" class="form-label required-field">Start
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="first_term_start"
+                                                    name="first_term_start" value="<%= formData.first_term_start %>"
+                                                    required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="first_term_end" class="form-label required-field">End
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="first_term_end"
+                                                    name="first_term_end" value="<%= formData.first_term_end %>"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Second Term -->
+                                <div class="card term-card">
+                                    <div class="card-header bg-white">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="bi bi-calendar-week me-2"></i>Second Term
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="second_term_start" class="form-label required-field">Start
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="second_term_start"
+                                                    name="second_term_start" value="<%= formData.second_term_start %>"
+                                                    required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="second_term_end" class="form-label required-field">End
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="second_term_end"
+                                                    name="second_term_end" value="<%= formData.second_term_end %>"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Third Term -->
+                                <div class="card term-card">
+                                    <div class="card-header bg-white">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            <i class="bi bi-calendar-week me-2"></i>Third Term
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="third_term_start" class="form-label required-field">Start
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="third_term_start"
+                                                    name="third_term_start" value="<%= formData.third_term_start %>"
+                                                    required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="third_term_end" class="form-label required-field">End
+                                                    Date</label>
+                                                <input type="date" class="form-control" id="third_term_end"
+                                                    name="third_term_end" value="<%= formData.third_term_end %>"
+                                                    required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="row mt-4">
+                                    <div class="col-md-12 text-center">
+                                        <button type="submit" class="btn btn-save text-white" id="submitBtn">
+                                            <i class="bi bi-save me-2"></i>
+                                            <%= typeof isEdit !=='undefined' && isEdit ? 'Update Academic Year'
+                                                : 'Save Academic Year' %>
+                                        </button>
+                                        <a href="/academic-years" class="btn btn-secondary ms-2">
+                                            <i class="bi bi-x-circle me-2"></i> Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
