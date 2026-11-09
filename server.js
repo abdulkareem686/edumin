@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
@@ -44,7 +45,14 @@ app.use(rateLimit({
     legacyHeaders: false
 }));
 
+// ---------------------------------------------------------------------------
 // Session configuration
+//
+// CRITICAL: When running under cluster.js with WEB_CONCURRENCY > 1, sessions
+// MUST be stored in a shared store (Redis). With the default MemoryStore each
+// worker keeps its own copy, so a request routed to a different worker sees no
+// session and the user is effectively logged out.
+// ---------------------------------------------------------------------------
 let redisClient = null;
 const sessionConfig = {
     secret: process.env.SESSION_SECRET || 'your-secret-key',
@@ -52,24 +60,31 @@ const sessionConfig = {
     saveUninitialized: false,
     cookie: {
         maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production'
     }
 };
 
-if (process.env.REDIS_URL) {
-    try {
-        const { createClient } = require('redis');
-        const RedisStore = require('connect-redis').default;
-        redisClient = createClient({ url: process.env.REDIS_URL });
-        redisClient.on('error', (err) => console.error('Redis session store error:', err.message));
-        redisClient.connect().catch((err) => console.error('Redis connect failed:', err.message));
-        sessionConfig.store = new RedisStore({ client: redisClient, prefix: 'smsess:' });
-        console.log('Session store: Redis');
-    } catch (err) {
-        console.warn('Redis session store unavailable:', err.message);
-    }
+const isProduction = process.env.NODE_ENV === 'production';
+const hasRedis = Boolean(process.env.REDIS_URL);
+const workerCount = Math.max(1, Number(process.env.WEB_CONCURRENCY) || 1);
+
+if (hasRedis) {
+    const { createClient } = require('redis');
+    const RedisStore = require('connect-redis').default;
+    redisClient = createClient({ url: process.env.REDIS_URL });
+    redisClient.on('error', (err) => console.error('Redis session store error:', err.message));
+    sessionConfig.store = new RedisStore({ client: redisClient, prefix: 'smsess:' });
+    console.log('Session store: Redis');
 } else {
     console.warn('REDIS_URL not set — using in-memory sessions (not for thousands of users)');
+    if (workerCount > 1) {
+        console.warn(
+            `WEB_CONCURRENCY=${workerCount}, but no shared session store is configured. ` +
+            'cluster.js limits this process to one worker; configure Redis before scaling out.'
+        );
+    }
 }
 
 app.use(session(sessionConfig));
@@ -156,6 +171,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Health check endpoint
 app.get('/health', async (req, res) => {
+    if (hasRedis && !redisClient?.isReady) {
+        return res.status(503).json({ ok: false, error: 'session store unavailable' });
+    }
+
     try {
         const conn = await dbPool.getConnection();
         try {
@@ -166,14 +185,14 @@ app.get('/health', async (req, res) => {
         res.json({
             ok: true,
             pid: process.pid,
-            redis: Boolean(process.env.REDIS_URL),
+            redis: hasRedis ? Boolean(redisClient?.isReady) : false,
+            sessionStore: sessionConfig.store ? sessionConfig.store.constructor.name : 'MemoryStore',
             poolLimit: DB_POOL_LIMIT
         });
     } catch (err) {
         res.status(503).json({ ok: false, error: 'database unavailable' });
     }
 });
-
 
 // Role-based access control guards
 app.get('/admin/*', requireRole('admin'));
@@ -216,37 +235,58 @@ process.on('unhandledRejection', (reason) => {
 });
 
 const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT} (pid ${process.pid})`);
-    console.log(`MySQL connection pool ready (limit: ${DB_POOL_LIMIT}, queue: ${DB_QUEUE_LIMIT})`);
-});
+let server = null;
 
-server.keepAliveTimeout = 65000;
-server.headersTimeout = 66000;
-if (typeof server.requestTimeout !== 'undefined') {
-    server.requestTimeout = REQUEST_TIMEOUT_MS + 5000;
-}
-server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${PORT} is already in use. Stop the other server first:`);
-        console.error(`  netstat -ano | findstr :${PORT}`);
-        console.error(`  taskkill /PID <pid> /F`);
-        process.exit(1);
+async function startServer() {
+    if (redisClient && !redisClient.isReady) {
+        await redisClient.connect();
     }
-    console.error('Server failed to start:', err);
+
+    server = app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT} (pid ${process.pid})`);
+        console.log(`MySQL connection pool ready (limit: ${DB_POOL_LIMIT}, queue: ${DB_QUEUE_LIMIT})`);
+    });
+
+    server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            console.error(`Port ${PORT} is already in use. Stop the other server first:`);
+            console.error(`  netstat -ano | findstr :${PORT}`);
+            console.error(`  taskkill /PID <pid> /F`);
+            process.exit(1);
+        }
+        console.error('Server failed to start:', err);
+        process.exit(1);
+    });
+
+    server.keepAliveTimeout = 65000;
+    server.headersTimeout = 66000;
+    if (typeof server.requestTimeout !== 'undefined') {
+        server.requestTimeout = REQUEST_TIMEOUT_MS + 5000;
+    }
+}
+
+startServer().catch((err) => {
+    console.error('Server startup failed:', err.message);
     process.exit(1);
 });
 
 function shutdown(signal) {
     console.log(`${signal} received — closing server and DB pool...`);
-    server.close(async () => {
+    const closeResources = async () => {
         try { await dbPool.end(); } catch (_) { /* ignore */ }
         try { if (redisClient) await redisClient.quit(); } catch (_) { /* ignore */ }
         process.exit(0);
-    });
+    };
+
+    if (server?.listening) {
+        server.close(closeResources);
+    } else {
+        closeResources();
+    }
     setTimeout(() => process.exit(1), 10000).unref();
 }
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
 
 module.exports = app;
