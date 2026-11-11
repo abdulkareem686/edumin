@@ -4,9 +4,21 @@ const mysql = require('mysql2/promise');
 const { AsyncLocalStorage } = require('async_hooks');
 const { tryApplyScaleIndexes } = require('../utils/scale');
 
-// Database pool configuration
-const DB_POOL_LIMIT = Number(process.env.DB_POOL_LIMIT) || 5;
-const DB_QUEUE_LIMIT = Number(process.env.DB_QUEUE_LIMIT) || 200;
+// Vercel creates independent warm instances, each with its own pool. Keep each
+// instance to one DB client so scaling traffic does not multiply a large pool.
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
+const configuredPoolLimit = Number(process.env.DB_POOL_LIMIT);
+const DB_POOL_LIMIT = isVercel
+    ? 1
+    : (Number.isInteger(configuredPoolLimit) && configuredPoolLimit > 0
+        ? configuredPoolLimit
+        : 5);
+const configuredQueueLimit = Number(process.env.DB_QUEUE_LIMIT);
+const DB_QUEUE_LIMIT = Number.isInteger(configuredQueueLimit) && configuredQueueLimit > 0
+    ? configuredQueueLimit
+    : (isVercel ? 10 : 200);
+const DB_MAX_IDLE = isVercel ? 0 : Math.max(0, Math.min(4, DB_POOL_LIMIT - 1));
+const DB_IDLE_TIMEOUT = isVercel ? 30000 : 60000;
 
 // Validate required database environment variables
 const requiredDbVariables = [
@@ -48,8 +60,8 @@ const dbPool = mysql.createPool({
 
     waitForConnections: true,
     connectionLimit: DB_POOL_LIMIT,
-    maxIdle: Math.min(5, DB_POOL_LIMIT),
-    idleTimeout: 60000,
+    maxIdle: DB_MAX_IDLE,
+    idleTimeout: DB_IDLE_TIMEOUT,
     queueLimit: DB_QUEUE_LIMIT,
 
     enableKeepAlive: true,
@@ -64,10 +76,13 @@ dbPool.on('error', (err) => {
     console.error('Database pool error:', err.message);
 });
 
-// Apply scale indexes when possible
-tryApplyScaleIndexes(dbPool).catch((err) => {
-    console.warn('Scale indexes not applied:', err.message);
-});
+// Apply schema/index changes only when explicitly requested. Do not execute DDL
+// during application imports or Vercel function cold starts.
+if (process.env.APPLY_SCALE_INDEXES_ON_START === 'true') {
+    tryApplyScaleIndexes(dbPool).catch((err) => {
+        console.warn('Scale indexes not applied:', err.message);
+    });
+}
 
 // Request-level database connection storage
 const requestDbStorage = new AsyncLocalStorage();
