@@ -14,7 +14,7 @@ const {
     DB_QUEUE_LIMIT
 } = require('./config/db');
 
-const { requireRole } = require('./middleware/auth');
+const { authenticate, requireRole } = require('./middleware/auth');
 const { studentDisplayName } = require('./utils/helpers');
 const routes = require('./routes');
 
@@ -478,13 +478,16 @@ app.get('/health', async (req, res) => {
 // ROLE-BASED ACCESS CONTROL
 // ---------------------------------------------------------------------
 
-app.get('/admin/*', requireRole('admin'));
+// `authenticate` must run first. Without it these prefix guards answer with a
+// 403 "Access Denied" page for signed-out visitors instead of redirecting them
+// to the login screen (which is what a plain GET on a portal URL should do).
+app.get('/admin/*', authenticate, requireRole('admin'));
 
-app.get('/teacher/*', requireRole('teacher'));
+app.get('/teacher/*', authenticate, requireRole('teacher'));
 
-app.get('/student/*', requireRole('student'));
+app.get('/student/*', authenticate, requireRole('student'));
 
-app.get('/parent/*', requireRole('parent'));
+app.get('/parent/*', authenticate, requireRole('parent'));
 
 // ---------------------------------------------------------------------
 // APPLICATION ROUTES
