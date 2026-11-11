@@ -221,13 +221,22 @@ exports.postLogin = async (req, res) => {
             req.session.regenerate((err) => err ? reject(err) : resolve());
         });
         Object.assign(req.session, sessionValues);
+
+        // Persist the authenticated session before redirecting. This is
+        // necessary for serverless deployments where the redirect may be
+        // handled by a different function instance.
+        await new Promise((resolve, reject) => {
+            req.session.save((err) => err ? reject(err) : resolve());
+        });
         return res.redirect(redirectTo);
 
     } catch (error) {
         console.error('Login error:', error);
-        res.render('page-login', { 
-            error: 'Login failed. Please try again.' 
-        });
+        if (!res.headersSent) {
+            res.status(503).render('page-login', {
+                error: 'Sign-in is temporarily unavailable. Please try again shortly.'
+            });
+        }
     }
 };
 
