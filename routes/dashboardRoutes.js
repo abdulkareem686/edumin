@@ -62,6 +62,20 @@ function redirectTo(role) {
 // UNIVERSAL ENTRY POINTS
 // ---------------------------------------------------------------------
 
+// `GET /` keeps its existing behaviour: the admin dashboard is rendered there
+// by adminRoutes, and a signed-out visitor is sent to the login page.
+// Teachers, students and parents are forwarded to their own dashboard here, so
+// the site root can never fall through to "Page Not Found" for those roles.
+router.get('/', (req, res, next) => {
+    const role = resolveRole(req);
+
+    if (!role || role === 'admin') {
+        return next();
+    }
+
+    return res.redirect(ROLE_DASHBOARD[role]);
+});
+
 // `/dashboard`, `/home` and `/dashboards` all resolve to the dashboard that
 // belongs to the signed-in role instead of returning "Page Not Found".
 router.get('/dashboard', authenticate, sendToDashboard);
