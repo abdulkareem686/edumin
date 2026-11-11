@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 
 const express = require('express');
@@ -8,36 +9,81 @@ const session = require('express-session');
 
 const {
     dbPool,
-    getConnection,
     requestDbStorage,
     DB_POOL_LIMIT,
     DB_QUEUE_LIMIT
 } = require('./config/db');
+
 const { requireRole } = require('./middleware/auth');
 const { studentDisplayName } = require('./utils/helpers');
 const routes = require('./routes');
 
 const app = express();
 
-// Trust proxy for rate limiting behind reverse proxies
-app.set('trust proxy', 1);
-app.use(compression());
-app.use(express.json({ limit: '2mb' }));
-app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+// Environment
+const isVercel =
+    process.env.VERCEL === '1' ||
+    process.env.VERCEL === 'true';
 
-// Request timeout
-const REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_MS) || 30000;
+const isProduction = process.env.NODE_ENV === 'production';
+
+const PORT = process.env.PORT || 3000;
+const REQUEST_TIMEOUT_MS =
+    Number(process.env.REQUEST_TIMEOUT_MS) || 30000;
+
+// Require a proper session secret in production
+if (isProduction && !process.env.SESSION_SECRET) {
+    throw new Error(
+        'SESSION_SECRET is required in production.'
+    );
+}
+
+const SESSION_SECRET =
+    process.env.SESSION_SECRET || 'local-development-secret';
+
+// ---------------------------------------------------------------------
+// EXPRESS CONFIGURATION
+// ---------------------------------------------------------------------
+
+app.set('trust proxy', 1);
+
+app.use(compression());
+
+app.use(express.json({
+    limit: '2mb'
+}));
+
+app.use(express.urlencoded({
+    extended: true,
+    limit: '2mb'
+}));
+
+// ---------------------------------------------------------------------
+// REQUEST TIMEOUT
+// ---------------------------------------------------------------------
+
 app.use((req, res, next) => {
     req.setTimeout(REQUEST_TIMEOUT_MS);
+
     res.setTimeout(REQUEST_TIMEOUT_MS, () => {
-        if (!res.headersSent) {
+        if (!res.headersSent && !res.writableEnded) {
+            console.error(
+                'Request timeout:',
+                req.method,
+                req.originalUrl
+            );
+
             res.status(504).send('Request timeout');
         }
     });
+
     next();
 });
 
-// Global Rate Limiter
+// ---------------------------------------------------------------------
+// RATE LIMITING
+// ---------------------------------------------------------------------
+
 app.use(rateLimit({
     windowMs: 60 * 1000,
     max: Number(process.env.RATE_LIMIT_MAX) || 300,
@@ -45,267 +91,622 @@ app.use(rateLimit({
     legacyHeaders: false
 }));
 
-// ---------------------------------------------------------------------------
-// Session configuration
-//
-// CRITICAL: When running under cluster.js with WEB_CONCURRENCY > 1, sessions
-// MUST be stored in a shared store (Redis). With the default MemoryStore each
-// worker keeps its own copy, so a request routed to a different worker sees no
-// session and the user is effectively logged out.
-// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------
+// REDIS SESSION CONFIGURATION
+// ---------------------------------------------------------------------
+
 let redisClient = null;
+let redisConnectPromise = null;
+
+const hasRedis = Boolean(process.env.REDIS_URL);
+
+const workerCount = Math.max(
+    1,
+    Number(process.env.WEB_CONCURRENCY) || 1
+);
+
 const sessionConfig = {
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    secret: SESSION_SECRET,
+
     resave: false,
+
     saveUninitialized: false,
+
+    rolling: true,
+
     cookie: {
         maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,
         sameSite: 'lax',
-        // Use HTTPS-only cookies on HTTPS requests, but allow plain HTTP on
-        // localhost even when NODE_ENV is set to production.
         secure: 'auto'
     }
 };
 
-const isProduction = process.env.NODE_ENV === 'production';
-const hasRedis = Boolean(process.env.REDIS_URL);
-const workerCount = Math.max(1, Number(process.env.WEB_CONCURRENCY) || 1);
-
-if (process.env.VERCEL && !hasRedis) {
-    throw new Error('REDIS_URL is required on Vercel so login sessions persist between serverless requests.');
+// Vercel requires a shared session store.
+// Do not use Express MemoryStore in production.
+if (isVercel && !hasRedis) {
+    throw new Error(
+        'REDIS_URL is required on Vercel. Configure Redis before deploying.'
+    );
 }
 
 if (hasRedis) {
     const { createClient } = require('redis');
     const RedisStore = require('connect-redis').default;
-    redisClient = createClient({ url: process.env.REDIS_URL });
-    redisClient.on('error', (err) => console.error('Redis session store error:', err.message));
-    sessionConfig.store = new RedisStore({ client: redisClient, prefix: 'smsess:' });
+
+    redisClient = createClient({
+        url: process.env.REDIS_URL
+    });
+
+    redisClient.on('error', err => {
+        console.error(
+            'Redis session store error:',
+            err.message
+        );
+    });
+
+    redisClient.on('ready', () => {
+        console.log('Redis session store is ready.');
+    });
+
+    redisClient.on('reconnecting', () => {
+        console.warn('Redis is reconnecting...');
+    });
+
+    sessionConfig.store = new RedisStore({
+        client: redisClient,
+        prefix: 'smsess:'
+    });
+
     console.log('Session store: Redis');
+
 } else {
-    console.warn('REDIS_URL not set — using in-memory sessions (not for thousands of users)');
+    console.warn(
+        'REDIS_URL not configured. Using in-memory sessions.'
+    );
+
     if (workerCount > 1) {
         console.warn(
-            `WEB_CONCURRENCY=${workerCount}, but no shared session store is configured. ` +
-            'cluster.js limits this process to one worker; configure Redis before scaling out.'
+            'Multiple workers are configured without a shared session store.'
         );
     }
 }
 
-let redisConnectPromise = null;
+// Connect Redis safely.
+// Prevent multiple simultaneous connection attempts.
 async function ensureRedisConnected() {
-    if (!redisClient || redisClient.isReady) return;
+    if (!redisClient) {
+        return;
+    }
+
+    if (redisClient.isReady) {
+        return;
+    }
+
     if (!redisConnectPromise) {
-        redisConnectPromise = redisClient.connect().catch((err) => {
+        redisConnectPromise = (async () => {
+
+            if (!redisClient.isOpen) {
+                await redisClient.connect();
+            }
+
+            if (!redisClient.isReady) {
+                throw new Error(
+                    'Redis client connected but is not ready.'
+                );
+            }
+
+        })().finally(() => {
             redisConnectPromise = null;
-            throw err;
         });
     }
+
     await redisConnectPromise;
 }
 
+// Expose readiness function
 app.locals.ready = ensureRedisConnected;
-app.use(session(sessionConfig));
 
-// Return pooled connections when the HTTP response completes
-app.use((req, res, next) => {
-    const connections = new Set();
-    const cleanup = () => {
-        for (const conn of connections) {
-            try { conn.release(); } catch (_) { /* already released */ }
+// IMPORTANT:
+// Connect Redis BEFORE express-session uses the Redis store.
+app.use(async (req, res, next) => {
+    try {
+        await ensureRedisConnected();
+        next();
+
+    } catch (err) {
+        console.error(
+            'Redis connection failed:',
+            err.message
+        );
+
+        if (!res.headersSent && !res.writableEnded) {
+            return res.status(503).send(
+                'Session service temporarily unavailable. Please try again.'
+            );
         }
-        connections.clear();
-    };
-    res.once('finish', cleanup);
-    res.once('close', cleanup);
-    requestDbStorage.run({ connections }, next);
+    }
 });
 
-// Set EJS as the templating engine
+// Session middleware runs only after Redis readiness middleware.
+app.use(session(sessionConfig));
+
+// ---------------------------------------------------------------------
+// REQUEST-LEVEL DATABASE CONNECTION MANAGEMENT
+// ---------------------------------------------------------------------
+
+app.use((req, res, next) => {
+
+    const connections = new Set();
+    let cleaned = false;
+
+    const cleanup = () => {
+        if (cleaned) return;
+
+        cleaned = true;
+
+        for (const connection of connections) {
+            try {
+                connection.release();
+            } catch (err) {
+                console.error(
+                    'Database connection cleanup error:',
+                    err.message
+                );
+            }
+        }
+
+        connections.clear();
+    };
+
+    res.once('finish', cleanup);
+    res.once('close', cleanup);
+
+    requestDbStorage.run(
+        {
+            connections,
+            primaryConnection: null
+        },
+        next
+    );
+});
+
+// ---------------------------------------------------------------------
+// EJS CONFIGURATION
+// ---------------------------------------------------------------------
+
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views', 'school_app'));
+
+app.set(
+    'views',
+    path.join(__dirname, 'views', 'school_app')
+);
+
+// ---------------------------------------------------------------------
+// FEEDBACK ASSETS
+// ---------------------------------------------------------------------
 
 function injectFeedbackAssets(html) {
-    if (typeof html !== 'string') return html;
+    if (typeof html !== 'string') {
+        return html;
+    }
 
     let updatedHtml = html;
-    if (!updatedHtml.includes('/assets/css/form-feedback.css')) {
-        updatedHtml = updatedHtml.replace('</head>', '<link rel="stylesheet" href="/assets/css/form-feedback.css"></head>');
+
+    if (
+        !updatedHtml.includes(
+            '/assets/css/form-feedback.css'
+        )
+    ) {
+        updatedHtml = updatedHtml.replace(
+            '</head>',
+            '<link rel="stylesheet" href="/assets/css/form-feedback.css"></head>'
+        );
     }
-    if (!updatedHtml.includes('/assets/js/form-feedback.js')) {
-        updatedHtml = updatedHtml.replace('</body>', '<script src="/assets/js/form-feedback.js"></script></body>');
+
+    if (
+        !updatedHtml.includes(
+            '/assets/js/form-feedback.js'
+        )
+    ) {
+        updatedHtml = updatedHtml.replace(
+            '</body>',
+            '<script src="/assets/js/form-feedback.js"></script></body>'
+        );
     }
+
     return updatedHtml;
 }
 
-// Global view locals for role-aware layouts
+// ---------------------------------------------------------------------
+// GLOBAL VIEW LOCALS
+// ---------------------------------------------------------------------
+
 app.use((req, res, next) => {
-    const role = req.session?.role || (req.session?.parentId ? 'parent' : null);
+
+    const role =
+        req.session?.role ||
+        (req.session?.parentId ? 'parent' : null);
+
     res.locals.role = role;
     res.locals.userRole = role;
-    res.locals.username = req.session?.username || req.session?.parentName || '';
-    res.locals.userId = req.session?.userId || req.session?.parentId || null;
+
+    res.locals.username =
+        req.session?.username ||
+        req.session?.parentName ||
+        '';
+
+    res.locals.userId =
+        req.session?.userId ||
+        req.session?.parentId ||
+        null;
+
     res.locals.session = req.session;
+
     next();
 });
 
+// ---------------------------------------------------------------------
+// GLOBAL EJS RENDER OVERRIDE
+// ---------------------------------------------------------------------
+
 app.use((req, res, next) => {
+
     const originalRender = res.render.bind(res);
 
     res.render = function (view, options, callback) {
+
         if (typeof options === 'function') {
             return originalRender(view, {}, options);
         }
 
         const renderOptions = options || {};
-        const done = typeof callback === 'function'
-            ? callback
-            : function (err, html) {
-                if (err) {
-                    if (!res.headersSent) {
-                        return res.status(500).send(err.message || err);
+
+        const done =
+            typeof callback === 'function'
+                ? callback
+                : function (err, html) {
+
+                    if (err) {
+                        console.error(
+                            'View rendering error:',
+                            err
+                        );
+
+                        if (!res.headersSent) {
+                            return res.status(500).send(
+                                'Unable to render this page.'
+                            );
+                        }
+
+                        return;
                     }
-                    return;
-                }
 
-                if (typeof html === 'string') {
-                    html = injectFeedbackAssets(html);
-                }
+                    if (typeof html === 'string') {
+                        html = injectFeedbackAssets(html);
+                    }
 
-                res.send(html);
-            };
+                    res.send(html);
+                };
 
-        return originalRender(view, renderOptions, done);
+        return originalRender(
+            view,
+            renderOptions,
+            done
+        );
     };
 
     next();
 });
 
-// App locals
+// ---------------------------------------------------------------------
+// APP LOCALS
+// ---------------------------------------------------------------------
+
 app.locals.studentDisplayName = studentDisplayName;
 
-// Serve static files (CSS, JS)
-app.use(express.static(path.join(__dirname, 'public')));
+// ---------------------------------------------------------------------
+// STATIC FILES
+// ---------------------------------------------------------------------
 
-// Health check endpoint
+app.use(
+    express.static(
+        path.join(__dirname, 'public')
+    )
+);
+
+// ---------------------------------------------------------------------
+// HEALTH CHECK
+// ---------------------------------------------------------------------
+
 app.get('/health', async (req, res) => {
+
     if (hasRedis && !redisClient?.isReady) {
-        return res.status(503).json({ ok: false, error: 'session store unavailable' });
+        return res.status(503).json({
+            ok: false,
+            error: 'Session store unavailable'
+        });
     }
+
+    let connection;
 
     try {
-        const conn = await dbPool.getConnection();
-        try {
-            await conn.ping();
-        } finally {
-            conn.release();
-        }
-        res.json({
+        connection = await dbPool.getConnection();
+
+        await connection.ping();
+
+        return res.json({
             ok: true,
+            message: 'EduSuite is running.',
             pid: process.pid,
-            redis: hasRedis ? Boolean(redisClient?.isReady) : false,
-            sessionStore: sessionConfig.store ? sessionConfig.store.constructor.name : 'MemoryStore',
-            poolLimit: DB_POOL_LIMIT
+
+            redis: hasRedis
+                ? Boolean(redisClient?.isReady)
+                : false,
+
+            sessionStore: sessionConfig.store
+                ? 'Redis'
+                : 'MemoryStore',
+
+            database: 'connected',
+
+            poolLimit: DB_POOL_LIMIT,
+            queueLimit: DB_QUEUE_LIMIT
         });
+
     } catch (err) {
-        res.status(503).json({ ok: false, error: 'database unavailable' });
+
+        console.error(
+            'Health check failed:',
+            err.code,
+            err.message
+        );
+
+        return res.status(503).json({
+            ok: false,
+            error: 'Database unavailable'
+        });
+
+    } finally {
+        if (connection) {
+            connection.release();
+        }
     }
 });
 
-// Role-based access control guards
+// ---------------------------------------------------------------------
+// ROLE-BASED ACCESS CONTROL
+// ---------------------------------------------------------------------
+
 app.get('/admin/*', requireRole('admin'));
+
 app.get('/teacher/*', requireRole('teacher'));
+
 app.get('/student/*', requireRole('student'));
+
 app.get('/parent/*', requireRole('parent'));
 
-// Mount all application routes
+// ---------------------------------------------------------------------
+// APPLICATION ROUTES
+// ---------------------------------------------------------------------
+
 app.use('/', routes);
 
-// 404 handler - must be after every route
+// ---------------------------------------------------------------------
+// 404 HANDLER
+// ---------------------------------------------------------------------
+
 app.use((req, res) => {
+
     res.status(404).render('error', {
         message: 'Page Not Found',
-        error: { status: 404, message: 'The page you are looking for does not exist.' }
+
+        error: {
+            status: 404,
+            message: 'The page you are looking for does not exist.'
+        }
     });
 });
 
-// Global error handler
+// ---------------------------------------------------------------------
+// GLOBAL ERROR HANDLER
+// ---------------------------------------------------------------------
+
 app.use((err, req, res, next) => {
-    console.error('Global error handler:', err);
-    if (res.headersSent) return next(err);
-    const status = err.status || 500;
-    if (req.path && req.path.startsWith('/api/')) {
-        return res.status(status).json({ success: false, error: err.message || 'Server error' });
+
+    console.error('Global error handler:', {
+        message: err.message,
+        code: err.code,
+        stack: err.stack
+    });
+
+    if (res.headersSent) {
+        return next(err);
     }
-    res.status(status).render('error', {
-        message: status === 503 ? 'Server Busy' : 'Something Went Wrong',
-        error: { status, message: err.message || 'An unexpected error occurred.' }
+
+    const status = err.status || 500;
+
+    if (req.path && req.path.startsWith('/api/')) {
+        return res.status(status).json({
+            success: false,
+            error: err.message || 'Server error'
+        });
+    }
+
+    return res.status(status).render('error', {
+        message:
+            status === 503
+                ? 'Server Busy'
+                : 'Something Went Wrong',
+
+        error: {
+            status,
+            message: err.message || 'An unexpected error occurred.'
+        }
     });
 });
 
-process.on('uncaughtException', (err) => {
+// ---------------------------------------------------------------------
+// PROCESS ERROR HANDLERS
+// ---------------------------------------------------------------------
+
+process.on('uncaughtException', err => {
+
     console.error('Uncaught Exception:', err);
-    if (err.code === 'EADDRINUSE') process.exit(1);
+
+    if (err.code === 'EADDRINUSE') {
+        process.exit(1);
+    }
 });
 
-process.on('unhandledRejection', (reason) => {
-    console.error('Unhandled Rejection (server kept alive):', reason);
+process.on('unhandledRejection', reason => {
+    console.error(
+        'Unhandled Rejection:',
+        reason
+    );
 });
 
-const PORT = process.env.PORT || 3000;
+// ---------------------------------------------------------------------
+// LOCAL SERVER STARTUP
+// ---------------------------------------------------------------------
+
 let server = null;
 
 async function startServer() {
+
+    // Local development must connect Redis before accepting requests.
     await ensureRedisConnected();
 
     server = app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT} (pid ${process.pid})`);
-        console.log(`MySQL connection pool ready (limit: ${DB_POOL_LIMIT}, queue: ${DB_QUEUE_LIMIT})`);
+
+        console.log(
+            `EduSuite running at http://localhost:${PORT}`
+        );
+
+        console.log(
+            `MySQL pool limit: ${DB_POOL_LIMIT}`
+        );
+
+        console.log(
+            `MySQL queue limit: ${DB_QUEUE_LIMIT}`
+        );
+
+        console.log(
+            `Redis ready: ${hasRedis ? Boolean(redisClient?.isReady) : false}`
+        );
     });
 
-    server.on('error', (err) => {
+    server.on('error', err => {
+
         if (err.code === 'EADDRINUSE') {
-            console.error(`Port ${PORT} is already in use. Stop the other server first:`);
-            console.error(`  netstat -ano | findstr :${PORT}`);
-            console.error(`  taskkill /PID <pid> /F`);
+
+            console.error(
+                `Port ${PORT} is already in use.`
+            );
+
+            console.error(
+                `Run: netstat -ano | findstr :${PORT}`
+            );
+
             process.exit(1);
         }
-        console.error('Server failed to start:', err);
+
+        console.error(
+            'Server startup failed:',
+            err
+        );
+
         process.exit(1);
     });
 
     server.keepAliveTimeout = 65000;
     server.headersTimeout = 66000;
+
     if (typeof server.requestTimeout !== 'undefined') {
-        server.requestTimeout = REQUEST_TIMEOUT_MS + 5000;
+        server.requestTimeout =
+            REQUEST_TIMEOUT_MS + 5000;
     }
 }
 
-if (!process.env.VERCEL) {
-    startServer().catch((err) => {
-        console.error('Server startup failed:', err.message);
+// Vercel imports the Express app.
+// Local environments start their own HTTP server.
+if (!isVercel) {
+
+    startServer().catch(err => {
+
+        console.error(
+            'Application startup failed:',
+            err.message
+        );
+
         process.exit(1);
     });
 }
 
-function shutdown(signal) {
-    console.log(`${signal} received — closing server and DB pool...`);
+// ---------------------------------------------------------------------
+// GRACEFUL SHUTDOWN
+// ---------------------------------------------------------------------
+
+let shutdownStarted = false;
+
+async function shutdown(signal) {
+
+    if (shutdownStarted) return;
+
+    shutdownStarted = true;
+
+    console.log(
+        `${signal} received. Closing application resources...`
+    );
+
     const closeResources = async () => {
-        try { await dbPool.end(); } catch (_) { /* ignore */ }
-        try { if (redisClient) await redisClient.quit(); } catch (_) { /* ignore */ }
+
+        try {
+            await dbPool.end();
+        } catch (err) {
+            console.error(
+                'Database shutdown error:',
+                err.message
+            );
+        }
+
+        try {
+            if (redisClient?.isOpen) {
+                await redisClient.quit();
+            }
+        } catch (err) {
+            console.error(
+                'Redis shutdown error:',
+                err.message
+            );
+        }
+
         process.exit(0);
     };
 
     if (server?.listening) {
-        server.close(closeResources);
+        server.close(() => {
+            closeResources();
+        });
     } else {
-        closeResources();
+        await closeResources();
     }
-    setTimeout(() => process.exit(1), 10000).unref();
+
+    setTimeout(() => {
+        process.exit(1);
+    }, 10000).unref();
 }
 
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => {
+    shutdown('SIGTERM');
+});
+
+process.on('SIGINT', () => {
+    shutdown('SIGINT');
+});
+
+// ---------------------------------------------------------------------
+// EXPORT APPLICATION
+// ---------------------------------------------------------------------
 
 module.exports = app;
