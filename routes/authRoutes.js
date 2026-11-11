@@ -15,7 +15,7 @@ router.post('/login', loginLimiter, authController.postLogin);
 router.get('/logout', authController.logout);
 
 // Universal dashboard route (redirects each role to its original dashboard)
-router.get('/', authenticate, (req, res) => {
+router.get('/dashboard', authenticate, (req, res) => {
     if (req.session.role === 'teacher') return res.redirect('/teacher-dashboard');
     if (req.session.role === 'student') return res.redirect('/student-dashboard');
     if (req.session.role === 'parent' || req.session.parentId) return res.redirect('/parent/parent-dashboard');
