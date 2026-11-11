@@ -496,10 +496,53 @@ app.get('/parent/*', authenticate, requireRole('parent'));
 app.use('/', routes);
 
 // ---------------------------------------------------------------------
+// ROOT SAFETY NET
+// ---------------------------------------------------------------------
+
+// The site root is the first URL every visitor hits, so it must never be
+// allowed to fall through to the 404 page. The routers above normally answer
+// `GET /` themselves (dashboardRoutes forwards non-admin roles, adminRoutes
+// renders the admin dashboard and `authenticate` sends guests to /login).
+//
+// If control ever reaches this point then no mounted router claimed the
+// request - which is exactly how the deployed "Page Not Found" page was
+// produced. Answer with a redirect instead of a dead end, and keep it last so
+// the real handlers always win.
+app.get('/', (req, res) => {
+
+    const role =
+        req.session?.role ||
+        (req.session?.parentId ? 'parent' : null);
+
+    const destination = {
+        admin: '/',
+        teacher: '/teacher-dashboard',
+        student: '/student-dashboard',
+        parent: '/parent/parent-dashboard'
+    }[role];
+
+    // Admins live on `/`; if their dashboard route did not claim the request
+    // there is nothing sane to redirect to, so send them to a working page.
+    if (!destination || destination === '/') {
+        return res.redirect('/login');
+    }
+
+    return res.redirect(destination);
+});
+
+// ---------------------------------------------------------------------
 // 404 HANDLER
 // ---------------------------------------------------------------------
 
 app.use((req, res) => {
+
+    // Keep the missing URL in the deployment logs so a "Page Not Found"
+    // report can be traced to the exact route that was requested.
+    console.warn(
+        '404 Not Found:',
+        req.method,
+        req.originalUrl
+    );
 
     res.status(404).render('error', {
         message: 'Page Not Found',
