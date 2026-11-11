@@ -15,6 +15,7 @@ const {
 } = require('./config/db');
 
 const { authenticate, requireRole } = require('./middleware/auth');
+const postRedirectGet = require('./middleware/postRedirect');
 const { studentDisplayName } = require('./utils/helpers');
 const routes = require('./routes');
 
@@ -230,6 +231,11 @@ app.use(async (req, res, next) => {
 
 // Session middleware runs only after Redis readiness middleware.
 app.use(session(sessionConfig));
+
+// Every form in this app redirects back to a GET page. Force those redirects
+// to 303 so the browser never repeats the POST against a GET-only dashboard
+// URL (see middleware/postRedirect.js).
+app.use(postRedirectGet);
 
 // ---------------------------------------------------------------------
 // REQUEST-LEVEL DATABASE CONNECTION MANAGEMENT
@@ -494,41 +500,6 @@ app.get('/parent/*', authenticate, requireRole('parent'));
 // ---------------------------------------------------------------------
 
 app.use('/', routes);
-
-// ---------------------------------------------------------------------
-// ROOT SAFETY NET
-// ---------------------------------------------------------------------
-
-// The site root is the first URL every visitor hits, so it must never be
-// allowed to fall through to the 404 page. The routers above normally answer
-// `GET /` themselves (dashboardRoutes forwards non-admin roles, adminRoutes
-// renders the admin dashboard and `authenticate` sends guests to /login).
-//
-// If control ever reaches this point then no mounted router claimed the
-// request - which is exactly how the deployed "Page Not Found" page was
-// produced. Answer with a redirect instead of a dead end, and keep it last so
-// the real handlers always win.
-app.get('/', (req, res) => {
-
-    const role =
-        req.session?.role ||
-        (req.session?.parentId ? 'parent' : null);
-
-    const destination = {
-        admin: '/',
-        teacher: '/teacher-dashboard',
-        student: '/student-dashboard',
-        parent: '/parent/parent-dashboard'
-    }[role];
-
-    // Admins live on `/`; if their dashboard route did not claim the request
-    // there is nothing sane to redirect to, so send them to a working page.
-    if (!destination || destination === '/') {
-        return res.redirect('/login');
-    }
-
-    return res.redirect(destination);
-});
 
 // ---------------------------------------------------------------------
 // 404 HANDLER
