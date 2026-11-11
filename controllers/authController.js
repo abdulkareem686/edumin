@@ -228,7 +228,11 @@ exports.postLogin = async (req, res) => {
         await new Promise((resolve, reject) => {
             req.session.save((err) => err ? reject(err) : resolve());
         });
-        return res.redirect(redirectTo);
+        // 303 (not 302): after a form POST the browser must switch to GET when
+        // it follows this redirect. A method-preserving 307 would re-submit the
+        // login form to a dashboard URL that only exists for GET and land on
+        // the 404 page.
+        return res.redirect(303, redirectTo);
 
     } catch (error) {
         console.error('Login error:', error);
