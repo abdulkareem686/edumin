@@ -1,26 +1,38 @@
+
 require('dotenv').config();
 
 const mysql = require('mysql2/promise');
 const { AsyncLocalStorage } = require('async_hooks');
 const { tryApplyScaleIndexes } = require('../utils/scale');
 
-// Vercel creates independent warm instances, each with its own pool. Keep each
-// instance to one DB client so scaling traffic does not multiply a large pool.
-const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
+// Vercel and Layerbase connection limits
+const isVercel =
+    process.env.VERCEL === '1' ||
+    process.env.VERCEL === 'true';
+
 const configuredPoolLimit = Number(process.env.DB_POOL_LIMIT);
+
+// Keep each Vercel instance to one MySQL connection.
+// This reduces connection usage but does not guarantee the
+// total across all Vercel instances stays below Layerbase's limit.
 const DB_POOL_LIMIT = isVercel
     ? 1
-    : (Number.isInteger(configuredPoolLimit) && configuredPoolLimit > 0
-        ? configuredPoolLimit
-        : 5);
-const configuredQueueLimit = Number(process.env.DB_QUEUE_LIMIT);
-const DB_QUEUE_LIMIT = Number.isInteger(configuredQueueLimit) && configuredQueueLimit > 0
-    ? configuredQueueLimit
-    : (isVercel ? 10 : 200);
-const DB_MAX_IDLE = isVercel ? 0 : Math.max(0, Math.min(4, DB_POOL_LIMIT - 1));
-const DB_IDLE_TIMEOUT = isVercel ? 30000 : 60000;
+    : (
+        Number.isInteger(configuredPoolLimit) &&
+        configuredPoolLimit > 0
+            ? configuredPoolLimit
+            : 5
+    );
 
-// Validate required database environment variables
+const configuredQueueLimit = Number(process.env.DB_QUEUE_LIMIT);
+
+const DB_QUEUE_LIMIT =
+    Number.isInteger(configuredQueueLimit) &&
+    configuredQueueLimit > 0
+        ? configuredQueueLimit
+        : (isVercel ? 10 : 200);
+
+// Validate required environment variables
 const requiredDbVariables = [
     'DB_HOST',
     'DB_PORT',
@@ -41,11 +53,17 @@ if (missingDbVariables.length > 0) {
 
 const dbPort = Number(process.env.DB_PORT);
 
-if (!Number.isInteger(dbPort) || dbPort < 1 || dbPort > 65535) {
-    throw new Error('Invalid DB_PORT. Check your Layerbase connection details.');
+if (
+    !Number.isInteger(dbPort) ||
+    dbPort < 1 ||
+    dbPort > 65535
+) {
+    throw new Error(
+        'Invalid DB_PORT. Check your database connection details.'
+    );
 }
 
-// Reusable MariaDB / MySQL connection pool
+// Create one reusable pool per running application instance.
 const dbPool = mysql.createPool({
     host: process.env.DB_HOST,
     port: dbPort,
@@ -53,77 +71,109 @@ const dbPool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
 
-    // Layerbase TLS connection
     ssl: {
         minVersion: 'TLSv1.2'
     },
 
     waitForConnections: true,
     connectionLimit: DB_POOL_LIMIT,
-    maxIdle: DB_MAX_IDLE,
-    idleTimeout: DB_IDLE_TIMEOUT,
     queueLimit: DB_QUEUE_LIMIT,
+
+    // Keep at most one idle connection on Vercel.
+    maxIdle: isVercel
+        ? 1
+        : Math.min(4, DB_POOL_LIMIT),
+
+    idleTimeout: 60000,
 
     enableKeepAlive: true,
     keepAliveInitialDelay: 10000,
 
-    // Allow time for sleeping free databases to wake up
-    connectTimeout: 30000
+    connectTimeout: 20000
 });
 
-// Log database pool errors
-dbPool.on('error', (err) => {
-    console.error('Database pool error:', err.message);
+// Log pool errors
+dbPool.on('error', err => {
+    console.error('MySQL pool error:', {
+        code: err.code,
+        message: err.message
+    });
 });
 
-// Apply schema/index changes only when explicitly requested. Do not execute DDL
-// during application imports or Vercel function cold starts.
-if (process.env.APPLY_SCALE_INDEXES_ON_START === 'true') {
-    tryApplyScaleIndexes(dbPool).catch((err) => {
-        console.warn('Scale indexes not applied:', err.message);
+// Request-level connection storage
+const requestDbStorage = new AsyncLocalStorage();
+
+// Apply indexes only when explicitly enabled.
+// Do not run database schema changes automatically on Vercel.
+if (
+    process.env.APPLY_SCALE_INDEXES_ON_START === 'true' &&
+    !isVercel
+) {
+    tryApplyScaleIndexes(dbPool).catch(err => {
+        console.error('Scale index application failed:', err.message);
     });
 }
 
-// Request-level database connection storage
-const requestDbStorage = new AsyncLocalStorage();
-
-// Release a database connection
+// Release a connection safely
 function releaseConnection(connection) {
     if (!connection) return;
 
-    try {
-        const store = requestDbStorage.getStore();
-
-        if (store?.connections) {
-            store.connections.delete(connection);
-        }
-
-        connection.release();
-    } catch (err) {
-        console.error('Error releasing DB connection:', err.message);
-    }
-}
-
-// Get a reusable connection for the current request
-async function getConnection() {
     const store = requestDbStorage.getStore();
 
     if (store) {
-        if (!store.primaryConnection) {
-            store.primaryConnection = await dbPool.getConnection();
-
-            store.connections = store.connections || new Set();
-            store.connections.add(store.primaryConnection);
+        if (store.connections) {
+            store.connections.delete(connection);
         }
 
+        if (store.primaryConnection === connection) {
+            store.primaryConnection = null;
+        }
+    }
+
+    try {
+        connection.release();
+    } catch (err) {
+        console.error(
+            'Database connection release error:',
+            err.message
+        );
+    }
+}
+
+// Get a connection for the current request.
+// A released connection is never reused.
+async function getConnection() {
+    const store = requestDbStorage.getStore();
+
+    if (!store) {
+        return dbPool.getConnection();
+    }
+
+    if (store.primaryConnection) {
         return store.primaryConnection;
     }
 
-    return dbPool.getConnection();
+    const connection = await dbPool.getConnection();
+
+    store.primaryConnection = connection;
+
+    if (!store.connections) {
+        store.connections = new Set();
+    }
+
+    store.connections.add(connection);
+
+    return connection;
 }
 
-// Execute a callback using a database connection
+// Run a callback with a dedicated connection.
 async function withConnection(callback) {
+    if (typeof callback !== 'function') {
+        throw new TypeError(
+            'withConnection requires a callback function.'
+        );
+    }
+
     const connection = await dbPool.getConnection();
 
     try {
@@ -133,8 +183,12 @@ async function withConnection(callback) {
     }
 }
 
-// Check if a table column exists
-async function tableHasColumn(connection, tableName, columnName) {
+// Check whether a column exists
+async function tableHasColumn(
+    connection,
+    tableName,
+    columnName
+) {
     try {
         const [rows] = await connection.execute(
             `SELECT COUNT(*) AS count
@@ -148,16 +202,16 @@ async function tableHasColumn(connection, tableName, columnName) {
         return Number(rows[0].count) > 0;
 
     } catch (err) {
-        console.warn(
-            `tableHasColumn check failed for ${tableName}.${columnName}:`,
+        console.error(
+            `Column check failed for ${tableName}.${columnName}:`,
             err.message
         );
 
-        return false;
+        throw err;
     }
 }
 
-// Check if a table exists
+// Check whether a table exists
 async function tableExists(connection, tableName) {
     try {
         const [rows] = await connection.execute(
@@ -171,12 +225,12 @@ async function tableExists(connection, tableName) {
         return Number(rows[0].count) > 0;
 
     } catch (err) {
-        console.warn(
-            `tableExists check failed for ${tableName}:`,
+        console.error(
+            `Table check failed for ${tableName}:`,
             err.message
         );
 
-        return false;
+        throw err;
     }
 }
 
@@ -188,10 +242,12 @@ async function testConnection() {
         connection = await dbPool.getConnection();
 
         const [rows] = await connection.query(
-            'SELECT 1 AS connected, DATABASE() AS database_name'
+            `SELECT
+                1 AS connected,
+                DATABASE() AS database_name`
         );
 
-        console.log('Database connected successfully!');
+        console.log('Database connected successfully.');
         console.log('Database:', rows[0].database_name);
 
         return rows[0];
@@ -211,6 +267,7 @@ async function testConnection() {
     }
 }
 
+// Export database utilities
 module.exports = {
     dbPool,
     getConnection,
