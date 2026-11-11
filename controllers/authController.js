@@ -257,17 +257,24 @@ exports.getTeacherPortal = (req, res) => {
             error: { status: 403, message: 'You do not have permission to access this page.' }
         });
     }
-    res.render('teacher', { username: req.session.username });
+
+    // There is no `teacher` view; the teacher landing page is the dashboard.
+    res.redirect('/teacher-dashboard');
 };
 
 exports.getStaffPortal = (req, res) => {
-    if (req.session.role !== 'staff') {
-        return res.status(403).render('error', {
-            message: 'Access Denied',
-            error: { status: 403, message: 'You do not have permission to access this page.' }
-        });
+    if (req.session.role === 'teacher') {
+        return res.redirect('/teacher-dashboard');
     }
-    res.render('staff', { username: req.session.username });
+
+    if (req.session.role === 'admin') {
+        return res.redirect('/');
+    }
+
+    res.status(403).render('error', {
+        message: 'Access Denied',
+        error: { status: 403, message: 'You do not have permission to access this page.' }
+    });
 };
 
 exports.getAdminChangePassword = async (req, res) => {
