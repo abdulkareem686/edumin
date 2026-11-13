@@ -1,0 +1,57 @@
+.form-feedback-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  min-width: 320px;
+  max-width: 420px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
+  transform: translateY(18px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 2147483647;
+}
+
+.form-feedback-toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.form-feedback-toast.success {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.form-feedback-toast.danger {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.form-feedback-toast.warning {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.form-feedback-toast.info {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.form-feedback-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.form-feedback-text {
+  font-weight: 600;
+  line-height: 1.4;
+}
