@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error | Alhamdulillahi Academy</title>
+    <link href="/assets/css/app.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --error-primary: #a6463b;
+            --error-secondary: var(--aa-danger-soft, #f8d7da);
+            --error-dark: #6e2b25;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: var(--aa-surface-2, #f9f9f9);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .error-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .error-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        
+        .error-header {
+            background: linear-gradient(135deg, var(--error-primary), #8e382f);
+            padding: 1.5rem;
+            position: relative;
+        }
+        
+        .error-header h4 {
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-header h4::before {
+            content: "⚠️";
+            margin-right: 12px;
+            font-size: 1.8rem;
+        }
+        
+        .error-body {
+            padding: 2rem;
+            background-color: var(--aa-surface, #fff);
+        }
+        
+        .error-title {
+            color: var(--error-dark);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        
+        .error-message {
+            background-color: var(--error-secondary);
+            border-left: 4px solid var(--error-primary);
+            padding: 1rem;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .error-stack {
+            background-color: var(--aa-surface-2, #f8f9fa);
+            border: 1px solid var(--aa-surface-3, #e9ecef);
+            border-radius: 5px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+        }
+        
+        .home-btn {
+            background: linear-gradient(135deg, var(--error-primary), #8e382f);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(162, 73, 61, 0.3);
+            color: #fff;
+        }
+        
+        .home-btn::before {
+            content: "←";
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .error-icon {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            opacity: 0.2;
+        }
+        
+        @media (max-width: 768px) {
+            .error-icon {
+                display: none;
+            }
+            
+            .error-header h4 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .error-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <!-- Alhamdulillahi Academy - Heritage 2027 UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+    <link href="/assets/css/theme-2027.css" rel="stylesheet" type="text/css">
+    <script src="/assets/js/theme-2027.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="card error-card">
+                    <div class="card-header error-header text-white">
+                        <h4>System Error</h4>
+                        <div class="error-icon">⚠️</div>
+                    </div>
+                    <div class="card-body error-body">
+                        <h3 class="card-title error-title">
+                            <%= message || 'An unexpected error occurred' %>
+                        </h3>
+                        
+                        <% if (error && error.message) { %>
+                            <div class="error-message">
+                                <strong>Details:</strong> <%= error.message %>
+                            </div>
+                        <% } %>
+                        
+                        <% if (error && error.stack && process.env.NODE_ENV !== 'production') { %>
+                            <h5 class="mt-4 mb-3">Technical Details:</h5>
+                            <pre class="error-stack"><code><%= error.stack %></code></pre>
+                        <% } %>
+                        
+                        <%
+                            // Send the visitor somewhere they can actually use
+                            // instead of always bouncing through `/`. Guests get
+                            // the login screen; signed-in users get the dashboard
+                            // that belongs to their role.
+                            const currentRole = locals && locals.role ? locals.role : null;
+
+                            const roleDashboards = {
+                                admin: '/',
+                                teacher: '/teacher-dashboard',
+                                student: '/student-dashboard',
+                                parent: '/parent/parent-dashboard'
+                            };
+
+                            const dashboardHref =
+                                currentRole && roleDashboards[currentRole]
+                                    ? roleDashboards[currentRole]
+                                    : '/login';
+
+                            const dashboardLabel = currentRole
+                                ? 'Return to Dashboard'
+                                : 'Continue to Sign In';
+                        %>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="<%= dashboardHref %>" class="btn home-btn">
+                                <%= dashboardLabel %>
+                            </a>
+                            
+                            <% if (error && error.code) { %>
+                                <span class="text-muted">Error Code: <%= error.code %></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                
+                <% if (process.env.NODE_ENV === 'development') { %>
+                    <div class="mt-4 text-center text-muted small">
+                        This error page is shown because you're in development mode.
+                        In production, users would see a simpler error message.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!-- JavaScript for form handling -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Nigerian states and their Local Government Areas
+    const nigerianStates = {
+        "Abia": ["Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala Ngwa North", "Isiala Ngwa South", "Isuikwuato", "Obi Ngwa", "Ohafia", "Osisioma", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu Nneochi"],
+        "Adamawa": ["Demsa", "Fufure", "Ganye", "Gayuk", "Gombi", "Grie", "Hong", "Jada", "Lamurde", "Madagali", "Maiha", "Mayo Belwa", "Michika", "Mubi North", "Mubi South", "Numan", "Shelleng", "Song", "Toungo", "Yola North", "Yola South"],
+        "Akwa Ibom": ["Abak", "Eastern Obolo", "Eket", "Esit Eket", "Essien Udim", "Etim Ekpo", "Etinan", "Ibeno", "Ibesikpo Asutan", "Ibiono-Ibom", "Ika", "Ikono", "Ikot Abasi", "Ikot Ekpene", "Ini", "Itu", "Mbo", "Mkpat-Enin", "Nsit-Atai", "Nsit-Ibom", "Nsit-Ubium", "Obot Akara", "Okobo", "Onna", "Oron", "Oruk Anam", "Udung-Uko", "Ukanafun", "Uruan", "Urue-Offong/Oruko", "Uyo"],
+        "Anambra": ["Aguata", "Anambra East", "Anambra West", "Anaocha", "Awka North", "Awka South", "Ayamelum", "Dunukofia", "Ekwusigo", "Idemili North", "Idemili South", "Ihiala", "Njikoka", "Nnewi North", "Nnewi South", "Ogbaru", "Onitsha North", "Onitsha South", "Orumba North", "Orumba South", "Oyi"],
+        "Bauchi": ["Alkaleri", "Bauchi", "Bogoro", "Damban", "Darazo", "Dass", "Gamawa", "Ganjuwa", "Giade", "Itas/Gadau", "Jama'are", "Katagum", "Kirfi", "Misau", "Ningi", "Shira", "Tafawa Balewa", "Toro", "Warji", "Zaki"],
+        "Bayelsa": ["Brass", "Ekeremor", "Kolokuma/Opokuma", "Nembe", "Ogbia", "Sagbama", "Southern Ijaw", "Yenagoa"],
+        "Benue": ["Ado", "Agatu", "Apa", "Buruku", "Gboko", "Guma", "Gwer East", "Gwer West", "Katsina-Ala", "Konshisha", "Kwande", "Logo", "Makurdi", "Obi", "Ogbadibo", "Ohimini", "Oju", "Okpokwu", "Oturkpo", "Tarka", "Ukum", "Ushongo", "Vandeikya"],
+        "Borno": ["Abadam", "Askira/Uba", "Bama", "Bayo", "Biase", "Chibok", "Damboa", "Dikwa", "Gubio", "Guzamala", "Gwoza", "Hawul", "Jere", "Kaga", "Kala/Balge", "Konduga", "Kukawa", "Kwaya Kusar", "Mafa", "Magumeri", "Maiduguri", "Marte", "Mobbar", "Monguno", "Ngala", "Nganzai", "Shani"],
+        "Cross River": ["Abi", "Akamkpa", "Akpabuyo", "Bakassi", "Bekwarra", "Biase", "Boki", "Calabar Municipal", "Calabar South", "Etung", "Ikom", "Obanliku", "Obubra", "Obudu", "Odukpani", "Ogoja", "Yakuur", "Yala"],
+        "Delta": ["Aniocha North", "Aniocha South", "Bomadi", "Burutu", "Ethiope East", "Ethiope West", "Ika North East", "Ika South", "Isoko North", "Isoko South", "Ndokwa East", "Ndokwa West", "Okpe", "Oshimili North", "Oshimili South", "Patani", "Sapele", "Udu", "Ughelli North", "Ughelli South", "Ukwuani", "Uvwie", "Warri North", "Warri South", "Warri South West"],
+        "Ebonyi": ["Abakaliki", "Afikpo North", "Afikpo South", "Ebonyi", "Ezza North", "Ezza South", "Ikwo", "Ishielu", "Ivo", "Izzi", "Ohaozara", "Ohaukwu", "Onicha"],
+        "Edo": ["Akoko-Edo", "Egor", "Esan Central", "Esan North-East", "Esan South-East", "Esan West", "Etsako Central", "Etsako East", "Etsako West", "Igueben", "Ikpoba Okha", "Orhionmwon", "Oredo", "Ovia North-East", "Ovia South-West", "Owan East", "Owan West", "Uhunmwonde"],
+        "Ekiti": ["Ado Ekiti", "Efon", "Ekiti East", "Ekiti South-West", "Ekiti West", "Emure", "Gbonyin", "Ido Osi", "Ijero", "Ikere", "Ikole", "Ilejemeje", "Irepodun/Ifelodun", "Ise/Orun", "Moba", "Oye"],
+        "Enugu": ["Aninri", "Awgu", "Enugu East", "Enugu North", "Enugu South", "Ezeagu", "Igbo Etiti", "Igbo Eze North", "Igbo Eze South", "Isi Uzo", "Nkanu East", "Nkanu West", "Nsukka", "Oji River", "Udenu", "Udi", "Uzo Uwani"],
+        "FCT": ["Abaji", "Bwari", "Gwagwalada", "Kuje", "Kwali", "Municipal Area Council"],
+        "Gombe": ["Akko", "Balanga", "Billiri", "Dukku", "Funakaye", "Gombe", "Kaltungo", "Kwami", "Nafada", "Shongom", "Yamaltu/Deba"],
+        "Imo": ["Aboh Mbaise", "Ahiazu Mbaise", "Ehime Mbano", "Ezinihitte", "Ideato North", "Ideato South", "Ihitte/Uboma", "Ikeduru", "Isiala Mbano", "Isu", "Mbaitoli", "Ngor Okpala", "Njaba", "Nkwerre", "Nwangele", "Obowo", "Oguta", "Ohaji/Egbema", "Okigwe", "Orlu", "Orsu", "Oru East", "Oru West", "Owerri Municipal", "Owerri North", "Owerri West", "Unuimo"],
+        "Jigawa": ["Auyo", "Babura", "Biriniwa", "Birnin Kudu", "Buji", "Dutse", "Gagarawa", "Garki", "Gumel", "Guri", "Gwaram", "Gwiwa", "Hadejia", "Jahun", "Kafin Hausa", "Kazaure", "Kiri Kasama", "Kiyawa", "Kaugama", "Maigatari", "Malam Madori", "Miga", "Ringim", "Roni", "Sule Tankarkar", "Taura", "Yankwashi"],
+        "Kaduna": ["Birnin Gwari", "Chikun", "Giwa", "Igabi", "Ikara", "Jaba", "Jema'a", "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru", "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"],
+        "Kano": ["Ajingi", "Albasu", "Bagwai", "Bebeji", "Bichi", "Bunkure", "Dala", "Dambatta", "Dawakin Kudu", "Dawakin Tofa", "Doguwa", "Fagge", "Gabasawa", "Garko", "Garun Mallam", "Gaya", "Gezawa", "Gwale", "Gwarzo", "Kabo", "Kano Municipal", "Karaye", "Kibiya", "Kiru", "Kumbotso", "Kunchi", "Kura", "Madobi", "Makoda", "Minjibir", "Nasarawa", "Rano", "Rimin Gado", "Rogo", "Shanono", "Sumaila", "Takai", "Tarauni", "Tofa", "Tsanyawa", "Tudun Wada", "Ungogo", "Warawa", "Wudil"],
+        "Katsina": ["Bakori", "Batagarawa", "Batsari", "Baure", "Bindawa", "Charanchi", "Dandume", "Danja", "Dan Musa", "Daura", "Dutsi", "Dutsin Ma", "Faskari", "Funtua", "Ingawa", "Jibia", "Kafur", "Kaita", "Kankara", "Kankia", "Katsina", "Kurfi", "Kusada", "Mai'Adua", "Malumfashi", "Mani", "Mashi", "Matazu", "Musawa", "Rimi", "Sabuwa", "Safana", "Sandamu", "Zango"],
+        "Kebbi": ["Aleiro", "Arewa Dandi", "Argungu", "Augie", "Bagudo", "Birnin Kebbi", "Bunza", "Dandi", "Fakai", "Gwandu", "Jega", "Kalgo", "Koko/Besse", "Maiyama", "Ngaski", "Sakaba", "Shanga", "Suru", "Wasagu/Danko", "Yauri", "Zuru"],
+        "Kogi": ["Adavi", "Ajaokuta", "Ankpa", "Bassa", "Dekina", "Ibaji", "Idah", "Igalamela Odolu", "Ijumu", "Kabba/Bunu", "Kogi", "Lokoja", "Mopa Muro", "Ofu", "Ogori/Magongo", "Okehi", "Okene", "Olamaboro", "Omala", "Yagba East", "Yagba West"],
+        "Kwara": ["Asa", "Baruten", "Edu", "Ekiti", "Ifelodun", "Ilorin East", "Ilorin South", "Ilorin West", "Irepodun", "Isin", "Kaiama", "Moro", "Offa", "Oke Ero", "Oyun", "Pategi"],
+        "Lagos": ["Agege", "Ajeromi-Ifelodun", "Alimosho", "Amuwo-Odofin", "Apapa", "Badagry", "Epe", "Eti Osa", "Ibeju-Lekki", "Ifako-Ijaiye", "Ikeja", "Ikorodu", "Kosofe", "Lagos Island", "Lagos Mainland", "Mushin", "Ojo", "Oshodi-Isolo", "Shomolu", "Surulere"],
+        "Nasarawa": ["Akwanga", "Awe", "Doma", "Karu", "Keana", "Keffi", "Kokona", "Lafia", "Nasarawa", "Nasarawa Egon", "Obi", "Toto", "Wamba"],
+        "Niger": ["Agaie", "Agwara", "Bida", "Borgu", "Bosso", "Chanchaga", "Edati", "Gbako", "Gurara", "Katcha", "Kontagora", "Lapai", "Lavun", "Magama", "Mariga", "Mashegu", "Mokwa", "Moya", "Paikoro", "Rafi", "Rijau", "Shiroro", "Suleja", "Tafa", "Wushishi"],
+        "Ogun": ["Abeokuta North", "Abeokuta South", "Ado-Odo/Ota", "Egbado North", "Egbado South", "Ewekoro", "Ifo", "Ijebu East", "Ijebu North", "Ijebu North East", "Ijebu Ode", "Ikenne", "Imeko Afon", "Ipokia", "Obafemi Owode", "Odeda", "Odogbolu", "Ogun Waterside", "Remo North", "Shagamu", "Yewa North", "Yewa South"],
+        "Ondo": ["Akoko North-East", "Akoko North-West", "Akoko South-East", "Akoko South-West", "Akure North", "Akure South", "Ese Odo", "Idanre", "Ifedore", "Ilaje", "Ile Oluji/Okeigbo", "Irele", "Odigbo", "Okitipupa", "Ondo East", "Ondo West", "Ose", "Owo"],
+        "Osun": ["Aiyedade", "Aiyedire", "Atakunmosa East", "Atakunmosa West", "Boluwaduro", "Boripe", "Ede North", "Ede South", "Egbedore", "Ejigbo", "Ife Central", "Ife East", "Ife North", "Ife South", "Ifedayo", "Ila", "Ilesa East", "Ilesa West", "Irepodun", "Irewole", "Isokan", "Iwo", "Obokun", "Odo Otin", "Ola Oluwa", "Olorunda", "Oriade", "Orolu", "Osogbo"],
+        "Oyo": ["Afijio", "Akinyele", "Atiba", "Atisbo", "Egbeda", "Ibadan North", "Ibadan North-East", "Ibadan North-West", "Ibadan South-East", "Ibadan South-West", "Ibarapa Central", "Ibarapa East", "Ibarapa North", "Ido", "Irepo", "Iseyin", "Itesiwaju", "Iwajowa", "Kajola", "Lagelu", "Ogbomosho North", "Ogbomosho South", "Ogo Oluwa", "Olorunsogo", "Oluyole", "Ona Ara", "Orelope", "Ori Ire", "Oyo East", "Oyo West", "Saki East", "Saki West", "Surulere"],
+        "Plateau": ["Barkin Ladi", "Bassa", "Bokkos", "Jos East", "Jos North", "Jos South", "Kanam", "Kanke", "Langtang North", "Langtang South", "Mangu", "Mikang", "Pankshin", "Qua'an Pan", "Riyom", "Shendam", "Wase"],
+        "Rivers": ["Abua/Odual", "Ahoada East", "Ahoada West", "Akuku-Toru", "Andoni", "Asari-Toru", "Bonny", "Degema", "Eleme", "Emuoha", "Etche", "Gokana", "Ikwerre", "Khana", "Obio/Akpor", "Ogba/Egbema/Ndoni", "Ogu/Bolo", "Okrika", "Omuma", "Opobo/Nkoro", "Oyigbo", "Port Harcourt", "Tai"],
+        "Sokoto": ["Binji", "Bodinga", "Dange Shuni", "Gada", "Goronyo", "Gudu", "Gwadabawa", "Illela", "Isa", "Kebbe", "Kware", "Rabah", "Sabon Birni", "Shagari", "Silame", "Sokoto North", "Sokoto South", "Tambuwal", "Tangaza", "Tureta", "Wamako", "Wurno", "Yabo"],
+        "Taraba": ["Ardo Kola", "Bali", "Donga", "Gashaka", "Gassol", "Ibi", "Jalingo", "Karim Lamido", "Kurmi", "Lau", "Sardauna", "Takum", "Ussa", "Wukari", "Yorro", "Zing"],
+        "Yobe": ["Bade", "Bursari", "Damaturu", "Fika", "Fune", "Geidam", "Gujba", "Gulani", "Jakusko", "Karasuwa", "Machina", "Nangere", "Nguru", "Potiskum", "Tarmuwa", "Yunusari", "Yusufari"],
+        "Zamfara": ["Anka", "Bakura", "Birnin Magaji/Kiyaw", "Bukkuyum", "Bungudu", "Gummi", "Gusau", "Kaura Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Chafe", "Zurmi"]
+    };
+
+    // Get all state and LGA select elements
+    const stateOfOriginSelect = document.getElementById('stateOfOrigin');
+    const localGovernmentSelect = document.getElementById('localGovernment');
+    const residentialStateSelect = document.getElementById('residentialState');
+    const residentialLGASelect = document.getElementById('residentialLGA');
+
+    // Function to populate state dropdowns
+    function populateStateDropdowns() {
+        const states = Object.keys(nigerianStates).sort();
+        
+        // Add states to State of Origin dropdown
+        states.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state;
+            stateOfOriginSelect.appendChild(option);
+        });
+        
+        // Add states to Residential State dropdown
+        states.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state;
+            residentialStateSelect.appendChild(option);
+        });
+    }
+
+    // Function to update LGA options based on selected state
+    function updateLgaOptions(stateSelect, lgaSelect) {
+        const selectedState = stateSelect.value;
+        
+        // Clear existing options except the first one
+        while (lgaSelect.options.length > 1) {
+            lgaSelect.remove(1);
+        }
+        
+        if (selectedState && nigerianStates[selectedState]) {
+            // Add LGAs for the selected state
+            nigerianStates[selectedState].sort().forEach(lga => {
+                const option = document.createElement('option');
+                option.value = lga;
+                option.textContent = lga;
+                lgaSelect.appendChild(option);
+            });
+        }
+    }
+
+    // Function to pre-select values from form data
+    function preSelectValues() {
+        // Get form data from EJS
+        const formData = {
+            stateOfOrigin: '<%= typeof formData !== "undefined" && formData.stateOfOrigin ? formData.stateOfOrigin.replace(/"/g, "&quot;") : "" %>',
+            localGovernment: '<%= typeof formData !== "undefined" && formData.localGovernment ? formData.localGovernment.replace(/"/g, "&quot;") : "" %>',
+            residentialState: '<%= typeof formData !== "undefined" && formData.residentialState ? formData.residentialState.replace(/"/g, "&quot;") : "" %>',
+            residentialLGA: '<%= typeof formData !== "undefined" && formData.residentialLGA ? formData.residentialLGA.replace(/"/g, "&quot;") : "" %>'
+        };
+        
+        // Pre-select State of Origin if available
+        if (formData.stateOfOrigin && formData.stateOfOrigin !== '') {
+            stateOfOriginSelect.value = formData.stateOfOrigin;
+            updateLgaOptions(stateOfOriginSelect, localGovernmentSelect);
+            
+            // Pre-select Local Government if available
+            if (formData.localGovernment && formData.localGovernment !== '') {
+                setTimeout(() => {
+                    localGovernmentSelect.value = formData.localGovernment;
+                }, 100);
+            }
+        }
+
+        // Pre-select Residential State if available
+        if (formData.residentialState && formData.residentialState !== '') {
+            residentialStateSelect.value = formData.residentialState;
+            updateLgaOptions(residentialStateSelect, residentialLGASelect);
+            
+            // Pre-select Residential LGA if available
+            if (formData.residentialLGA && formData.residentialLGA !== '') {
+                setTimeout(() => {
+                    residentialLGASelect.value = formData.residentialLGA;
+                }, 100);
+            }
+        }
+    }
+
+    // Add event listeners to state dropdowns
+    if (stateOfOriginSelect) {
+        stateOfOriginSelect.addEventListener('change', function() {
+            updateLgaOptions(stateOfOriginSelect, localGovernmentSelect);
+        });
+    }
+
+    if (residentialStateSelect) {
+        residentialStateSelect.addEventListener('change', function() {
+            updateLgaOptions(residentialStateSelect, residentialLGASelect);
+        });
+    }
+
+    // Class selection functionality
+    const classSelect = document.getElementById('class-select');
+    const departmentDisplay = document.getElementById('department-display');
+    
+    // Show department when class is selected
+    if (classSelect && departmentDisplay) {
+        classSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const department = selectedOption.getAttribute('data-department');
+            departmentDisplay.textContent = department ? 'Department: ' + department : '';
+        });
+        
+        // Initialize department display if a class is pre-selected
+        if (classSelect.value) {
+            classSelect.dispatchEvent(new Event('change'));
+        }
+    }
+
+    // ========== PARENT SEARCH AND LINKING FUNCTIONALITY ==========
+    
+    // Setup parent search functionality
+    function setupParentSearch() {
+        const parentSearchInput = document.getElementById('parentSearch');
+        const parentResultsDiv = document.getElementById('parentResults');
+        const parentLoadingDiv = document.getElementById('parentLoading');
+        let searchTimeout;
+        
+        if (!parentSearchInput) return;
+        
+        parentSearchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (!parentResultsDiv) return;
+            
+            if (query.length < 2) {
+                parentResultsDiv.style.display = 'none';
+                parentResultsDiv.innerHTML = '';
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                searchParents(query);
+            }, 300);
+        });
+        
+        // Close results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (parentResultsDiv && !e.target.closest('.typeahead-input')) {
+                parentResultsDiv.style.display = 'none';
+            }
+        });
+        
+        function searchParents(query) {
+            if (parentLoadingDiv) parentLoadingDiv.style.display = 'inline-block';
+            
+            fetch(`/api/search-parents?search=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.results && data.results.length > 0) {
+                        displayParentResults(data.results);
+                    } else {
+                        if (parentResultsDiv) {
+                            parentResultsDiv.innerHTML = '<div class="p-3 text-center text-muted">No parents found. You can register a new parent by switching to the "Register New Parent" tab.</div>';
+                            parentResultsDiv.style.display = 'block';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error searching parents:', error);
+                    if (parentResultsDiv) {
+                        parentResultsDiv.innerHTML = '<div class="p-3 text-center text-danger">Error searching. Please try again.</div>';
+                        parentResultsDiv.style.display = 'block';
+                    }
+                })
+                .finally(() => {
+                    if (parentLoadingDiv) parentLoadingDiv.style.display = 'none';
+                });
+        }
+        
+        function displayParentResults(parents) {
+            if (!parentResultsDiv) return;
+            
+            let html = '';
+            parents.forEach(parent => {
+                html += `
+                    <div class="search-result-item p-3" data-id="${parent.id}" data-name="${escapeHtml(parent.first_name)} ${escapeHtml(parent.last_name)}" data-email="${escapeHtml(parent.email)}" data-phone="${escapeHtml(parent.phone || 'No phone')}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${escapeHtml(parent.first_name)} ${escapeHtml(parent.last_name)}</strong>
+                                <div class="small text-muted">${escapeHtml(parent.email)}</div>
+                                <div class="small text-muted">${escapeHtml(parent.phone || 'No phone')}</div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-success select-parent-btn">Select</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            parentResultsDiv.innerHTML = html;
+            parentResultsDiv.style.display = 'block';
+            
+            // Add click handlers for select buttons
+            document.querySelectorAll('.select-parent-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const item = this.closest('.search-result-item');
+                    const id = item.dataset.id;
+                    const name = item.dataset.name;
+                    selectParent(id, name);
+                });
+            });
+            
+            // Also allow clicking on the whole item
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('select-parent-btn')) {
+                        const id = this.dataset.id;
+                        const name = this.dataset.name;
+                        selectParent(id, name);
+                    }
+                });
+            });
+        }
+    }
+    
+    function selectParent(parentId, parentName) {
+        const existingParentIdInput = document.getElementById('existingParentId');
+        const selectedParentDisplay = document.getElementById('selectedParentDisplay');
+        const selectedInfoSpan = document.querySelector('#selectedParentDisplay .selected-info');
+        const parentSearchInput = document.getElementById('parentSearch');
+        const parentResultsDiv = document.getElementById('parentResults');
+        
+        if (existingParentIdInput) existingParentIdInput.value = parentId;
+        if (selectedInfoSpan) selectedInfoSpan.innerHTML = `<i class="bi bi-person-check me-1"></i> Selected: ${escapeHtml(parentName)}`;
+        if (selectedParentDisplay) selectedParentDisplay.style.display = 'flex';
+        if (parentSearchInput) parentSearchInput.value = parentName;
+        if (parentResultsDiv) parentResultsDiv.style.display = 'none';
+        
+        // Switch to existing parent tab if not already there
+        const existingParentTab = document.getElementById('existing-parent-tab');
+        if (existingParentTab) {
+            const bsTab = new bootstrap.Tab(existingParentTab);
+            bsTab.show();
+        }
+        
+        showNotification('success', `Parent "${parentName}" selected. Student will be linked to this parent.`);
+    }
+    
+    window.clearParentSelection = function() {
+        const existingParentIdInput = document.getElementById('existingParentId');
+        const selectedParentDisplay = document.getElementById('selectedParentDisplay');
+        const parentSearchInput = document.getElementById('parentSearch');
+        const parentResultsDiv = document.getElementById('parentResults');
+        
+        if (existingParentIdInput) existingParentIdInput.value = '';
+        if (selectedParentDisplay) selectedParentDisplay.style.display = 'none';
+        if (parentSearchInput) parentSearchInput.value = '';
+        if (parentResultsDiv) parentResultsDiv.style.display = 'none';
+    };
+    
+    // Generate random password
+    window.generateRandomPassword = function() {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let password = '';
+        for (let i = 0; i < 10; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        const parentPasswordInput = document.getElementById('parentPassword');
+        if (parentPasswordInput) {
+            parentPasswordInput.value = password;
+            showNotification('info', 'New password generated: ' + password);
+        }
+    };
+    
+    function showNotification(type, message) {
+        const toastType = type === 'success' ? 'success' : (type === 'error' ? 'danger' : 'info');
+        if (window.showFormFeedbackToast) {
+            window.showFormFeedbackToast(message, toastType);
+            return;
+        }
+
+        const alertClass = type === 'success' ? 'alert-success' : (type === 'error' ? 'alert-danger' : 'alert-info');
+        const icon = type === 'success' ? 'check-circle-fill' : (type === 'error' ? 'exclamation-triangle-fill' : 'info-circle-fill');
+        
+        const alert = document.createElement('div');
+        alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+        alert.style.cssText = 'z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `
+            <i class="bi bi-${icon} me-2"></i> ${escapeHtml(message)}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        setTimeout(() => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 300);
+        }, 5000);
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Form validation before submit
+    const studentForm = document.getElementById('studentForm');
+    if (studentForm) {
+        studentForm.addEventListener('submit', function(e) {
+            const activeTab = document.querySelector('#parentTab .nav-link.active');
+            const isUsingExistingParent = document.getElementById('existingParentId')?.value;
+            
+            if (activeTab && activeTab.id === 'new-parent-tab') {
+                // Validate new parent fields
+                const parentFirstName = document.getElementById('parentFirstName')?.value.trim();
+                const parentLastName = document.getElementById('parentLastName')?.value.trim();
+                const parentEmail = document.getElementById('parentEmail')?.value.trim();
+                const parentPhone = document.getElementById('parentPhone')?.value.trim();
+                
+                if (!parentFirstName || !parentLastName || !parentEmail || !parentPhone) {
+                    e.preventDefault();
+                    showNotification('error', 'Please fill in all required parent information fields (First Name, Last Name, Email, Phone)');
+                    return false;
+                }
+                
+                if (!isValidEmail(parentEmail)) {
+                    e.preventDefault();
+                    showNotification('error', 'Please enter a valid parent email address');
+                    return false;
+                }
+            } else if (activeTab && activeTab.id === 'existing-parent-tab' && !isUsingExistingParent) {
+                e.preventDefault();
+                showNotification('error', 'Please select a parent from the search results or switch to "Register New Parent" tab');
+                return false;
+            }
+            
+            return true;
+        });
+    }
+    
+    function isValidEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+    
+    // Auto-clear parent selection when switching to new parent tab
+    const newParentTab = document.getElementById('new-parent-tab');
+    if (newParentTab) {
+        newParentTab.addEventListener('click', function() {
+            window.clearParentSelection();
+        });
+    }
+    
+    // Initialize parent search
+    setupParentSearch();
+    
+    // Initialize Bootstrap tabs if Bootstrap is available
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tab) {
+        // Tabs are already initialized by data-bs-toggle attributes
+    }
+    
+    // Initialize the form
+    populateStateDropdowns();
+    preSelectValues();
+});
+</script>

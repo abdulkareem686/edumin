@@ -1,0 +1,117 @@
+<script>
+      function generateRandomPassword() {
+         const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+         let password = '';
+         for (let i = 0; i < 10; i++) {
+            password += chars.charAt(Math.floor(Math.random() * chars.length));
+         }
+         document.getElementById('password').value = password;
+         showNotification('info', 'New password generated: ' + password);
+      }
+
+      function showNotification(type, message) {
+         const alertClass = type === 'success' ? 'alert-success' : (type === 'error' ? 'alert-danger' : 'alert-info');
+         const icon = type === 'success' ? 'check-circle-fill' : (type === 'error' ? 'exclamation-triangle-fill' : 'info-circle-fill');
+
+         const alert = document.createElement('div');
+         alert.className = `alert ${alertClass} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+         alert.style.cssText = 'z-index: 9999; min-width: 300px;';
+         alert.innerHTML = `
+                <i class="bi bi-${icon} me-2"></i> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+         document.body.appendChild(alert);
+
+         setTimeout(() => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 300);
+         }, 5000);
+      }
+
+      // Notification functions
+      function markRead(notificationId) {
+         fetch(`/admin/notifications/mark-read/${notificationId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+         }).then(response => response.json())
+            .then(data => {
+               if (data.success) {
+                  location.reload();
+               }
+            });
+      }
+
+      function markAllRead() {
+         fetch('/admin/notifications/mark-all-read', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+         }).then(response => response.json())
+            .then(data => {
+               if (data.success) {
+                  location.reload();
+               }
+            });
+      }
+
+      (function () {
+         var input = document.getElementById('studentSearchInput');
+         var results = document.getElementById('studentSearchResults');
+         var select = document.getElementById('studentSelect');
+         var selectedBox = document.getElementById('selectedStudents');
+         if (!input || !select) return;
+         var timer = null;
+         function label(s) {
+            return [s.firstName, s.middleName, s.lastName].filter(Boolean).join(' ') + ' — ' + (s.admission_number || '');
+         }
+         function refreshChips() {
+            selectedBox.innerHTML = '';
+            Array.from(select.options).forEach(function (opt) {
+               var badge = document.createElement('span');
+               badge.className = 'badge bg-primary me-1 mb-1';
+               badge.textContent = opt.textContent + ' ';
+               var x = document.createElement('a');
+               x.href = '#';
+               x.className = 'text-white';
+               x.textContent = '×';
+               x.onclick = function (e) {
+                  e.preventDefault();
+                  opt.remove();
+                  refreshChips();
+               };
+               badge.appendChild(x);
+               selectedBox.appendChild(badge);
+            });
+         }
+         input.addEventListener('input', function () {
+            clearTimeout(timer);
+            var q = input.value.trim();
+            if (q.length < 2) { results.innerHTML = ''; return; }
+            timer = setTimeout(function () {
+               fetch('/api/students/search?q=' + encodeURIComponent(q))
+                  .then(function (r) { return r.json(); })
+                  .then(function (data) {
+                     results.innerHTML = '';
+                     (data.students || []).forEach(function (s) {
+                        var a = document.createElement('button');
+                        a.type = 'button';
+                        a.className = 'list-group-item list-group-item-action';
+                        a.textContent = label(s);
+                        a.onclick = function () {
+                           if ([].some.call(select.options, function (o) { return o.value === String(s.id); })) return;
+                           var opt = document.createElement('option');
+                           opt.value = s.id;
+                           opt.selected = true;
+                           opt.textContent = label(s);
+                           select.appendChild(opt);
+                           refreshChips();
+                           results.innerHTML = '';
+                           input.value = '';
+                        };
+                        results.appendChild(a);
+                     });
+                  });
+            }, 250);
+         });
+      })();
+   </script>

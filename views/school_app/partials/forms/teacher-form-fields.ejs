@@ -1,0 +1,206 @@
+<form action="/add-teacher" method="post" enctype="multipart/form-data" id="teacherForm">
+                                            <!-- Personal Information Section -->
+                                            <div class="form-section">
+                                                <h5 class="form-section-title"><i class="bi bi-person-circle me-2"></i>Personal Information</h5>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required-field">First Name</label>
+                                                            <input type="text" class="form-control" name="firstName" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required-field">Last Name</label>
+                                                            <input type="text" class="form-control" name="lastName" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required-field">Email</label>
+                                                            <input type="email" class="form-control" name="email" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required-field">Password</label>
+                                                            <input type="password" class="form-control" name="password" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Gender</label>
+                                                            <select class="form-control" name="gender">
+                                                                <option value="">-- Select Gender --</option>
+                                                                <option value="Male">Male</option>
+                                                                <option value="Female">Female</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Date of Birth</label>
+                                                            <input type="date" class="form-control" name="dateOfBirth">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Nationality</label>
+                                                            <select class="form-control" name="nationality">
+                                                                <option value="">-- Select Nationality --</option>
+                                                                <option value="Nigerian">Nigerian</option>
+                                                                <option value="Other">Other</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Profile Image</label>
+                                                            <input type="file" class="form-control" name="image" accept="image/*">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- State of Origin and LGA Selection -->
+                                                <div class="state-lga-container">
+                                                    <div class="state-lga-title">State of Origin Information</div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">State of Origin</label>
+                                                                <select class="form-control" name="stateOfOrigin" id="stateOfOrigin">
+                                                                    <option value="">-- Select State --</option>
+                                                                    <!-- States will be populated by JavaScript -->
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Local Government Area</label>
+                                                                <select class="form-control" name="localGovernment" id="localGovernment">
+                                                                    <option value="">-- Select LGA --</option>
+                                                                    <!-- LGAs will be populated by JavaScript based on state selection -->
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Residential State and LGA Selection -->
+                                                <div class="state-lga-container">
+                                                    <div class="state-lga-title">Residential Information</div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Residential State</label>
+                                                                <select class="form-control" name="residentialState" id="residentialState">
+                                                                    <option value="">-- Select State --</option>
+                                                                    <!-- States will be populated by JavaScript -->
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Residential Local Government Area</label>
+                                                                <select class="form-control" name="residentialLGA" id="residentialLGA">
+                                                                    <option value="">-- Select LGA --</option>
+                                                                    <!-- LGAs will be populated by JavaScript based on state selection -->
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Contact Information Section -->
+                                            <div class="form-section">
+                                                <h5 class="form-section-title"><i class="bi bi-telephone me-2"></i>Contact Information</h5>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Mobile Number</label>
+                                                            <input type="text" class="form-control" name="mobileNumber" placeholder="e.g., 08012345678">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Emergency Contact Name</label>
+                                                            <input type="text" class="form-control" name="emergencyContactName" placeholder="Full name of emergency contact">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Emergency Contact Number</label>
+                                                            <input type="text" class="form-control" name="emergencyContactNumber" placeholder="e.g., 08012345678">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Address</label>
+                                                            <textarea class="form-control" rows="2" name="address" placeholder="Full residential address"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Professional Information Section -->
+                                            <div class="form-section">
+                                                <h5 class="form-section-title"><i class="bi bi-briefcase me-2"></i>Professional Information</h5>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Joining Date</label>
+                                                            <input type="date" class="form-control" name="joiningDate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Designation</label>
+                                                            <input type="text" class="form-control" name="designation" placeholder="e.g., Senior Teacher">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Department</label>
+                                                            <input type="text" class="form-control" name="department"
+                                                    value="" placeholder="e.g., Computer Science">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Education</label>
+                                                            <input type="text" class="form-control" name="education" placeholder="e.g., B.Sc. Computer Science">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row mt-4">
+                                                <div class="col-md-12">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="bi bi-check-circle me-1"></i> Add Teacher
+                                                    </button>
+                                                    <button type="reset" class="btn btn-light ms-2">
+                                                        <i class="bi bi-x-circle me-1"></i> Reset Form
+                                                    </button>
+                                                    <a href="/all-teachers" class="btn btn-outline-secondary ms-2">
+                                                        <i class="bi bi-list me-1"></i> View All Teachers
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>

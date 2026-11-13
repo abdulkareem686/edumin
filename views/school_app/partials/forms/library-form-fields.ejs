@@ -1,0 +1,96 @@
+<form action="/add-library" method="post" enctype="multipart/form-data">
+                                          <div class="form-section">
+                                             <h5 class="form-section-title"><i class="bi bi-book me-2"></i>Book Details
+                                             </h5>
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Title</label>
+                                                      <input type="text" class="form-control" name="title"
+                                                         value="<%= formData ? formData.title : '' %>" required>
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Author</label>
+                                                      <input type="text" class="form-control" name="author"
+                                                         value="<%= formData ? formData.author : '' %>" required>
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-md-4">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">ISBN</label>
+                                                      <input type="text" class="form-control" name="isbn"
+                                                         value="<%= formData ? formData.isbn : '' %>"
+                                                         placeholder="978-3-16-148410-0">
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                   <div class="mb-3">
+                                                      <label class="form-label required-field">Quantity</label>
+                                                      <input type="number" class="form-control" name="quantity"
+                                                         value="<%= formData ? formData.quantity : 1 %>" min="1"
+                                                         required>
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Category</label>
+                                                      <select class="form-control" name="category">
+                                                         <option value="">Select Category</option>
+                                                         <option value="Fiction" <%=(formData &&
+                                                            formData.category==='Fiction' ) ? 'selected' : '' %>>Fiction
+                                                         </option>
+                                                         <option value="Non-Fiction" <%=(formData &&
+                                                            formData.category==='Non-Fiction' ) ? 'selected' : '' %>
+                                                            >Non-Fiction</option>
+                                                         <option value="Textbook" <%=(formData &&
+                                                            formData.category==='Textbook' ) ? 'selected' : '' %>
+                                                            >Textbook</option>
+                                                         <option value="Reference" <%=(formData &&
+                                                            formData.category==='Reference' ) ? 'selected' : '' %>
+                                                            >Reference</option>
+                                                         <option value="Magazine" <%=(formData &&
+                                                            formData.category==='Magazine' ) ? 'selected' : '' %>
+                                                            >Magazine</option>
+                                                         <option value="Journal" <%=(formData &&
+                                                            formData.category==='Journal' ) ? 'selected' : '' %>>Journal
+                                                         </option>
+                                                         <option value="Other" <%=(formData &&
+                                                            formData.category==='Other' ) ? 'selected' : '' %>>Other
+                                                         </option>
+                                                      </select>
+                                                   </div>
+                                                </div>
+                                             </div>
+
+                                             <div class="row">
+                                                <div class="col-12">
+                                                   <div class="mb-3">
+                                                      <label class="form-label">Book Cover</label>
+                                                      <input type="file" class="form-control" name="bookCover"
+                                                         accept="image/*">
+                                                      <small class="text-muted">Optional. Upload a book cover
+                                                         image.</small>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+
+                                          <div class="row mt-4">
+                                             <div class="col-md-12">
+                                                <button type="submit" class="btn btn-primary">
+                                                   <i class="bi bi-book-plus me-1"></i> Add Book
+                                                </button>
+                                                <button type="reset" class="btn btn-light ms-2">
+                                                   <i class="bi bi-x-circle me-1"></i> Reset Form
+                                                </button>
+                                                <a href="/all-library" class="btn btn-outline-secondary ms-2">
+                                                   <i class="bi bi-list me-1"></i> View All Books
+                                                </a>
+                                             </div>
+                                          </div>
+                                       </form>

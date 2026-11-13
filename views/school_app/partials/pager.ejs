@@ -1,0 +1,29 @@
+<%
+  var _page = typeof pagerPage !== 'undefined' ? Number(pagerPage) : (typeof currentPage === 'number' ? currentPage : parseInt(currentPage, 10) || 1);
+  var _pages = typeof totalPages !== 'undefined' ? Number(totalPages) : 1;
+  var _total = typeof totalRecords !== 'undefined' ? totalRecords : (typeof listTotal !== 'undefined' ? listTotal : 0);
+  var _q = typeof extraQuery !== 'undefined' && extraQuery ? extraQuery : '';
+  if (_pages < 1) _pages = 1;
+  var _start = Math.max(1, _page - 3);
+  var _end = Math.min(_pages, _page + 3);
+%>
+<div class="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-2">
+  <div class="text-muted small">
+    Showing page <%= _page %> of <%= _pages %><% if (_total) { %> (<%= _total %> total)<% } %>
+  </div>
+  <% if (_pages > 1) { %>
+  <ul class="pagination pagination-rounded mb-0">
+    <li class="page-item <%= _page <= 1 ? 'disabled' : '' %>">
+      <a class="page-link" href="?page=<%= _page - 1 %><%= _q %>">Prev</a>
+    </li>
+    <% for (var i = _start; i <= _end; i++) { %>
+    <li class="page-item <%= i === _page ? 'active' : '' %>">
+      <a class="page-link" href="?page=<%= i %><%= _q %>"><%= i %></a>
+    </li>
+    <% } %>
+    <li class="page-item <%= _page >= _pages ? 'disabled' : '' %>">
+      <a class="page-link" href="?page=<%= _page + 1 %><%= _q %>">Next</a>
+    </li>
+  </ul>
+  <% } %>
+</div>
