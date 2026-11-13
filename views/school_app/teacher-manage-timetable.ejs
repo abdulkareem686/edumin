@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Manage Timetable - Teacher Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <!-- Alhamdulillahi Academy - Heritage 2027 UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+    <link href="/assets/css/theme-2027.css" rel="stylesheet" type="text/css">
+    <script src="/assets/js/theme-2027.js"></script>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <div class="wrapper">
+        <%- include('partials/teacher-sidebar') %>
+
+        <div class="content-page">
+            <div class="content">
+                <%- include('partials/teacher-navbar') %>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="/teacher-dashboard">Teacher Portal</a></li>
+                                        <li class="breadcrumb-item"><a href="/teacher/weekly-timetable">Timetable</a></li>
+                                        <li class="breadcrumb-item active">Manage Slots</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title"><i class="bi bi-calendar-plus text-primary me-2"></i>Manage Timetable Slots</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <% } %>
+
+                    <% if (typeof success !== 'undefined' && success) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <%= success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <% } %>
+
+                    <div class="row">
+                        <!-- Add Slot Form -->
+                        <div class="col-xl-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-3">Add / Schedule Period</h5>
+                                    <form action="/teacher/timetable/add" method="post">
+                                        <input type="hidden" name="timetableId" id="timetableId" value="">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Day of Week <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="dayOfWeek" id="slotDay" required>
+                                                <option value="">-- Select Day --</option>
+                                                <option value="1">Monday</option>
+                                                <option value="2">Tuesday</option>
+                                                <option value="3">Wednesday</option>
+                                                <option value="4">Thursday</option>
+                                                <option value="5">Friday</option>
+                                                <option value="6">Saturday</option>
+                                                <option value="7">Sunday</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Class <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="classId" id="slotClass" required>
+                                                <option value="">-- Select Class --</option>
+                                                <% if (typeof teacherClasses !== 'undefined' && teacherClasses) { %>
+                                                    <% teacherClasses.forEach(function(cls) { %>
+                                                        <option value="<%= cls.id %>"><%= cls.className %></option>
+                                                    <% }); %>
+                                                <% } %>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Subject <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="subjectId" id="slotSubject" required>
+                                                <option value="">-- Select Subject --</option>
+                                                <% if (typeof teacherSubjects !== 'undefined' && teacherSubjects) { %>
+                                                    <% teacherSubjects.forEach(function(sub) { %>
+                                                        <option value="<%= sub.id %>"><%= sub.subjectName || sub.name %></option>
+                                                    <% }); %>
+                                                <% } %>
+                                            </select>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label">Start Time <span class="text-danger">*</span></label>
+                                                <input type="time" class="form-control" name="startTime" id="slotStart" required>
+                                            </div>
+                                            <div class="col-6 mb-3">
+                                                <label class="form-label">End Time <span class="text-danger">*</span></label>
+                                                <input type="time" class="form-control" name="endTime" id="slotEnd" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Room / Venue</label>
+                                            <input type="text" class="form-control" name="room" id="slotRoom" placeholder="e.g. Science Lab 2 or Room 104">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Notes</label>
+                                            <input type="text" class="form-control" name="notes" id="slotNotes" placeholder="Optional notes">
+                                        </div>
+
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-primary" id="saveSlotBtn">
+                                                <i class="bi bi-plus-circle me-1"></i>Save Timetable Entry
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" id="resetSlotBtn" style="display:none;" onclick="resetForm()">
+                                                Cancel Edit
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Existing Slots Table -->
+                        <div class="col-xl-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="card-title mb-0">Scheduled Teaching Periods</h5>
+                                        <a href="/teacher/weekly-timetable" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-calendar-week me-1"></i>View Weekly View
+                                        </a>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table class="table table-centered table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Day</th>
+                                                    <th>Time</th>
+                                                    <th>Class</th>
+                                                    <th>Subject</th>
+                                                    <th>Room</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% 
+                                                    var hasAny = false;
+                                                    var dayKeys = [1, 2, 3, 4, 5, 6, 7];
+                                                    var dayNames = {1:'Monday', 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday', 7:'Sunday'};
+                                                    dayKeys.forEach(function(dayNum) {
+                                                        var dayName = (typeof days !== 'undefined' && days[dayNum]) ? days[dayNum] : dayNames[dayNum];
+                                                        var slots = (typeof timetableByDay !== 'undefined' && timetableByDay[dayNum]) ? timetableByDay[dayNum] : [];
+                                                        if (slots && slots.length > 0) {
+                                                            hasAny = true;
+                                                            slots.forEach(function(slot) {
+                                                %>
+                                                <tr>
+                                                    <td><span class="badge bg-light text-dark border"><%= dayName %></span></td>
+                                                    <td class="font-monospace fw-semibold"><%= slot.start_time %> - <%= slot.end_time %></td>
+                                                    <td><%= slot.class_name || slot.className || 'Class' %></td>
+                                                    <td class="fw-semibold text-primary"><%= slot.subject_name || slot.subjectName || 'Subject' %></td>
+                                                    <td><%= slot.room || '-' %></td>
+                                                    <td class="text-center">
+                                                        <a href="/teacher/timetable/delete/<%= slot.id %>" class="btn btn-sm btn-outline-danger" 
+                                                           onclick="return confirm('Delete this scheduled period?')" title="Delete">
+                                                            <i class="bi bi-trash"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                <% 
+                                                            });
+                                                        }
+                                                    });
+                                                    if (!hasAny) {
+                                                %>
+                                                <tr>
+                                                    <td colspan="6" class="text-center py-4 text-muted">
+                                                        No timetable entries configured yet. Use the form on the left to add your first period.
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            © Alhamdulillahi Academy <span class="aa-credit">Powered by <strong>QuDex Technologies</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+</body>
+</html>

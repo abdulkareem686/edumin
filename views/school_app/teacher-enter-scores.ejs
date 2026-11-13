@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Enter Scores - <%= subjectData ? (subjectData.subjectName || subjectData.name) : 'Subject' %> - <%= classData ? classData.className : 'Class' %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .score-input {
+            width: 85px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .score-input:focus {
+            border-color: #6e8153;
+            box-shadow: 0 0 0 0.2rem rgba(94, 112, 69, 0.25);
+        }
+    </style>
+    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+    <!-- Alhamdulillahi Academy - Heritage 2027 UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+    <link href="/assets/css/theme-2027.css" rel="stylesheet" type="text/css">
+    <script src="/assets/js/theme-2027.js"></script>
+</head>
+
+<body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+    <div class="wrapper">
+        <%- include('partials/teacher-sidebar') %>
+
+        <div class="content-page">
+            <div class="content">
+                <%- include('partials/teacher-navbar') %>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box">
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="/teacher-dashboard">Teacher Portal</a></li>
+                                        <li class="breadcrumb-item"><a href="/teacher/my-classes">Classes</a></li>
+                                        <li class="breadcrumb-item active">Enter Scores</li>
+                                    </ol>
+                                </div>
+                                <h4 class="page-title">
+                                    <i class="bi bi-pencil-square text-primary me-2"></i>Enter Assessment Scores
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="alertBox"></div>
+
+                    <!-- Header card with Class & Subject Info -->
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h4 class="fw-bold text-primary mb-1">
+                                        <%= subjectData ? (subjectData.subjectName || subjectData.name) : 'Subject' %>
+                                    </h4>
+                                    <p class="text-muted mb-0">
+                                        <span>Class: <strong><%= classData ? classData.className : '' %></strong></span>
+                                        <span class="mx-2">•</span>
+                                        <span>Session: <strong><%= typeof academicYear !== 'undefined' ? academicYear : '' %></strong></span>
+                                        <span class="mx-2">•</span>
+                                        <span>Term: <strong><%= typeof term !== 'undefined' ? term : '' %></strong></span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                                    <a href="/teacher/classes/<%= classData ? classData.id : '' %>/subjects/<%= subjectData ? subjectData.id : '' %>/grade-book/print?term=<%= typeof term !== 'undefined' ? encodeURIComponent(term) : '' %>&academicYear=<%= typeof academicYear !== 'undefined' ? encodeURIComponent(academicYear) : '' %>" target="_blank" class="btn btn-outline-secondary me-2">
+                                        <i class="bi bi-printer me-1"></i>Print Grade Book
+                                    </a>
+                                    <button type="button" class="btn btn-success" id="saveScoresTopBtn">
+                                        <i class="bi bi-save me-1"></i>Save All Scores
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scores Table -->
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="scoresForm">
+                                <input type="hidden" name="classId" value="<%= classData ? classData.id : '' %>">
+                                <input type="hidden" name="subjectId" value="<%= subjectData ? subjectData.id : '' %>">
+                                <input type="hidden" name="academicYear" value="<%= typeof academicYear !== 'undefined' ? academicYear : '' %>">
+                                <input type="hidden" name="term" value="<%= typeof term !== 'undefined' ? term : '' %>">
+
+                                <div class="table-responsive">
+                                    <table class="table table-centered table-striped table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 50px;">#</th>
+                                                <th>Admission No.</th>
+                                                <th>Student Name</th>
+                                                <th class="text-center" style="width: 130px;">C.A. (Max 40)</th>
+                                                <th class="text-center" style="width: 130px;">Exam (Max 60)</th>
+                                                <th class="text-center" style="width: 100px;">Total (100)</th>
+                                                <th class="text-center" style="width: 80px;">Grade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% if (typeof students !== 'undefined' && students && students.length > 0) { %>
+                                                <% students.forEach(function(student, idx) { 
+                                                    var fullName = [student.firstName, student.middleName, student.lastName].filter(Boolean).join(' ');
+                                                    var testVal = student.test_score !== null && student.test_score !== undefined ? student.test_score : (student.ca_score || '');
+                                                    var examVal = student.exam_score !== null && student.exam_score !== undefined ? student.exam_score : '';
+                                                    var totalVal = student.total_score !== null && student.total_score !== undefined ? student.total_score : '';
+                                                %>
+                                                <tr class="student-score-row" data-student-id="<%= student.id %>">
+                                                    <td><%= idx + 1 %></td>
+                                                    <td>
+                                                        <span class="font-monospace text-secondary"><%= student.admission_number || 'N/A' %></span>
+                                                    </td>
+                                                    <td class="fw-semibold"><%= fullName %></td>
+                                                    <td class="text-center">
+                                                        <input type="number" class="form-control form-control-sm score-input test-score-input" 
+                                                               min="0" max="40" step="0.5" 
+                                                               value="<%= testVal %>" placeholder="0 - 40">
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <input type="number" class="form-control form-control-sm score-input exam-score-input" 
+                                                               min="0" max="60" step="0.5" 
+                                                               value="<%= examVal %>" placeholder="0 - 60">
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="fw-bold total-score-display text-primary"><%= totalVal || '-' %></span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="badge bg-secondary-subtle text-secondary grade-display"><%= student.grade || '-' %></span>
+                                                    </td>
+                                                </tr>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="7" class="text-center py-4 text-muted">
+                                                        No students found for this class and subject.
+                                                    </td>
+                                                </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="text-end mt-3">
+                                    <button type="button" class="btn btn-success px-4" id="saveScoresBottomBtn">
+                                        <i class="bi bi-check2-circle me-1"></i>Submit and Save Scores
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            © Alhamdulillahi Academy <span class="aa-credit">Powered by <strong>QuDex Technologies</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+
+    <script>
+        function computeRow(row) {
+            const testInp = row.querySelector('.test-score-input');
+            const examInp = row.querySelector('.exam-score-input');
+            const totalSpan = row.querySelector('.total-score-display');
+            const gradeSpan = row.querySelector('.grade-display');
+
+            const test = parseFloat(testInp.value) || 0;
+            const exam = parseFloat(examInp.value) || 0;
+            const total = test + exam;
+
+            if (testInp.value !== '' || examInp.value !== '') {
+                totalSpan.textContent = total;
+                let grade = 'F';
+                if (total >= 75) grade = 'A';
+                else if (total >= 65) grade = 'B';
+                else if (total >= 50) grade = 'C';
+                else if (total >= 40) grade = 'D';
+                else grade = 'F';
+
+                gradeSpan.textContent = grade;
+                gradeSpan.className = 'badge fw-bold ' + (total >= 50 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger');
+            } else {
+                totalSpan.textContent = '-';
+                gradeSpan.textContent = '-';
+                gradeSpan.className = 'badge bg-secondary-subtle text-secondary';
+            }
+        }
+
+        document.querySelectorAll('.student-score-row').forEach(row => {
+            row.querySelectorAll('input').forEach(inp => {
+                inp.addEventListener('input', () => computeRow(row));
+            });
+        });
+
+        async function submitScores() {
+            const saveBtns = [document.getElementById('saveScoresTopBtn'), document.getElementById('saveScoresBottomBtn')];
+            saveBtns.forEach(b => { if (b) b.disabled = true; });
+
+            const rows = document.querySelectorAll('.student-score-row');
+            const scores = [];
+
+            for (const r of rows) {
+                const sId = r.dataset.studentId;
+                const test = parseFloat(r.querySelector('.test-score-input').value) || 0;
+                const exam = parseFloat(r.querySelector('.exam-score-input').value) || 0;
+                scores.push({ studentId: sId, testScore: test, examScore: exam });
+            }
+
+            const payload = {
+                classId: document.querySelector('input[name="classId"]').value,
+                subjectId: document.querySelector('input[name="subjectId"]').value,
+                academicYear: document.querySelector('input[name="academicYear"]').value,
+                term: document.querySelector('input[name="term"]').value,
+                scores: JSON.stringify(scores)
+            };
+
+            try {
+                const res = await fetch('/teacher/save-scores', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                const alertBox = document.getElementById('alertBox');
+                if (data.success) {
+                    alertBox.innerHTML = `
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="bi bi-check-circle-fill me-2"></i>Scores successfully recorded and updated.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                } else {
+                    alertBox.innerHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>${data.error || 'Failed to save scores'}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                document.getElementById('alertBox').innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Network error: ${err.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+            } finally {
+                saveBtns.forEach(b => { if (b) b.disabled = false; });
+            }
+        }
+
+        document.getElementById('saveScoresTopBtn')?.addEventListener('click', submitScores);
+        document.getElementById('saveScoresBottomBtn')?.addEventListener('click', submitScores);
+    </script>
+</body>
+</html>
