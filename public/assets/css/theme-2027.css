@@ -323,20 +323,27 @@ hr {
     radial-gradient(320px 260px at 100% 100%, rgba(179, 197, 142, 0.08), transparent 60%);
 }
 
-.logo {
+/* The template ships .logo.logo-light / .logo.logo-dark { display:block },
+   which is more specific than .logo. Match it so the wordmark is vertically
+   centred inside the 70px bar and inset from the window edge. */
+.leftside-menu .logo,
+.leftside-menu .logo.logo-light,
+.leftside-menu .logo.logo-dark {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   height: 70px;
-  padding: 0;
+  padding: 0 18px;
+  line-height: 1;
   background: transparent !important;
 }
 .logo h3 {
+  width: auto;
   margin: 0;
   font-family: var(--aa-font-display);
   font-weight: 600;
-  font-size: 1.02rem;
-  line-height: 1.15;
+  font-size: 0.98rem;
+  line-height: 1.1;
   letter-spacing: -0.01em;
   color: #f2eedf;
   display: flex;
@@ -411,8 +418,8 @@ hr {
   color: var(--aa-sidebar-text);
   border-radius: 10px;
   margin: 1px 12px;
-  padding: 9px 38px 9px 14px;
-  font-size: 0.875rem;
+  padding: 9px 38px 9px 12px;
+  font-size: 0.84rem;
   font-weight: 500;
   letter-spacing: 0.005em;
   transition: color var(--aa-dur) var(--aa-ease), background-color var(--aa-dur) var(--aa-ease),
@@ -428,7 +435,7 @@ html[data-theme] body .leftside-menu .logo.logo-light {
 .side-nav .side-nav-link i {
   color: var(--aa-sidebar-muted);
   font-size: 1.02rem;
-  width: 22px;
+  width: 20px;
   margin-right: 8px;
   transition: color var(--aa-dur) var(--aa-ease), transform var(--aa-dur) var(--aa-ease);
 }
@@ -479,7 +486,7 @@ html[data-theme] body .leftside-menu .logo.logo-light {
   color: var(--aa-brass-strong) !important;
 }
 
-.side-nav .menu-arrow { opacity: 0.55; }
+.side-nav .menu-arrow { opacity: 0.55; right: 18px; }
 
 .help-box {
   background: rgba(255, 250, 236, 0.055) !important;
@@ -1501,10 +1508,24 @@ html[data-theme="dark"] .alert-info { color: #a9c6c9; }
   overflow: hidden;
 }
 .modal-header {
-  border-bottom: 1px solid var(--aa-border);
+  border-bottom: 1px solid rgba(255, 250, 236, 0.14);
   padding: 1.1rem 1.35rem;
-  background: linear-gradient(180deg, var(--aa-surface-2), var(--aa-surface));
+  background: var(--aa-hero) !important;
+  color: #fdfaf0 !important;
+  border-radius: var(--aa-radius-xl) var(--aa-radius-xl) 0 0;
 }
+.modal-header .modal-title,
+.modal-header .modal-title *,
+.modal-header h5,
+.modal-header h4,
+.modal-header .text-white { color: #fdfaf0 !important; }
+.modal-header .modal-title i { color: var(--aa-brass-strong) !important; }
+.modal-header .btn-close,
+.modal-header .btn-close-white {
+  filter: invert(1) grayscale(1) brightness(1.9);
+  opacity: 0.8;
+}
+.modal-header .btn-close:hover { opacity: 1; }
 .modal-title { font-family: var(--aa-font-display); font-weight: 600; color: var(--aa-text); font-size: 1.1rem; }
 .modal-body { padding: 1.35rem; background: var(--aa-surface); }
 .modal-footer { border-top: 1px solid var(--aa-border); padding: 0.9rem 1.35rem; background: var(--aa-surface-2); }
@@ -2138,15 +2159,18 @@ html[data-theme="dark"] .aa-theme-toggle--sm .aa-theme-toggle__knob { transform:
   100% { background-position: 300px 0; }
 }
 
-/* Page enter */
-.content-page { animation: aaFadeIn 0.45s var(--aa-ease) both; }
-.content-page .container-fluid { animation: aaFadeUp 0.5s var(--aa-ease) both; }
-.auth-fluid-form-box { animation: aaFadeUp 0.6s var(--aa-ease) both; }
-.auth-fluid-right { animation: aaFadeIn 0.9s var(--aa-ease) both; }
+/* Page enter.
+   Important: use `backwards`, never `both`/`forwards` here. A retained
+   transform on these ancestors becomes the containing block for fixed
+   descendants and would trap Bootstrap modals inside the page container. */
+.content-page { animation: aaFadeIn 0.45s var(--aa-ease) backwards; }
+.content-page .container-fluid { animation: aaFadeUp 0.5s var(--aa-ease) backwards; }
+.auth-fluid-form-box { animation: aaFadeUp 0.6s var(--aa-ease) backwards; }
+.auth-fluid-right { animation: aaFadeIn 0.9s var(--aa-ease) backwards; }
 
 /* Cards rise in with an unobtrusive stagger */
 .content-page .card {
-  animation: aaFadeUp 0.55s var(--aa-ease) both;
+  animation: aaFadeUp 0.55s var(--aa-ease) backwards;
 }
 .content-page .row > div:nth-child(2) > .card { animation-delay: 0.05s; }
 .content-page .row > div:nth-child(3) > .card { animation-delay: 0.1s; }
@@ -2219,6 +2243,18 @@ html.aa-theme-transition *:not(.no-theme-transition) {
   .auth-fluid-form-box .footer-alt { text-align: center; }
   .auth-fluid .auth-fluid-form-box::before { font-size: 15rem; bottom: -2rem; }
   .aa-theme-toggle--auth { top: 1rem; right: 1rem; }
+
+  /* The mobile topbar spans the full width and sits above the off-canvas
+     sidebar, which used to bury the brand lock-up underneath it. Drop the
+     logo and the nav below the bar when the drawer is open. */
+  body.sidebar-enable .leftside-menu { padding-top: 136px; }
+  body.sidebar-enable .leftside-menu .logo {
+    top: 71px;
+    height: 64px;
+    padding: 0 18px;
+    background: transparent !important;
+  }
+  body.sidebar-enable #leftside-menu-container { padding-top: 0; }
   .table-responsive { border-radius: var(--aa-radius-sm); }
   .school-week-metrics-grid { grid-template-columns: repeat(2, 1fr) !important; }
   .school-week-header { align-items: flex-start; }
