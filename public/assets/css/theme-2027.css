@@ -625,16 +625,16 @@ html[data-theme] body .leftside-menu .logo.logo-light {
    -------------------------------------------------------------------------- */
 .btn {
   font-family: var(--aa-font-body);
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: 0.01em;
   border-radius: var(--aa-radius-sm);
-  padding: 0.5rem 1.05rem;
+  padding: 0.52rem 1.05rem;
   border-width: 1px;
-  transition: transform 0.18s var(--aa-ease), box-shadow 0.18s var(--aa-ease),
-    background-color 0.2s var(--aa-ease), border-color 0.2s var(--aa-ease), color 0.2s var(--aa-ease);
-  will-change: transform;
+  line-height: 1.35;
+  transition: background-color 0.2s var(--aa-ease), border-color 0.2s var(--aa-ease),
+    color 0.2s var(--aa-ease), box-shadow 0.2s var(--aa-ease);
 }
-.btn:active { transform: translateY(1px) scale(0.99); }
+.btn:active { transform: none; }
 .btn:disabled, .btn.disabled { opacity: 0.55; box-shadow: none; }
 
 .btn-primary {
@@ -697,7 +697,6 @@ html[data-theme="dark"] .btn-dark { background: var(--aa-brand) !important; bord
 .btn-outline-primary:hover {
   background: var(--aa-brand) !important;
   color: var(--aa-on-brand) !important;
-  transform: translateY(-1px);
 }
 .btn-outline-secondary { color: var(--aa-text-muted) !important; border-color: var(--aa-border-strong) !important; }
 .btn-outline-secondary:hover { background: var(--aa-surface-2) !important; color: var(--aa-text) !important; }
@@ -717,7 +716,27 @@ html[data-theme="dark"] .btn-dark { background: var(--aa-brand) !important; bord
 .btn-warning { background: var(--aa-warning) !important; border-color: var(--aa-warning) !important; color: #fffaf0 !important; }
 .btn-info { background: var(--aa-info) !important; border-color: var(--aa-info) !important; color: #fffaf0 !important; }
 
-.btn-success:hover, .btn-danger:hover, .btn-warning:hover, .btn-info:hover { filter: brightness(0.94); transform: translateY(-1px); }
+.btn-success:hover, .btn-danger:hover, .btn-warning:hover, .btn-info:hover { filter: brightness(0.94); }
+
+/* "Add / Create" actions use the brand colour, not the danger red. The
+   template painted every modal trigger with .btn-danger. */
+.btn-danger[data-bs-target^="#add"],
+.btn-danger[data-bs-target^="#create"],
+.btn-danger[data-bs-target^="#new"],
+a.btn-danger[href*="/create"] {
+  background: var(--aa-brand) !important;
+  border-color: var(--aa-brand) !important;
+  color: var(--aa-on-brand) !important;
+  box-shadow: var(--aa-btn-shadow);
+}
+.btn-danger[data-bs-target^="#add"]:hover,
+.btn-danger[data-bs-target^="#create"]:hover,
+.btn-danger[data-bs-target^="#new"]:hover,
+a.btn-danger[href*="/create"]:hover {
+  background: var(--aa-brand-strong) !important;
+  border-color: var(--aa-brand-strong) !important;
+  color: var(--aa-on-brand) !important;
+}
 
 .btn-sm { padding: 0.32rem 0.75rem; font-size: 0.79rem; border-radius: 9px; }
 .btn-lg { padding: 0.68rem 1.35rem; font-size: 0.95rem; border-radius: var(--aa-radius); }
@@ -1046,6 +1065,13 @@ input::-webkit-inner-spin-button { opacity: 0.4; }
 }
 .table td, .table th { border-color: var(--aa-border); }
 .table td { font-size: 0.86rem; }
+/* Explicit paint colours: some table skins leave the inherited text colour
+   resolved to the surface tone, which made cells look empty. */
+.table { color: var(--aa-text) !important; }
+.table thead th { color: var(--aa-text-muted) !important; -webkit-text-fill-color: currentColor; }
+.table tbody td, .table tbody th { color: var(--aa-text) !important; -webkit-text-fill-color: currentColor; }
+.table tbody td a, .table tbody td a.text-body, .table tbody td .fw-semibold { color: inherit; -webkit-text-fill-color: currentColor; }
+.table tbody td .text-muted { color: var(--aa-text-muted) !important; }
 .table-sm > :not(caption) > * > * { padding: 0.5rem 0.7rem; }
 .table-bordered { border-color: var(--aa-border); }
 .table-title { font-family: var(--aa-font-display); font-weight: 600; }
@@ -1063,6 +1089,28 @@ input::-webkit-inner-spin-button { opacity: 0.4; }
 
 /* DataTables */
 .dataTables_wrapper { font-size: 0.85rem; }
+.dataTables_wrapper .row:first-child { align-items: center; margin-bottom: 0.35rem; row-gap: 0.5rem; }
+.dataTables_wrapper .dataTables_length { color: var(--aa-text-muted); font-size: 0.78rem; }
+.dataTables_wrapper .dataTables_length label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-weight: 600;
+}
+.dataTables_wrapper .dataTables_length select {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: var(--aa-chevron);
+  background-repeat: no-repeat;
+  background-position: right 0.55rem center;
+  background-size: 15px 15px;
+  padding: 0.25rem 1.9rem 0.25rem 0.6rem;
+  min-width: 64px;
+}
+.dataTables_wrapper .dataTables_info { color: var(--aa-text-muted); font-size: 0.78rem; padding-top: 0.9rem; }
+.dataTables_wrapper .dataTables_paginate { padding-top: 0.8rem; }
+.dataTables_wrapper .dataTables_paginate .pagination { margin-bottom: 0; }
 .dataTables_wrapper .dataTables_filter input,
 .dataTables_wrapper .dataTables_length select {
   background: var(--aa-surface);
@@ -1390,6 +1438,11 @@ table.dataTable thead .sorting_desc:after { opacity: 0.45; }
 .badge-soft-danger { background: var(--aa-danger-soft) !important; color: var(--aa-danger) !important; }
 .badge-soft-info { background: var(--aa-info-soft) !important; color: var(--aa-info) !important; }
 .badge-outline-primary { border: 1px solid var(--aa-brand); color: var(--aa-brand-ink); background: transparent; }
+html[data-theme="dark"] .badge-success-lighten {
+  background: rgba(95, 160, 122, 0.16) !important;
+  color: #a8d5b8 !important;
+  border: 1px solid rgba(95, 160, 122, 0.3);
+}
 
 .alert {
   border-radius: var(--aa-radius);
@@ -1897,8 +1950,14 @@ html[data-theme="dark"] .auth-brand .logo-dark { display: block; }
 }
 
 /* --------------------------------------------------------------------------
-   12. THEME SWITCH
+   12. THEME SWITCH (removed - the app is light mode only)
    -------------------------------------------------------------------------- */
+/* Kept only as a guard: older cached pages or browser extensions may still
+   carry a switch node, and the template's customiser has a Dark Mode switch. */
+.aa-theme-toggle,
+.aa-theme-toggle-item,
+.end-bar,
+.rightbar-overlay { display: none !important; }
 .aa-theme-toggle {
   position: relative;
   display: inline-flex;
@@ -2155,23 +2214,11 @@ html[data-theme="dark"] .aa-theme-toggle--sm .aa-theme-toggle__knob { transform:
 }
 
 /* Page enter.
-   Important: use `backwards`, never `both`/`forwards` here. A retained
-   transform on these ancestors becomes the containing block for fixed
-   descendants and would trap Bootstrap modals inside the page container. */
-.content-page { animation: aaFadeIn 0.45s var(--aa-ease) backwards; }
-.content-page .container-fluid { animation: aaFadeUp 0.5s var(--aa-ease) backwards; }
+   Kept deliberately minimal: an opacity animation on an ancestor of a table
+   can stop its cell text from painting in Chromium (and a retained transform
+   traps fixed-position modals). Only the auth screens animate. */
 .auth-fluid-form-box { animation: aaFadeUp 0.6s var(--aa-ease) backwards; }
 .auth-fluid-right { animation: aaFadeIn 0.9s var(--aa-ease) backwards; }
-
-/* Cards rise in with an unobtrusive stagger */
-.content-page .card {
-  animation: aaFadeUp 0.55s var(--aa-ease) backwards;
-}
-.content-page .row > div:nth-child(2) > .card { animation-delay: 0.05s; }
-.content-page .row > div:nth-child(3) > .card { animation-delay: 0.1s; }
-.content-page .row > div:nth-child(4) > .card { animation-delay: 0.15s; }
-.content-page .row > div:nth-child(5) > .card { animation-delay: 0.2s; }
-.content-page .row > div:nth-child(6) > .card { animation-delay: 0.25s; }
 
 /* Hover lifts */
 .modern-action-tile:hover,
