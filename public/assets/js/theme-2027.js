@@ -66,6 +66,74 @@
     }
   }
 
+  /* ---------------- table configuration ---------------- */
+  /* Builds the reference-style footer (Previous / Next, page size, page
+     number) around the existing DataTables instance. This runs after init,
+     so it works no matter where the page starts its table. */
+  function setupTableFooter(wrapper) {
+    if (wrapper.getAttribute('data-aa-footer') === '1') return;
+    var table = wrapper.querySelector('table.dataTable');
+    var jq = window.jQuery;
+    if (!table || !jq || !jq.fn || !jq.fn.dataTable) return;
+
+    var api;
+    try {
+      api = jq(table).DataTable();
+    } catch (err) {
+      return;
+    }
+    if (!api) return;
+
+    var footer = document.createElement('div');
+    footer.className = 'dt-footer';
+    footer.innerHTML =
+      '<div class="dt-pager">' +
+      '<button type="button" class="dt-page-btn" data-dir="prev">Previous</button>' +
+      '<button type="button" class="dt-page-btn" data-dir="next">Next</button>' +
+      '</div>' +
+      '<div class="dt-meta">' +
+      '<label class="dt-length">Show <select class="dt-page-size">' +
+      '<option value="10">10</option><option value="25">25</option><option value="50">50</option>' +
+      '</select> per page</label>' +
+      '<span class="dt-page-info"></span>' +
+      '</div>';
+    /* Place the footer under the table container, not inside its scroll box. */
+    var scrollBox = wrapper.closest('.table-responsive');
+    var mount = (scrollBox && scrollBox.parentElement) ? scrollBox.parentElement : wrapper.parentElement;
+    mount.appendChild(footer);
+    wrapper.setAttribute('data-aa-footer', '1');
+
+    /* hide the native controls and the rows that contained them (never the
+       row that holds the table itself) */
+    var native = wrapper.querySelectorAll('.dataTables_length, .dataTables_info, .dataTables_paginate');
+    for (var n = 0; n < native.length; n += 1) native[n].style.display = 'none';
+    var rows = wrapper.querySelectorAll(':scope > .row');
+    for (var r = 0; r < rows.length; r += 1) {
+      if (rows[r].querySelector('.dataTables_length, .dataTables_filter, .dataTables_info, .dataTables_paginate')) {
+        rows[r].style.display = 'none';
+      }
+    }
+
+    var prev = footer.querySelector('[data-dir="prev"]');
+    var next = footer.querySelector('[data-dir="next"]');
+    var size = footer.querySelector('.dt-page-size');
+    var info = footer.querySelector('.dt-page-info');
+    size.value = String(api.page.len());
+
+    function sync() {
+      var p = api.page.info();
+      info.textContent = 'Page ' + (p.pages ? p.page + 1 : 0) + ' of ' + p.pages;
+      prev.disabled = p.page <= 0;
+      next.disabled = p.page >= p.pages - 1;
+    }
+
+    prev.addEventListener('click', function () { api.page('previous').draw(false); });
+    next.addEventListener('click', function () { api.page('next').draw(false); });
+    size.addEventListener('change', function () { api.page.len(Number(size.value)).draw(); });
+    api.on('draw', sync);
+    sync();
+  }
+
   /* ---------------- table cleanup ---------------- */
   function tidyTables() {
     var wrappers = document.querySelectorAll('.dataTables_wrapper');
@@ -80,7 +148,11 @@
       );
       if (customSearch) {
         var filter = wrapper.querySelector('.dataTables_filter');
-        if (filter) filter.style.display = 'none';
+        if (filter) {
+          var top = filter.closest('.dt-top');
+          if (top) top.style.display = 'none';
+          filter.style.display = 'none';
+        }
       }
 
       /* A one-page server pager duplicates DataTables' own count. Keep it
@@ -95,6 +167,8 @@
           block.style.setProperty('display', 'none', 'important');
         }
       }
+
+      setupTableFooter(wrapper);
     }
   }
 
