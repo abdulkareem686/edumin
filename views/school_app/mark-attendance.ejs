@@ -40,6 +40,34 @@
             right: 20px;
             z-index: 9999;
         }
+        /* Bulk action toolbar above the attendance table */
+        .attendance-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+            background: var(--aa-surface-2, #f8f9fa);
+            border: 1px solid var(--aa-border, #e2e6ea);
+            border-radius: var(--aa-radius-sm, 10px);
+        }
+        .attendance-toolbar .attendance-toolbar__label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--aa-text-muted, #6b715c);
+        }
+        .attendance-toolbar .btn-mark-all {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--aa-radius-pill, 999px);
+        }
     </style>
     <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
     <!-- Alhamdulillahi Academy - Heritage 2027 UI -->
@@ -51,7 +79,6 @@
 <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
     <!-- Begin page -->
     <div class="wrapper">
-        <!-- ========== Left Sidebar Start ========== -->
         <!-- ========== Left Sidebar Start ========== -->
         <%- include('partials/app-sidebar') %>
         <!-- Left Sidebar End -->
@@ -221,6 +248,22 @@
                                             Date: <%= moment(selectedDate).format('dddd, MMMM D, YYYY') %><br>
                                             Session: <%= selectedSession.charAt(0).toUpperCase() + selectedSession.slice(1) %><br>
                                             Academic Year: <%= selectedAcademicYear %>, Term: <%= selectedTerm %>, Week: <%= selectedWeek %>
+                                        </div>
+
+                                        <!-- Bulk action toolbar -->
+                                        <div class="attendance-toolbar">
+                                            <span class="attendance-toolbar__label">
+                                                <i class="bi bi-people me-1"></i>
+                                                <%= students.length %> student<%= students.length === 1 ? '' : 's' %> in this class
+                                            </span>
+                                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                                <button type="button" class="btn btn-success btn-mark-all" id="markAllPresentBtn">
+                                                    <i class="bi bi-check2-all"></i> Mark only present for all
+                                                </button>
+                                                <button type="button" class="btn btn-outline-secondary btn-sm" id="clearAllBtn" title="Clear all selections">
+                                                    <i class="bi bi-x-lg"></i> Clear
+                                                </button>
+                                            </div>
                                         </div>
                                         
                                         <div class="table-responsive">
@@ -431,6 +474,45 @@
             }
             if (termSelect) {
                 termSelect.addEventListener('change', updateWeekDropdown);
+            }
+
+            // ── Bulk actions ─────────────────────────────────────────────
+            // "Mark only present for all": check every "present" radio in
+            // the attendance form. One-click attendance for a full class.
+            const markAllPresentBtn = document.getElementById('markAllPresentBtn');
+            if (markAllPresentBtn) {
+                markAllPresentBtn.addEventListener('click', function() {
+                    const form = document.getElementById('attendanceForm');
+                    if (!form) return;
+
+                    const presentRadios = form.querySelectorAll('input[type="radio"][value="present"]');
+                    presentRadios.forEach(function(radio) {
+                        radio.checked = true;
+                        // Let Bootstrap and any listeners know the state changed
+                        radio.dispatchEvent(new Event('change', { bubbles: true }));
+                    });
+
+                    // Give the teacher a quick confirmation without a modal
+                    markAllPresentBtn.classList.add('btn-save-loading');
+                    const originalText = markAllPresentBtn.innerHTML;
+                    markAllPresentBtn.innerHTML = '<i class="bi bi-check2-all"></i> All marked present';
+                    setTimeout(function() {
+                        markAllPresentBtn.classList.remove('btn-save-loading');
+                        markAllPresentBtn.innerHTML = originalText;
+                    }, 1500);
+                });
+            }
+
+            // Optional: clear every selection so the teacher can start fresh
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            if (clearAllBtn) {
+                clearAllBtn.addEventListener('click', function() {
+                    const form = document.getElementById('attendanceForm');
+                    if (!form) return;
+                    form.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+                        radio.checked = false;
+                    });
+                });
             }
             
             // Attendance form submission
