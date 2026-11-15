@@ -10,86 +10,189 @@
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
    <style>
-      .summary-card {
-         transition: all 0.3s ease;
-         border-radius: 15px;
+      /* --- Redesigned Attendance Cards (matching reference image) --- */
+      .aa-att-card {
+         background: var(--aa-surface);
+         border: 1px solid var(--aa-border);
+         border-radius: var(--aa-radius-lg);
+         box-shadow: var(--aa-shadow-sm);
+         overflow: hidden;
+         height: 100%;
+         display: flex;
+         flex-direction: column;
+         transition: border-color var(--aa-dur) var(--aa-ease), box-shadow var(--aa-dur) var(--aa-ease);
+      }
+      .aa-att-card:hover {
+         border-color: var(--aa-border-strong);
+         box-shadow: var(--aa-shadow);
       }
 
-      .stat-card {
-         background: var(--aa-brand, #4a5a34);
-         color: white;
-         border-radius: 12px;
-         padding: 1rem;
-         text-align: center;
-      }
-
-      .stat-number {
-         font-size: 2rem;
-         font-weight: bold;
-      }
-
-      .attendance-circle {
-         width: 100px;
-         height: 100px;
-         border-radius: 50%;
+      .aa-att-header {
+         padding: 0.9rem 1.25rem;
          display: flex;
          align-items: center;
+         justify-content: space-between;
+         color: #fff;
+      }
+      .aa-att-header h6 {
+         margin: 0;
+         font-family: var(--aa-font-body);
+         font-size: 1rem;
+         font-weight: 700;
+         display: flex;
+         align-items: center;
+         gap: 0.5rem;
+      }
+      .aa-att-header h6 i {
+         font-size: 1.1rem;
+         opacity: 0.9;
+      }
+      .aa-att-header span {
+         font-size: 0.85rem;
+         font-weight: 600;
+         opacity: 0.9;
+      }
+
+      /* Header tint variations */
+      .aa-att-header--weekly { background: var(--aa-success); }
+      .aa-att-header--termly { background: var(--aa-brand); }
+      .aa-att-header--yearly { background: var(--aa-warning); }
+      .aa-att-header--excellent { background: var(--aa-success); }
+      .aa-att-header--good { background: #5fa07a; }
+      .aa-att-header--average { background: var(--aa-warning); }
+      .aa-att-header--poor { background: var(--aa-danger); }
+
+      .aa-att-body {
+         padding: 2rem 1.5rem 1.5rem;
+         text-align: center;
+         flex-grow: 1;
+         display: flex;
+         flex-direction: column;
          justify-content: center;
-         font-size: 1.5rem;
-         font-weight: bold;
-         margin: 0 auto;
       }
 
-      .attendance-excellent {
-         background: #3f7a5a;
-         color: white;
+      .aa-att-percentage {
+         font-family: var(--aa-font-display);
+         font-size: 3rem;
+         font-weight: 600;
+         line-height: 1;
+         letter-spacing: -0.03em;
+         margin-bottom: 0.5rem;
       }
 
-      .attendance-good {
-         background: #5fa07a;
-         color: white;
+      .aa-att-ratio {
+         font-family: var(--aa-font-body);
+         font-size: 0.95rem;
+         color: var(--aa-text-muted);
+         margin-bottom: 2rem;
       }
 
-      .attendance-average {
-         background: #d3a855;
-         color: var(--aa-text, #6b715c);
+      .aa-att-track {
+         height: 6px;
+         background: var(--aa-surface-2);
+         border-radius: 999px;
+         width: 100%;
+         position: relative;
+         margin-bottom: 1.5rem;
+      }
+      .aa-att-fill {
+         height: 100%;
+         border-radius: 999px;
+         position: absolute;
+         top: 0;
+         left: 0;
+         min-width: 8px;
+      }
+      .aa-att-fill::after {
+         content: "";
+         position: absolute;
+         right: -4px;
+         top: 50%;
+         transform: translateY(-50%);
+         width: 12px;
+         height: 12px;
+         border-radius: 50%;
+         background: inherit;
+         box-shadow: 0 0 0 2px var(--aa-surface);
       }
 
-      .attendance-poor {
-         background: #a6463b;
-         color: white;
+      .aa-att-fill--excellent { background: var(--aa-success); }
+      .aa-att-fill--good { background: #5fa07a; }
+      .aa-att-fill--average { background: var(--aa-warning); }
+      .aa-att-fill--poor { background: var(--aa-danger); }
+
+      .aa-att-formula {
+         text-align: left;
+         font-size: 0.8rem;
+         color: var(--aa-text-muted);
+         line-height: 1.5;
+         padding-top: 1rem;
+         border-top: 1px dashed var(--aa-border);
+         margin-top: auto;
+      }
+      .aa-att-formula i {
+         color: var(--aa-text-soft);
+         margin-right: 0.25rem;
       }
 
-      .progress {
-         height: 8px;
-         border-radius: 4px;
+      /* --- KPI row cards --- */
+      .aa-kpi {
+         display: flex;
+         align-items: center;
+         gap: 0.9rem;
+         padding: 1.15rem 1.25rem;
+         background: var(--aa-surface);
+         border: 1px solid var(--aa-border);
+         border-radius: var(--aa-radius-lg);
+         box-shadow: var(--aa-shadow-sm);
+         height: 100%;
+      }
+      .aa-kpi__icon {
+         flex: 0 0 auto;
+         width: 46px;
+         height: 46px;
+         display: inline-flex;
+         align-items: center;
+         justify-content: center;
+         border-radius: 14px;
+         font-size: 1.35rem;
+      }
+      .aa-kpi__icon--brand { background: var(--aa-brand-soft); color: var(--aa-brand-ink); }
+      .aa-kpi__icon--green { background: var(--aa-success-soft); color: var(--aa-success); }
+      .aa-kpi__icon--amber { background: var(--aa-warning-soft); color: var(--aa-warning); }
+      .aa-kpi__icon--rose { background: var(--aa-danger-soft); color: var(--aa-danger); }
+      .aa-kpi__label {
+         font-size: 0.68rem;
+         font-weight: 700;
+         letter-spacing: 0.09em;
+         text-transform: uppercase;
+         color: var(--aa-text-soft);
+         margin-bottom: 0.2rem;
+      }
+      .aa-kpi__value {
+         font-family: var(--aa-font-display);
+         font-size: 1.55rem;
+         font-weight: 600;
+         line-height: 1.1;
+         letter-spacing: -0.02em;
+         color: var(--aa-text);
       }
 
+      /* --- Retained utilities --- */
       .notification-unread {
          background-color: var(--aa-brand-softer, #e8f0fe);
          border-left: 3px solid #4a5a34;
       }
-
-      .rank-1 {
-         background: #d3a855;
-         color: var(--aa-text, #6b715c);
-      }
-
-      .rank-2 {
-         background: var(--aa-border, #d1d5db);
-         color: var(--aa-text, #6b715c);
-      }
-
-      .rank-3 {
-         background: #e0c07a;
-         color: var(--aa-text, #6b715c);
+      .progress {
+         height: 8px;
+         border-radius: 4px;
       }
    </style>
-    <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
-    <!-- Alhamdulillahi Academy - Heritage 2027 UI -->
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
-    <link href="/assets/css/theme-2027.css" rel="stylesheet" type="text/css">
-    <script src="/assets/js/theme-2027.js"></script>
+   <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+   <!-- Alhamdulillahi Academy - Heritage 2027 UI -->
+   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+   <link href="/assets/css/theme-2027.css" rel="stylesheet" type="text/css">
+   <script src="/assets/js/theme-2027.js"></script>
 </head>
 
 <body class="loading"
@@ -97,19 +200,17 @@
    <!-- Begin page -->
    <div class="wrapper">
       <!-- Left Sidebar -->
-      <!-- ========== Left Sidebar Start ========== -->
-        <%- include('partials/teacher-sidebar') %>
-        <!-- Left Sidebar End -->
-
-        
+      <%- include('partials/teacher-sidebar') %>
+      <!-- Left Sidebar End -->
 
       <div class="content-page">
          <div class="content">
             <!-- Topbar -->
-                <%- include('partials/teacher-navbar') %>
-                <!-- end Topbar -->
+            <%- include('partials/teacher-navbar') %>
+            <!-- end Topbar -->
 
             <div class="container-fluid">
+               <!-- Page title -->
                <div class="row">
                   <div class="col-12">
                      <div class="page-title-box">
@@ -125,261 +226,254 @@
                   <div class="alert alert-danger">
                      <%= error %>
                   </div>
-                  <% } %>
+               <% } %>
 
-                     <!-- Filter Form -->
+               <!-- Filter Form -->
+               <div class="card mb-4">
+                  <div class="card-body">
+                     <form method="GET" action="/teacher/attendance-summary" class="row g-3">
+                        <div class="col-md-3">
+                           <label class="form-label">Academic Year</label>
+                           <select name="academicYear" class="form-select" required>
+                              <option value="">Select Year</option>
+                              <% academicYears.forEach(function(year) { %>
+                                 <option value="<%= year.year_name %>" <%= selectedAcademicYear === year.year_name ? 'selected' : '' %>>
+                                    <%= year.year_name %>
+                                 </option>
+                              <% }); %>
+                           </select>
+                        </div>
+                        <div class="col-md-3">
+                           <label class="form-label">Term</label>
+                           <select name="term" class="form-select" required>
+                              <option value="">Select Term</option>
+                              <% terms.forEach(function(t) { %>
+                                 <option value="<%= t.term_name %>" <%= selectedTerm === t.term_name ? 'selected' : '' %>>
+                                    <%= t.term_name %>
+                                 </option>
+                              <% }); %>
+                           </select>
+                        </div>
+                        <div class="col-md-3">
+                           <label class="form-label">Class (Optional)</label>
+                           <select name="classId" class="form-select">
+                              <option value="">All Classes</option>
+                              <% teacherClasses.forEach(function(cls) { %>
+                                 <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>>
+                                    <%= cls.className %>
+                                    <%= cls.department ? '(' + cls.department + ')' : '' %>
+                                 </option>
+                              <% }); %>
+                           </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                           <button type="submit" class="btn btn-primary w-100">
+                              <i class="bi bi-search me-1"></i> View Summary
+                           </button>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+
+               <% if (selectedAcademicYear && selectedTerm) { %>
+
+                  <% if (selectedClassId && classAttendanceSummary.length > 0) {
+                     var classData = classAttendanceSummary[0]; %>
+
+                     <!-- Class header -->
                      <div class="card mb-4">
                         <div class="card-body">
-                           <form method="GET" action="/teacher/attendance-summary" class="row g-3">
-                              <div class="col-md-3">
-                                 <label class="form-label">Academic Year</label>
-                                 <select name="academicYear" class="form-select" required>
-                                    <option value="">Select Year</option>
-                                    <% academicYears.forEach(function(year) { %>
-                                       <option value="<%= year.year_name %>" <%=selectedAcademicYear===year.year_name
-                                          ? 'selected' : '' %>>
-                                          <%= year.year_name %>
-                                       </option>
-                                       <% }); %>
-                                 </select>
+                           <div class="row align-items-center">
+                              <div class="col-md-6">
+                                 <h5 class="mb-1" style="font-family: var(--aa-font-display);">
+                                    <%= classData.classInfo.className %>
+                                 </h5>
+                                 <p class="text-muted mb-0 small">
+                                    <%= classData.classInfo.level || '' %>
+                                    <%= classData.classInfo.department || '' %>
+                                 </p>
                               </div>
-                              <div class="col-md-3">
-                                 <label class="form-label">Term</label>
-                                 <select name="term" class="form-select" required>
-                                    <option value="">Select Term</option>
-                                    <% terms.forEach(function(t) { %>
-                                       <option value="<%= t.term_name %>" <%=selectedTerm===t.term_name ? 'selected'
-                                          : '' %>>
-                                          <%= t.term_name %>
-                                       </option>
-                                       <% }); %>
-                                 </select>
+                              <div class="col-md-6 text-md-end">
+                                 <p class="mb-0 small">
+                                    <strong>Term:</strong> <%= selectedTerm %><br>
+                                    <strong>Academic Year:</strong> <%= selectedAcademicYear %>
+                                 </p>
                               </div>
-                              <div class="col-md-3">
-                                 <label class="form-label">Class (Optional)</label>
-                                 <select name="classId" class="form-select">
-                                    <option value="">All Classes</option>
-                                    <% teacherClasses.forEach(function(cls) { %>
-                                       <option value="<%= cls.id %>" <%=selectedClassId==cls.id ? 'selected' : '' %>>
-                                          <%= cls.className %>
-                                             <%= cls.department ? '(' + cls.department + ')' : '' %>
-                                       </option>
-                                       <% }); %>
-                                 </select>
-                              </div>
-                              <div class="col-md-3 d-flex align-items-end">
-                                 <button type="submit" class="btn btn-primary w-100">
-                                    <i class="bi bi-search me-1"></i> View Summary
-                                 </button>
-                              </div>
-                           </form>
+                           </div>
                         </div>
                      </div>
 
-                     <% if (selectedAcademicYear && selectedTerm) { %>
-                        <% if (selectedClassId && classAttendanceSummary.length> 0) {
-                           var classData = classAttendanceSummary[0]; %>
-                           <!-- Class Header -->
-                           <div class="card mb-4">
-                              <div class="card-body">
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <h5>
-                                          <%= classData.classInfo.className %>
-                                       </h5>
-                                       <p class="text-muted mb-0">
-                                          <%= classData.classInfo.level || '' %>
-                                             <%= classData.classInfo.department || '' %>
-                                       </p>
+                     <!-- Redesigned summary: KPI row + overall attendance card -->
+                     <div class="row g-3 mb-4">
+                        <div class="col-xl-8">
+                           <div class="row g-3">
+                              <div class="col-md-4">
+                                 <div class="aa-kpi">
+                                    <span class="aa-kpi__icon aa-kpi__icon--brand">
+                                       <i class="mdi mdi-account-group-outline"></i>
+                                    </span>
+                                    <div>
+                                       <div class="aa-kpi__label">Total Students</div>
+                                       <div class="aa-kpi__value"><%= classData.summary.totalStudents %></div>
                                     </div>
-                                    <div class="col-md-6 text-md-end">
-                                       <p class="mb-0">
-                                          <strong>Term:</strong>
-                                          <%= selectedTerm %><br>
-                                             <strong>Academic Year:</strong>
-                                             <%= selectedAcademicYear %>
-                                       </p>
+                                 </div>
+                              </div>
+                              <div class="col-md-4">
+                                 <div class="aa-kpi">
+                                    <span class="aa-kpi__icon aa-kpi__icon--green">
+                                       <i class="mdi mdi-calendar-check-outline"></i>
+                                    </span>
+                                    <div>
+                                       <div class="aa-kpi__label">School Days</div>
+                                       <div class="aa-kpi__value"><%= classData.summary.totalDays %></div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="col-md-4">
+                                 <div class="aa-kpi">
+                                    <span class="aa-kpi__icon aa-kpi__icon--amber">
+                                       <i class="mdi mdi-percent-outline"></i>
+                                    </span>
+                                    <div>
+                                       <div class="aa-kpi__label">Attendance Rate</div>
+                                       <div class="aa-kpi__value"><%= classData.summary.overallPercentage %>%</div>
                                     </div>
                                  </div>
                               </div>
                            </div>
+                        </div>
 
-                           <!-- Summary Stats -->
-                           <div class="row mb-4">
-                              <div class="col-md-3">
-                                 <div class="stat-card">
-                                    <div class="stat-number">
-                                       <%= classData.summary.totalStudents %>
-                                    </div>
-                                    <div>Total Students</div>
-                                 </div>
+                        <div class="col-xl-4">
+                           <div class="aa-att-card h-100">
+                              <div class="aa-att-header aa-att-header--<%= classData.summary.overallPercentage >= 80 ? 'excellent' : classData.summary.overallPercentage >= 60 ? 'good' : classData.summary.overallPercentage >= 40 ? 'average' : 'poor' %>">
+                                 <h6><i class="uil uil-analysis"></i> Overall Attendance</h6>
+                                 <span><%= selectedTerm %></span>
                               </div>
-                              <div class="col-md-3">
-                                 <div class="stat-card" style="background: #3f7a5a;">
-                                    <div class="stat-number">
-                                       <%= classData.summary.totalDays %>
-                                    </div>
-                                    <div>School Days</div>
-                                 </div>
-                              </div>
-                              <div class="col-md-3">
-                                 <div class="stat-card" style="background: #c08a3e;">
-                                    <div class="stat-number">
-                                       <%= classData.summary.overallPercentage %>%
-                                    </div>
-                                    <div>Overall Attendance</div>
-                                 </div>
-                              </div>
-                              <div class="col-md-3">
-                                 <div
-                                    class="attendance-circle attendance-<%= classData.summary.overallPercentage >= 80 ? 'excellent' : classData.summary.overallPercentage >= 60 ? 'good' : classData.summary.overallPercentage >= 40 ? 'average' : 'poor' %>">
+                              <div class="aa-att-body">
+                                 <div class="aa-att-percentage text-<%= classData.summary.overallPercentage >= 80 ? 'success' : classData.summary.overallPercentage >= 60 ? 'info' : classData.summary.overallPercentage >= 40 ? 'warning' : 'danger' %>">
                                     <%= classData.summary.overallPercentage %>%
                                  </div>
+                                 <div class="aa-att-ratio">
+                                    <%= classData.summary.totalStudents %> students · <%= classData.summary.totalDays %> days
+                                 </div>
+                                 <div class="aa-att-track">
+                                    <div class="aa-att-fill aa-att-fill--<%= classData.summary.overallPercentage >= 80 ? 'excellent' : classData.summary.overallPercentage >= 60 ? 'good' : classData.summary.overallPercentage >= 40 ? 'average' : 'poor' %>"
+                                         style="width: <%= classData.summary.overallPercentage %>%;"></div>
+                                 </div>
+                                 <div class="aa-att-formula">
+                                    <i class="uil uil-calculator-alt"></i> Formula: (Present / Max Possible) × 100<br>
+                                    Max Possible: <%= classData.summary.totalStudents %> students × <%= classData.summary.totalDays %> days
+                                 </div>
                               </div>
                            </div>
+                        </div>
+                     </div>
 
-                           <!-- Student Attendance Table -->
-                           <div class="card">
-                              <div class="card-header bg-white">
-                                 <h6 class="mb-0">Student Attendance Details</h6>
-                              </div>
-                              <div class="card-body p-0">
-                                 <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
-                                       <thead class="table-light">
-                                          <tr>
-                                             <th>#</th>
-                                             <th>Admission No.</th>
-                                             <th>Student Name</th>
-                                             <th>Present</th>
-                                             <th>Absent</th>
-                                             <th>Late</th>
-                                             <th>Excused</th>
-                                             <th>Attendance %</th>
-                                             <th>Status</th>
-                                          </tr>
-                                       </thead>
-                                       <tbody>
-                                          <% for(var i=0; i < classData.students.length; i++) { var
-                                             student=classData.students[i]; %>
-                                             <tr>
-                                                <td>
-                                                   <%= i + 1 %>
-                                                </td>
-                                                <td>
-                                                   <%= student.admissionNumber || 'N/A' %>
-                                                </td>
-                                                <td>
-                                                   <%= student.fullName %>
-                                                </td>
-                                                <td class="text-center">
-                                                   <%= student.present %>
-                                                </td>
-                                                <td class="text-center">
-                                                   <%= student.absent %>
-                                                </td>
-                                                <td class="text-center">
-                                                   <%= student.late %>
-                                                </td>
-                                                <td class="text-center">
-                                                   <%= student.excused %>
-                                                </td>
-                                                <td class="text-center">
-                                                   <strong>
-                                                      <%= student.percentage %>%
-                                                   </strong>
-                                                   <div class="progress mt-1">
-                                                      <div class="progress-bar bg-success"
-                                                         style="width: <%= student.percentage %>%"></div>
-                                                   </div>
-                                                </td>
-                                                <td class="text-center">
-                                                   <span
-                                                      class="badge <%= student.percentage >= 80 ? 'bg-success' : student.percentage >= 60 ? 'bg-info' : student.percentage >= 40 ? 'bg-warning' : 'bg-danger' %>">
-                                                      <%= student.percentage>= 80 ? 'Excellent' : student.percentage >=
-                                                         60 ? 'Good' : student.percentage >= 40 ? 'Average' : 'Poor' %>
-                                                   </span>
-                                                </td>
-                                             </tr>
-                                             <% } %>
-                                       </tbody>
-                                    </table>
+                     <!-- Student Attendance Table -->
+                     <div class="card">
+                        <div class="card-header bg-white">
+                           <h6 class="mb-0">Student Attendance Details</h6>
+                        </div>
+                        <div class="card-body p-0">
+                           <div class="table-responsive">
+                              <table class="table table-hover mb-0">
+                                 <thead class="table-light">
+                                    <tr>
+                                       <th>#</th>
+                                       <th>Admission No.</th>
+                                       <th>Student Name</th>
+                                       <th>Present</th>
+                                       <th>Absent</th>
+                                       <th>Late</th>
+                                       <th>Excused</th>
+                                       <th>Attendance %</th>
+                                       <th>Status</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    <% for (var i = 0; i < classData.students.length; i++) {
+                                       var student = classData.students[i]; %>
+                                       <tr>
+                                          <td><%= i + 1 %></td>
+                                          <td><%= student.admissionNumber || 'N/A' %></td>
+                                          <td><%= student.fullName %></td>
+                                          <td class="text-center"><%= student.present %></td>
+                                          <td class="text-center"><%= student.absent %></td>
+                                          <td class="text-center"><%= student.late %></td>
+                                          <td class="text-center"><%= student.excused %></td>
+                                          <td class="text-center">
+                                             <strong><%= student.percentage %>%</strong>
+                                             <div class="progress mt-1">
+                                                <div class="progress-bar bg-success" style="width: <%= student.percentage %>%"></div>
+                                             </div>
+                                          </td>
+                                          <td class="text-center">
+                                             <span class="badge <%= student.percentage >= 80 ? 'bg-success' : student.percentage >= 60 ? 'bg-info' : student.percentage >= 40 ? 'bg-warning' : 'bg-danger' %>">
+                                                <%= student.percentage >= 80 ? 'Excellent' : student.percentage >= 60 ? 'Good' : student.percentage >= 40 ? 'Average' : 'Poor' %>
+                                             </span>
+                                          </td>
+                                       </tr>
+                                    <% } %>
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                     </div>
+
+                  <% } else if (!selectedClassId && classAttendanceSummary.length > 0) { %>
+                     <!-- All Classes Summary -->
+                     <div class="row g-3">
+                        <% for (var i = 0; i < classAttendanceSummary.length; i++) {
+                           var cls = classAttendanceSummary[i]; %>
+                           <div class="col-md-6 col-xl-4">
+                              <div class="aa-att-card">
+                                 <div class="aa-att-header aa-att-header--<%= cls.percentage >= 80 ? 'excellent' : cls.percentage >= 60 ? 'good' : cls.percentage >= 40 ? 'average' : 'poor' %>">
+                                    <h6><i class="uil uil-building"></i> <%= cls.className %></h6>
+                                    <span><%= cls.level || cls.department || '' %></span>
+                                 </div>
+                                 <div class="aa-att-body">
+                                    <div class="aa-att-percentage text-<%= cls.percentage >= 80 ? 'success' : cls.percentage >= 60 ? 'info' : cls.percentage >= 40 ? 'warning' : 'danger' %>">
+                                       <%= cls.percentage %>%
+                                    </div>
+                                    <div class="aa-att-ratio">
+                                       <%= cls.totalStudents %> students · <%= cls.totalDays %> days
+                                    </div>
+                                    <div class="aa-att-track">
+                                       <div class="aa-att-fill aa-att-fill--<%= cls.percentage >= 80 ? 'excellent' : cls.percentage >= 60 ? 'good' : cls.percentage >= 40 ? 'average' : 'poor' %>"
+                                            style="width: <%= cls.percentage %>%;"></div>
+                                    </div>
+                                    <div class="d-grid mt-1">
+                                       <a href="/teacher/attendance-summary?classId=<%= cls.classId %>&academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>"
+                                          class="btn btn-outline-primary btn-sm">
+                                          View Details <i class="bi bi-arrow-right"></i>
+                                       </a>
+                                    </div>
+
+                                    <div class="aa-att-formula mt-3">
+                                       <i class="uil uil-calculator-alt"></i> Formula: (Present / Max Possible) × 100<br>
+                                       Max Possible: <%= cls.totalStudents %> students × <%= cls.totalDays %> days
+                                    </div>
                                  </div>
                               </div>
                            </div>
-                           <% } else if (!selectedClassId && classAttendanceSummary.length> 0) { %>
-                              <!-- All Classes Summary -->
-                              <div class="row">
-                                 <% for(var i=0; i < classAttendanceSummary.length; i++) { var
-                                    cls=classAttendanceSummary[i]; %>
-                                    <div class="col-md-6 col-xl-4 mb-4">
-                                       <div class="card summary-card h-100">
-                                          <div class="card-body">
-                                             <h5 class="card-title">
-                                                <%= cls.className %>
-                                             </h5>
-                                             <p class="text-muted small">
-                                                <%= cls.level || '' %>
-                                                   <%= cls.department || '' %>
-                                             </p>
-                                             <div class="text-center my-3">
-                                                <div
-                                                   class="attendance-circle attendance-<%= cls.percentage >= 80 ? 'excellent' : cls.percentage >= 60 ? 'good' : cls.percentage >= 40 ? 'average' : 'poor' %>"
-                                                   style="width: 80px; height: 80px; font-size: 1.2rem;">
-                                                   <%= cls.percentage %>%
-                                                </div>
-                                             </div>
-                                             <div class="row text-center">
-                                                <div class="col-6">
-                                                   <div class="fw-bold">
-                                                      <%= cls.totalStudents %>
-                                                   </div>
-                                                   <small class="text-muted">Students</small>
-                                                </div>
-                                                <div class="col-6">
-                                                   <div class="fw-bold">
-                                                      <%= cls.totalDays %>
-                                                   </div>
-                                                   <small class="text-muted">Days</small>
-                                                </div>
-                                             </div>
-                                             <div class="mt-3">
-                                                <div class="d-flex justify-content-between small mb-1">
-                                                   <span>Attendance Rate</span>
-                                                   <span>
-                                                      <%= cls.percentage %>%
-                                                   </span>
-                                                </div>
-                                                <div class="progress">
-                                                   <div class="progress-bar bg-success"
-                                                      style="width: <%= cls.percentage %>%"></div>
-                                                </div>
-                                             </div>
-                                             <div class="d-grid mt-3">
-                                                <a href="/teacher/attendance-summary?classId=<%= cls.classId %>&academicYear=<%= selectedAcademicYear %>&term=<%= selectedTerm %>"
-                                                   class="btn btn-outline-primary btn-sm">
-                                                   View Details <i class="bi bi-arrow-right"></i>
-                                                </a>
-                                             </div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <% } %>
-                              </div>
-                              <% } else { %>
-                                 <div class="alert alert-info text-center">
-                                    <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
-                                    <h5>Select a class to view attendance summary</h5>
-                                    <p>Choose an academic year, term, and class to see detailed attendance records</p>
-                                 </div>
-                                 <% } %>
-                                    <% } else { %>
-                                       <div class="alert alert-info text-center">
-                                          <i class="bi bi-calendar fs-1 d-block mb-3"></i>
-                                          <h5>Select Academic Year and Term</h5>
-                                          <p>Please select an academic year and term to view attendance summary</p>
-                                       </div>
-                                       <% } %>
+                        <% } %>
+                     </div>
+
+                  <% } else { %>
+                     <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
+                        <h5>Select a class to view attendance summary</h5>
+                        <p>Choose an academic year, term, and class to see detailed attendance records</p>
+                     </div>
+                  <% } %>
+
+               <% } else { %>
+                  <div class="alert alert-info text-center">
+                     <i class="bi bi-calendar fs-1 d-block mb-3"></i>
+                     <h5>Select Academic Year and Term</h5>
+                     <p>Please select an academic year and term to view attendance summary</p>
+                  </div>
+               <% } %>
             </div>
          </div>
 
@@ -387,7 +481,8 @@
             <div class="container-fluid">
                <div class="row">
                   <div class="col-md-6">
-                     <script>document.write(new Date().getFullYear())</script> &copy; Alhamdulillahi Academy - Teacher Portal <span class="aa-credit">Powered by <strong>QuDex Technologies</strong></span>
+                     <script>document.write(new Date().getFullYear())</script> &copy; Alhamdulillahi Academy - Teacher Portal
+                     <span class="aa-credit">Powered by <strong>QuDex Technologies</strong></span>
                   </div>
                   <div class="col-md-6 text-md-end">
                      <a href="#" class="text-muted">Support</a>
