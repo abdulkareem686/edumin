@@ -101,6 +101,110 @@
         .aa-search { position: relative; min-width: 230px; }
         .aa-search .mdi { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--aa-text-soft); font-size: 1rem; }
         .aa-search input { padding-left: 2.35rem !important; min-height: 38px !important; border-radius: var(--aa-radius-pill) !important; background: var(--aa-surface-2) !important; }
+
+        /* --- INSANE Quick Actions Design --- */
+        .aa-action-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            background: var(--aa-surface);
+            border: 1px solid var(--aa-border);
+            border-radius: var(--aa-radius-lg);
+            box-shadow: var(--aa-shadow-sm);
+            text-decoration: none !important;
+            color: var(--aa-text);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+        }
+
+        /* Gradient hover background that sweeps in */
+        .aa-action-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--aa-brand-softer) 0%, var(--aa-surface-2) 100%);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .aa-action-card:hover::before { opacity: 1; }
+
+        .aa-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--aa-shadow);
+            border-color: var(--aa-brand);
+        }
+
+        .aa-action-card__icon-wrap {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1.25rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .aa-action-card:hover .aa-action-card__icon-wrap {
+            transform: scale(1.05) rotate(-4deg);
+        }
+
+        /* Glowing effect behind the icon */
+        .aa-action-card__icon-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 20px 0px inherit;
+            opacity: 0.4;
+            transition: opacity 0.3s ease;
+        }
+        .aa-action-card:hover .aa-action-card__icon-wrap::after { opacity: 0.7; }
+
+        /* Icon specific colors */
+        .aa-action-card--scores .aa-action-card__icon-wrap { background: var(--aa-brand-soft); color: var(--aa-brand-ink); box-shadow: 0 0 20px -5px rgba(74, 90, 52, 0.3); }
+        .aa-action-card--attendance .aa-action-card__icon-wrap { background: var(--aa-info-soft); color: var(--aa-info); box-shadow: 0 0 20px -5px rgba(75, 110, 114, 0.3); }
+        .aa-action-card--fees .aa-action-card__icon-wrap { background: var(--aa-danger-soft); color: var(--aa-danger); box-shadow: 0 0 20px -5px rgba(162, 73, 61, 0.3); }
+        .aa-action-card--broadsheet .aa-action-card__icon-wrap { background: var(--aa-warning-soft); color: var(--aa-warning); box-shadow: 0 0 20px -5px rgba(180, 128, 58, 0.3); }
+
+        .aa-action-card__title {
+            font-family: var(--aa-font-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            transition: color 0.2s ease;
+        }
+        
+        .aa-action-card:hover .aa-action-card__title { color: var(--aa-brand-ink); }
+
+        .aa-action-card__desc {
+            font-size: 0.85rem;
+            color: var(--aa-text-muted);
+            line-height: 1.4;
+        }
+
+        .aa-action-card__arrow {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.25rem;
+            color: var(--aa-text-soft);
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            transform: translateX(-5px);
+        }
+
+        .aa-action-card:hover .aa-action-card__arrow {
+            color: var(--aa-brand-ink);
+            opacity: 1;
+            transform: translateX(0);
+        }
     </style>
 </head>
 
@@ -118,7 +222,7 @@
 
                 <div class="container-fluid edu-dashboard pt-3 pb-4">
 
-                    <!-- ══ Greeting row (reference: "Welcome, Diana!" + search + actions) ══ -->
+                    <!-- ══ Greeting row ══ -->
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
                         <div>
                             <h1 class="aa-greeting-title">
@@ -145,7 +249,7 @@
                         </div>
                     </div>
 
-                    <!-- ══ KPI strip (reference: three pastel cards) ══ -->
+                    <!-- ══ KPI strip ══ -->
                     <div class="aa-kpi-strip mb-4">
                         <div class="aa-kpi">
                             <span class="aa-kpi__icon aa-kpi__icon--rose"><i class="mdi mdi-account-group-outline"></i></span>
@@ -176,16 +280,17 @@
                             </div>
                         </div>
 
+                        <!-- Replaced Fee Collection with Attendance Rate -->
                         <div class="aa-kpi">
-                            <span class="aa-kpi__icon aa-kpi__icon--brand"><i class="mdi mdi-cash-multiple"></i></span>
+                            <span class="aa-kpi__icon aa-kpi__icon--brand"><i class="mdi mdi-check-decagram"></i></span>
                             <div>
-                                <div class="aa-kpi__label">Fee Collection</div>
-                                <div class="aa-kpi__value">₦<%= revenue.toLocaleString() %><small><%= currentTerm %></small></div>
+                                <div class="aa-kpi__label">Attendance Rate</div>
+                                <div class="aa-kpi__value"><%= averageAttendance %>%<small>this term</small></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ══ Primary row: chart + side panel (reference: Heart rate + Care team) ══ -->
+                    <!-- ══ Primary row: chart + side panel ══ -->
                     <div class="row g-3 mb-4">
                         <!-- Chart panel -->
                         <div class="col-xl-8">
@@ -207,8 +312,6 @@
                                 </div>
 
                                 <div class="card-body pt-2">
-                                    <!-- Replacement for the reference's bar chart:
-                                         the term/week engine, rendered with the Heritage ring + strip. -->
                                     <div class="week-engine border-0" style="box-shadow:none;">
                                         <div class="week-engine__body pb-0">
                                             <div class="week-ring">
@@ -287,7 +390,7 @@
                             </div>
                         </div>
 
-                        <!-- Side panel: Operational pulse + Upcoming events (reference: Care team) -->
+                        <!-- Side panel: Operational pulse + Upcoming events -->
                         <div class="col-xl-4">
                             <div class="card h-100">
                                 <div class="d-flex align-items-center justify-content-between px-4 pt-3 pb-2">
@@ -348,7 +451,7 @@
                         </div>
                     </div>
 
-                    <!-- ══ Full-width table (reference: Medication tracker) ══ -->
+                    <!-- ══ Full-width table ══ -->
                     <div class="card">
                         <div class="aa-panel-head">
                             <div class="d-flex align-items-center gap-2 flex-wrap">
@@ -417,40 +520,61 @@
                         </div>
                     </div>
 
-                    <!-- ══ Quick actions (kept from your original; restyled to the new language) ══ -->
-                    <div class="card mt-4">
-                        <div class="d-flex align-items-center justify-content-between px-4 pt-3 pb-1">
+                    <!-- ══ INSANE Quick Actions ══ -->
+                    <div class="card mt-4 border-0 shadow-none bg-transparent">
+                        <div class="d-flex align-items-center justify-content-between px-2 pt-3 pb-3">
                             <div>
-                                <h5 class="card-title mb-0"><i class="mdi mdi-lightning-bolt text-warning me-1"></i> Quick Actions</h5>
+                                <h5 class="card-title mb-0" style="font-size: 1.25rem;"><i class="mdi mdi-lightning-bolt text-warning me-1"></i> Operational Quick Actions</h5>
                                 <small class="text-muted">Fast shortcuts to everyday workflows</small>
                             </div>
                         </div>
-                        <div class="card-body px-4 pt-2 pb-4">
-                            <div class="row g-3">
-                                <div class="col-lg-3 col-md-6">
-                                    <a href="/enter-scores" class="modern-action-tile">
-                                        <div class="modern-action-icon" style="background: var(--aa-brand-soft); color: var(--aa-brand-ink);"><i class="mdi mdi-pencil-box-outline"></i></div>
-                                        <div><div class="fw-bold">Enter Scores</div><small class="text-muted">Assessment &amp; exams</small></div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-3 col-md-6">
-                                    <a href="/mark-attendance" class="modern-action-tile">
-                                        <div class="modern-action-icon" style="background: var(--aa-info-soft); color: var(--aa-info);"><i class="mdi mdi-check-circle-outline"></i></div>
-                                        <div><div class="fw-bold">Take Attendance</div><small class="text-muted">Daily roll call &amp; register</small></div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-3 col-md-6">
-                                    <a href="/fees-collection" class="modern-action-tile">
-                                        <div class="modern-action-icon" style="background: var(--aa-danger-soft); color: var(--aa-danger);"><i class="mdi mdi-cash-multiple"></i></div>
-                                        <div><div class="fw-bold">Fee Collection</div><small class="text-muted">Collect &amp; issue receipts</small></div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-3 col-md-6">
-                                    <a href="/broadsheet-selection" class="modern-action-tile">
-                                        <div class="modern-action-icon" style="background: var(--aa-warning-soft); color: var(--aa-warning);"><i class="mdi mdi-table-large"></i></div>
-                                        <div><div class="fw-bold">Class Broadsheet</div><small class="text-muted">Term result summaries</small></div>
-                                    </a>
-                                </div>
+                        <div class="row g-4">
+                            <!-- Enter Scores -->
+                            <div class="col-lg-3 col-md-6">
+                                <a href="/enter-scores" class="aa-action-card aa-action-card--scores">
+                                    <div class="aa-action-card__icon-wrap">
+                                        <i class="mdi mdi-pencil-box-outline"></i>
+                                    </div>
+                                    <div class="aa-action-card__title">Enter Scores</div>
+                                    <div class="aa-action-card__desc">Assessment &amp; exams</div>
+                                    <i class="mdi mdi-arrow-right aa-action-card__arrow"></i>
+                                </a>
+                            </div>
+                            
+                            <!-- Take Attendance -->
+                            <div class="col-lg-3 col-md-6">
+                                <a href="/mark-attendance" class="aa-action-card aa-action-card--attendance">
+                                    <div class="aa-action-card__icon-wrap">
+                                        <i class="mdi mdi-check-circle-outline"></i>
+                                    </div>
+                                    <div class="aa-action-card__title">Take Attendance</div>
+                                    <div class="aa-action-card__desc">Daily roll call &amp; register</div>
+                                    <i class="mdi mdi-arrow-right aa-action-card__arrow"></i>
+                                </a>
+                            </div>
+                            
+                            <!-- Fee Collection -->
+                            <div class="col-lg-3 col-md-6">
+                                <a href="/fees-collection" class="aa-action-card aa-action-card--fees">
+                                    <div class="aa-action-card__icon-wrap">
+                                        <i class="mdi mdi-cash-multiple"></i>
+                                    </div>
+                                    <div class="aa-action-card__title">Fee Collection</div>
+                                    <div class="aa-action-card__desc">Collect &amp; issue receipts</div>
+                                    <i class="mdi mdi-arrow-right aa-action-card__arrow"></i>
+                                </a>
+                            </div>
+                            
+                            <!-- Class Broadsheet -->
+                            <div class="col-lg-3 col-md-6">
+                                <a href="/broadsheet-selection" class="aa-action-card aa-action-card--broadsheet">
+                                    <div class="aa-action-card__icon-wrap">
+                                        <i class="mdi mdi-table-large"></i>
+                                    </div>
+                                    <div class="aa-action-card__title">Class Broadsheet</div>
+                                    <div class="aa-action-card__desc">Term result summaries</div>
+                                    <i class="mdi mdi-arrow-right aa-action-card__arrow"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
