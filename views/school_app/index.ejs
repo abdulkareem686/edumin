@@ -7,21 +7,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/assets/images/favicon.png">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-
     <!-- Core Icons & Styles -->
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
     <link href="/assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
     <link href="/assets/css/school-dashboard.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
     <!-- Alhamdulillahi Academy - Heritage 2027 UI -->
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
     <link href="/assets/css/theme-2027.css" rel="stylesheet" type="text/css">
     <script src="/assets/js/theme-2027.js"></script>
+
+    <!-- Page-scoped additions for the Heritage 2027 dashboard layout -->
+    <style>
+        /* --- KPI strip (reference: the three pastel cards across the top) --- */
+        .aa-kpi-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+        @media (max-width: 1199.98px) { .aa-kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 575.98px)  { .aa-kpi-strip { grid-template-columns: 1fr; } }
+
+        .aa-kpi {
+            display: flex; align-items: center; gap: 0.9rem;
+            padding: 1.15rem 1.25rem;
+            background: var(--aa-surface);
+            border: 1px solid var(--aa-border);
+            border-radius: var(--aa-radius-lg);
+            box-shadow: var(--aa-shadow-sm);
+            transition: border-color var(--aa-dur) var(--aa-ease);
+        }
+        .aa-kpi:hover { border-color: var(--aa-border-strong); }
+        .aa-kpi__icon {
+            flex: 0 0 auto; width: 46px; height: 46px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 14px; font-size: 1.35rem;
+        }
+        .aa-kpi__icon--rose   { background: var(--aa-danger-soft);  color: var(--aa-danger); }
+        .aa-kpi__icon--green  { background: var(--aa-success-soft); color: var(--aa-success); }
+        .aa-kpi__icon--amber  { background: var(--aa-warning-soft); color: var(--aa-warning); }
+        .aa-kpi__icon--brand  { background: var(--aa-brand-soft);   color: var(--aa-brand-ink); }
+        .aa-kpi__label {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.09em;
+            text-transform: uppercase; color: var(--aa-text-soft); margin-bottom: 0.2rem;
+        }
+        .aa-kpi__value {
+            font-family: var(--aa-font-display);
+            font-size: 1.55rem; font-weight: 600; line-height: 1.1;
+            letter-spacing: -0.02em; color: var(--aa-text);
+        }
+        .aa-kpi__value small { font-family: var(--aa-font-body); font-size: 0.72rem; font-weight: 600; color: var(--aa-text-muted); letter-spacing: 0; margin-left: 0.15rem; }
+
+        /* --- Row-action menu (reference: the "…" at the end of each table row) --- */
+        .aa-row-menu { position: relative; display: inline-block; }
+        .aa-row-menu > button {
+            border: 0; background: transparent; color: var(--aa-text-soft);
+            padding: 0.2rem 0.4rem; border-radius: 6px; line-height: 1;
+        }
+        .aa-row-menu > button:hover { background: var(--aa-surface-2); color: var(--aa-text); }
+        .aa-row-menu .dropdown-menu { min-width: 9.5rem; }
+
+        /* --- Table polish to match the reference's airy rows --- */
+        .aa-table th {
+            font-size: 0.7rem !important; font-weight: 700 !important;
+            letter-spacing: 0.08em !important; text-transform: uppercase !important;
+        }
+        .aa-table td { padding-top: 1.05rem !important; padding-bottom: 1.05rem !important; }
+        .aa-table .aa-primary { font-weight: 650; color: var(--aa-text); }
+        .aa-table .aa-secondary { font-size: 0.8rem; color: var(--aa-text-muted); }
+
+        /* Status pill — reference "Taken" / "Missed" */
+        .aa-status {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.35em 0.8em; border-radius: var(--aa-radius-pill);
+            font-size: 0.74rem; font-weight: 650; white-space: nowrap;
+        }
+        .aa-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .aa-status--ok   { background: var(--aa-success-soft); color: var(--aa-success); }
+        .aa-status--warn { background: var(--aa-warning-soft); color: var(--aa-warning); }
+        .aa-status--bad  { background: var(--aa-danger-soft);  color: var(--aa-danger); }
+        .aa-status--info { background: var(--aa-info-soft);    color: var(--aa-info); }
+
+        /* Chart panel head: title + segmented control (reference "Heart rate | Weekdays") */
+        .aa-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.1rem 1.35rem 0.4rem; }
+        .aa-seg { display: inline-flex; background: var(--aa-surface-2); border: 1px solid var(--aa-border); border-radius: var(--aa-radius-pill); padding: 3px; }
+        .aa-seg button {
+            border: 0; background: transparent; color: var(--aa-text-muted);
+            font-size: 0.74rem; font-weight: 650; padding: 0.3rem 0.8rem;
+            border-radius: var(--aa-radius-pill); line-height: 1.3;
+        }
+        .aa-seg button.is-active { background: var(--aa-surface); color: var(--aa-text); box-shadow: var(--aa-shadow-sm); }
+
+        /* Greeting row */
+        .aa-greeting-title { font-family: var(--aa-font-display); font-size: 1.6rem; font-weight: 600; letter-spacing: -0.025em; margin: 0; color: var(--aa-text); }
+        .aa-search { position: relative; min-width: 230px; }
+        .aa-search .mdi { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--aa-text-soft); font-size: 1rem; }
+        .aa-search input { padding-left: 2.35rem !important; min-height: 38px !important; border-radius: var(--aa-radius-pill) !important; background: var(--aa-surface-2) !important; }
+    </style>
 </head>
 
 <body class="loading"
@@ -29,7 +109,7 @@
     <div class="wrapper">
         <!-- Left Sidebar -->
         <%- include('partials/admin-sidebar') %>
-        
+
         <div class="content-page">
             <div class="content">
                 <!-- Topbar -->
@@ -37,515 +117,349 @@
                 <!-- end Topbar -->
 
                 <div class="container-fluid edu-dashboard pt-3 pb-4">
-                    <!-- Page Header Breadcrumb -->
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="page-title-box d-flex align-items-center justify-content-between">
-                                <h4 class="page-title mb-0" style="font-family: 'Outfit', sans-serif; font-weight: 700;">
-                                    <i class="mdi mdi-view-dashboard-outline me-2 text-primary"></i> Executive Dashboard
-                                </h4>
-                                <div class="page-title-right d-none d-md-block">
-                                    <span class="text-muted small">
-                                        <i class="mdi mdi-clock-outline me-1"></i>
-                                        <%= moment().format('dddd, MMMM D, YYYY') %>
-                                    </span>
-                                </div>
-                            </div>
+
+                    <!-- ══ Greeting row (reference: "Welcome, Diana!" + search + actions) ══ -->
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                        <div>
+                            <h1 class="aa-greeting-title">
+                                Welcome back, <%= typeof username !== 'undefined' && username ? username : 'Administrator' %>!
+                            </h1>
+                            <p class="text-muted mb-0 small">
+                                <i class="mdi mdi-clock-outline me-1"></i>
+                                <%= moment().format('dddd, MMMM D, YYYY') %>
+                                <span class="mx-1">·</span>
+                                <%= currentAcademicYear %> &middot; <%= currentTerm %>
+                            </p>
                         </div>
-                    </div>
-                
-                    <!-- Hero Section -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="edu-dash-hero-inner p-4 rounded-4 text-white shadow-sm"
-                                style="background: linear-gradient(#3a4727 100%);">
-                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-                                    <div>
-                                        <div class="d-flex align-items-center gap-2 mb-1">
-                                            <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">
-                                                <i class="mdi mdi-shield-crown-outline me-1"></i> ADMINISTRATOR PORTAL
-                                            </span>
-                                        </div>
-                                        <h2 class="text-white mb-2 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                            Welcome back, <%= typeof username !== 'undefined' && username ? username : 'Administrator' %>!
-                                        </h2>
-                                        <p class="mb-0 text-white-50" style="max-width: 620px; font-size: 0.95rem;">
-                                            Here is your real-time academic pulse, term progress calculation, staff activities, and financial metrics.
-                                        </p>
-                                    </div>
 
-                                    <!-- Top Hero Badges with Current School Week -->
-                                    <div class="d-flex flex-wrap gap-2 align-items-center">
-                                        <!-- Current School Week Live Badge -->
-                                        <div class="school-week-hero-pill shadow-sm">
-                                            <span class="pulse-indicator"></span>
-                                            <i class="mdi mdi-calendar-clock text-warning"></i>
-                                            <span class="fw-bold"><%= typeof weekLabel !== 'undefined' && weekLabel ? weekLabel : 'Week 1' %></span>
-                                            <span class="badge bg-white bg-opacity-20 text-white rounded-pill ms-1" style="font-size: 0.725rem;">
-                                                <%= typeof termWeekStatusBadge !== 'undefined' ? termWeekStatusBadge : 'In Session' %>
-                                            </span>
-                                        </div>
-
-                                        <span class="badge bg-white bg-opacity-15 text-white px-3 py-2 rounded-pill border border-white border-opacity-20 shadow-sm" style="font-size: 0.8125rem;">
-                                            <i class="mdi mdi-calendar-range me-1 text-info"></i>
-                                            <%= currentAcademicYear %>
-                                        </span>
-
-                                        <span class="badge bg-white bg-opacity-15 text-white px-3 py-2 rounded-pill border border-white border-opacity-20 shadow-sm" style="font-size: 0.8125rem;">
-                                            <i class="mdi mdi-book-open-page-variant me-1 text-success"></i>
-                                            <%= currentTerm %>
-                                        </span>
-                                    </div>
-                                </div>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <div class="aa-search d-none d-lg-block">
+                                <i class="mdi mdi-magnify"></i>
+                                <input type="search" class="form-control form-control-sm" placeholder="Search students, staff, records…" aria-label="Search">
                             </div>
+                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-semibold">
+                                <span class="pulse-indicator d-inline-block me-1" style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>
+                                <strong><%= typeof weekLabel !== 'undefined' && weekLabel ? weekLabel : 'Week 1' %></strong>
+                                &middot; <%= typeof termWeekStatusBadge !== 'undefined' ? termWeekStatusBadge : 'In Session' %>
+                            </span>
+                            <a href="/add-student" class="btn btn-primary btn-sm">
+                                <i class="mdi mdi-account-plus-outline me-1"></i> Admit Student
+                            </a>
                         </div>
                     </div>
 
-                    <!-- Current School Week & Term Calculation Widget -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="school-week-card">
-                                <div class="school-week-header">
-                                    <h5 class="school-week-header-title">
-                                        <i class="mdi mdi-calculator-variant-outline"></i>
-                                        Academic Term & School Week Engine
-                                    </h5>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <% if (typeof weekStartDate !== 'undefined' && weekStartDate) { %>
-                                            <span class="badge bg-light text-dark px-3 py-2 rounded-pill border">
-                                                <i class="mdi mdi-calendar-check text-primary me-1"></i>
-                                                This Week: <strong><%= weekStartDate %> – <%= typeof weekEndDate !== 'undefined' ? weekEndDate : '' %></strong>
-                                            </span>
-                                        <% } %>
-                                        <span class="week-status-badge">
-                                            <i class="mdi mdi-check-circle"></i> <%= typeof termWeekStatusBadge !== 'undefined' ? termWeekStatusBadge : 'In Session' %>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="school-week-body">
-                                    <div class="row align-items-center g-4">
-                                        <!-- Week Main Highlight -->
-                                        <div class="col-lg-5">
-                                            <div class="week-display-banner m-0">
-                                                <div class="d-flex justify-content-between align-items-start">
-                                                    <div>
-                                                        <div class="week-display-label text-uppercase">Current Term Progress</div>
-                                                        <div class="week-display-number">
-                                                            <%= typeof shortWeekLabel !== 'undefined' && shortWeekLabel ? shortWeekLabel : ('Week ' + (typeof currentWeek !== 'undefined' ? currentWeek : 1)) %>
-                                                        </div>
-                                                        <div class="text-white-50 small">
-                                                            Out of <%= typeof totalWeeks !== 'undefined' ? totalWeeks : 12 %> academic weeks in <%= currentTerm %>
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-end">
-                                                        <span class="fs-1 fw-bold text-white"><%= typeof termProgress !== 'undefined' ? termProgress : 0 %>%</span>
-                                                        <div class="text-white-50 small">Elapsed</div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Term Progress Bar inside Widget -->
-                                                <div class="school-week-progress-wrap mt-3 mb-0">
-                                                    <div class="school-week-progress-bar">
-                                                        <div class="school-week-progress-fill" style="width: <%= typeof termProgress !== 'undefined' ? termProgress : 0 %>%;"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- 4 Quick Term Breakdown Metric Tiles -->
-                                        <div class="col-lg-7">
-                                            <div class="school-week-metrics-grid">
-                                                <div class="school-week-metric-tile">
-                                                    <div class="school-week-metric-val text-primary">
-                                                        <%= typeof daysPassed !== 'undefined' ? daysPassed : 0 %>
-                                                    </div>
-                                                    <div class="school-week-metric-lbl">Days Passed</div>
-                                                </div>
-
-                                                <div class="school-week-metric-tile">
-                                                    <div class="school-week-metric-val text-success">
-                                                        <%= typeof daysRemaining !== 'undefined' ? daysRemaining : 0 %>
-                                                    </div>
-                                                    <div class="school-week-metric-lbl">Days Remaining</div>
-                                                </div>
-
-                                                <div class="school-week-metric-tile">
-                                                    <div class="school-week-metric-val text-info">
-                                                        <%= typeof totalWeeks !== 'undefined' ? totalWeeks : 12 %>
-                                                    </div>
-                                                    <div class="school-week-metric-lbl">Total Term Weeks</div>
-                                                </div>
-
-                                                <div class="school-week-metric-tile">
-                                                    <div class="school-week-metric-val text-warning">
-                                                        <%= typeof totalDays !== 'undefined' ? totalDays : 0 %>
-                                                    </div>
-                                                    <div class="school-week-metric-lbl">Total Term Days</div>
-                                                </div>
-                                            </div>
-
-                                            <div class="mt-3 px-2 d-flex justify-content-between align-items-center text-muted small">
-                                                <span>
-                                                    <i class="mdi mdi-calendar-start me-1"></i> Term Start: 
-                                                    <strong><%= typeof termStartDate !== 'undefined' && termStartDate ? moment(termStartDate).format('MMM D, YYYY') : 'Configured in Settings' %></strong>
-                                                </span>
-                                                <span>
-                                                    <i class="mdi mdi-calendar-end me-1"></i> Term End: 
-                                                    <strong><%= typeof termEndDate !== 'undefined' && termEndDate ? moment(termEndDate).format('MMM D, YYYY') : 'Configured in Settings' %></strong>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <!-- Core KPI Stat Cards -->
-                    <div class="row g-3 mb-4">
-                        <!-- Total Students -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="stat-kpi-modern kpi-blue h-100">
-                                <div class="kpi-indicator-bar"></div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="text-muted mb-1 text-uppercase small fw-semibold">Total Students</p>
-                                        <h2 class="mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-                                            <%= studentCount.toLocaleString() %>
-                                        </h2>
-                                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 py-1 small">
-                                            <i class="mdi mdi-school-outline me-1"></i> Active Roster
-                                        </span>
-                                    </div>
-                                    <div class="kpi-icon-chip">
-                                        <i class="mdi mdi-account-group-outline"></i>
-                                    </div>
-                                </div>
-                                <% if (typeof graduatedStudentCount !== 'undefined' && graduatedStudentCount > 0) { %>
-                                    <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
-                                        <a href="/graduated-students" class="small text-decoration-none text-muted" title="View graduated students list">
-                                            <i class="bi bi-award-fill text-success me-1"></i><strong><%= graduatedStudentCount.toLocaleString() %></strong> Graduated (Alumni) &rarr;
-                                        </a>
-                                    </div>
-                                <% } %>
-                            </div>
-                        </div>
-
-                        <!-- Teaching Staff -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="stat-kpi-modern kpi-green h-100">
-                                <div class="kpi-indicator-bar"></div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="text-muted mb-1 text-uppercase small fw-semibold">Teaching Staff</p>
-                                        <h2 class="mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-                                            <%= teacherCount.toLocaleString() %>
-                                        </h2>
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 small">
-                                            <i class="mdi mdi-check-circle-outline me-1"></i> Active Teachers
-                                        </span>
-                                    </div>
-                                    <div class="kpi-icon-chip">
-                                        <i class="mdi mdi-teach"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Active Classes -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="stat-kpi-modern kpi-amber h-100">
-                                <div class="kpi-indicator-bar"></div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="text-muted mb-1 text-uppercase small fw-semibold">Active Classes</p>
-                                        <h2 class="mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-                                            <%= classCount.toLocaleString() %>
-                                        </h2>
-                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1 small">
-                                            <i class="mdi mdi-book-open-outline me-1"></i> All Grade Levels
-                                        </span>
-                                    </div>
-                                    <div class="kpi-icon-chip">
-                                        <i class="mdi mdi-google-classroom"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Fee Collection -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="stat-kpi-modern kpi-rose h-100">
-                                <div class="kpi-indicator-bar"></div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="text-muted mb-1 text-uppercase small fw-semibold">Fee Collection</p>
-                                        <h2 class="mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-                                            ₦<%= revenue.toLocaleString() %>
-                                        </h2>
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1 small">
-                                            <i class="mdi mdi-cash-check me-1"></i> <%= currentTerm %>
-                                        </span>
-                                    </div>
-                                    <div class="kpi-icon-chip">
-                                        <i class="mdi mdi-cash-multiple"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <!-- Academic Performance & Operations Pulse -->
-                    <div class="row g-3">
-                        <div class="col-xl-8">
-                            <!-- Academic Overview Card -->
-                            <div class="card edu-card-modern mb-3">
-                                <div class="card-header bg-white border-0 pt-3 pb-2 px-4 d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                        <i class="mdi mdi-chart-box-outline me-2 text-primary"></i> Academic Operations Overview
-                                    </h5>
-                                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 fw-semibold">
-                                        <i class="mdi mdi-calendar-check me-1"></i> <%= currentAcademicYear %> · <%= currentTerm %>
-                                    </span>
-                                </div>
-                                <div class="card-body px-4 pt-2">
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="p-3 rounded-4" style="background: linear-gradient(135deg, var(--aa-success-soft, #ecfdf5) 0%, var(--aa-success-soft, #d1fae5) 100%);">
-                                                <div class="d-flex align-items-center gap-3">
-                                                    <div class="rounded-circle p-3" style="background: rgba(63, 122, 90, 0.2);">
-                                                        <i class="mdi mdi-clipboard-check-outline fs-2 text-success"></i>
-                                                    </div>
-                                                    <div>
-                                                        <h2 class="mb-0 fw-bold text-success" style="font-family: 'Outfit', sans-serif;">
-                                                            <%= examsConducted %>
-                                                        </h2>
-                                                        <p class="text-muted mb-0 small fw-semibold">Exam Subjects Evaluated</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="p-3 rounded-4" style="background: linear-gradient(135deg, var(--aa-brand-softer, #eff6ff) 0%, var(--aa-brand-soft, #dbeafe) 100%);">
-                                                <div class="d-flex align-items-center gap-3">
-                                                    <div class="rounded-circle p-3" style="background: rgba(74, 90, 52, 0.2);">
-                                                        <i class="mdi mdi-bookmark-check-outline fs-2 text-primary"></i>
-                                                    </div>
-                                                    <div>
-                                                        <h2 class="mb-0 fw-bold text-primary" style="font-family: 'Outfit', sans-serif;">
-                                                            <%= assignmentsSubmitted %>
-                                                        </h2>
-                                                        <p class="text-muted mb-0 small fw-semibold">Student Submissions Logged</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                
-                            <!-- Recent Activity Card -->
-                            <div class="card edu-card-modern">
-                                <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                        <i class="mdi mdi-history me-2 text-info"></i> Recent System Activity
-                                    </h5>
-                                    <span class="badge bg-light text-muted border px-2 py-1 small">Live Feed</span>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover mb-0">
-                                            <thead class="bg-light">
-                                                <tr>
-                                                    <th class="border-0 ps-4 py-3"><i class="mdi mdi-text me-1 text-muted"></i> Activity Description</th>
-                                                    <th class="border-0 text-end pe-4 py-3"><i class="mdi mdi-calendar me-1 text-muted"></i> Date & Time</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% if (recentActivities && recentActivities.length > 0) {
-                                                    for (var i = 0; i < recentActivities.length; i++) { 
-                                                        var activity = recentActivities[i]; %>
-                                                        <tr>
-                                                            <td class="ps-4 py-3">
-                                                                <i class="mdi mdi-check-circle text-success me-2 fs-5 align-middle"></i>
-                                                                <span class="align-middle fw-medium"><%= activity.description %></span>
-                                                            </td>
-                                                            <td class="text-end text-muted pe-4 py-3 small">
-                                                                <i class="mdi mdi-clock-outline me-1"></i>
-                                                                <%= moment(activity.created_at).format('MMM D, YYYY · h:mm A') %>
-                                                            </td>
-                                                        </tr>
-                                                    <% } 
-                                                } else { %>
-                                                    <tr>
-                                                        <td colspan="2" class="text-center text-muted py-5">
-                                                            <i class="mdi mdi-text-box-outline d-block fs-1 mb-2 opacity-50"></i>
-                                                            <p class="mb-0 fw-medium">No system activities recorded yet</p>
-                                                        </td>
-                                                    </tr>
-                                                <% } %>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                
-                        <!-- Sidebar: Term Operational Metrics & Upcoming Events -->
-                        <div class="col-xl-4">
-                            <!-- Term Operational Metrics Card -->
-                            <div class="card edu-card-modern mb-3">
-                                <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                            <i class="mdi mdi-speedometer me-2 text-warning"></i> Operational Pulse
-                                        </h5>
-                                        <small class="text-muted"><%= currentTerm %> Metrics</small>
-                                    </div>
-                                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-1">
-                                        <%= typeof shortWeekLabel !== 'undefined' ? shortWeekLabel : 'Week 1' %>
-                                    </span>
-                                </div>
-                                <div class="card-body px-4 pt-1">
-                                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                        <span class="text-muted"><i class="mdi mdi-calendar-check me-2 text-success"></i> Scheduled Sessions</span>
-                                        <span class="fw-bold bg-success bg-opacity-10 text-success px-3 py-1 rounded-pill small">
-                                            <%= classesScheduled %> Sessions
-                                        </span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                        <span class="text-muted"><i class="mdi mdi-clipboard-list me-2 text-warning"></i> Assignments Due</span>
-                                        <span class="fw-bold bg-warning bg-opacity-10 text-warning px-3 py-1 rounded-pill small">
-                                            <%= assignmentsDue %> Active
-                                        </span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                        <span class="text-muted"><i class="mdi mdi-percent me-2 text-info"></i> School Attendance Rate</span>
-                                        <span class="fw-bold bg-info bg-opacity-10 text-info px-3 py-1 rounded-pill small">
-                                            <%= averageAttendance %>%
-                                        </span>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center py-2">
-                                        <span class="text-muted"><i class="mdi mdi-cash me-2 text-danger"></i> Term Fee Inflow</span>
-                                        <span class="fw-bold bg-danger bg-opacity-10 text-danger px-3 py-1 rounded-pill small">
-                                            ₦<%= feesCollected.toLocaleString() %>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                
-                            <!-- Upcoming Events Card -->
-                            <div class="card edu-card-modern">
-                                <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                        <i class="mdi mdi-calendar-star me-2 text-danger"></i> Upcoming Events
-                                    </h5>
-                                    <a href="/school-calendar" class="small text-primary fw-semibold text-decoration-none">View All</a>
-                                </div>
-                                <div class="card-body px-4 pt-2">
-                                    <% if (upcomingEvents && upcomingEvents.length > 0) {
-                                        for (var i = 0; i < upcomingEvents.length; i++) { 
-                                            var event = upcomingEvents[i]; %>
-                                            <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
-                                                <div class="text-center rounded-3 p-2 text-white shadow-sm"
-                                                    style="min-width: 54px; background: linear-gradient(135deg, #455433 0%, #3a4727 100%);">
-                                                    <div class="fw-bold fs-4 line-height-1">
-                                                        <%= moment(event.eventDate).format('DD') %>
-                                                    </div>
-                                                    <div class="small text-white-50 text-uppercase" style="font-size: 0.7rem;">
-                                                        <%= moment(event.eventDate).format('MMM') %>
-                                                    </div>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="mb-1 fw-bold text-dark">
-                                                        <%= event.title %>
-                                                    </h6>
-                                                    <small class="text-muted">
-                                                        <i class="mdi mdi-clock-outline me-1"></i>
-                                                        <%= event.startTime ? moment(event.startTime, 'HH:mm:ss').format('h:mm A') : 'All Day' %>
-                                                    </small>
-                                                </div>
-                                                <i class="mdi mdi-chevron-right text-muted fs-4"></i>
-                                            </div>
-                                        <% } 
-                                    } else { %>
-                                        <div class="text-center text-muted py-4">
-                                            <i class="mdi mdi-calendar-blank-outline fs-1 mb-2 d-block opacity-50"></i>
-                                            <p class="mb-0 small fw-medium">No events currently scheduled for this term</p>
-                                        </div>
+                    <!-- ══ KPI strip (reference: three pastel cards) ══ -->
+                    <div class="aa-kpi-strip mb-4">
+                        <div class="aa-kpi">
+                            <span class="aa-kpi__icon aa-kpi__icon--rose"><i class="mdi mdi-account-group-outline"></i></span>
+                            <div>
+                                <div class="aa-kpi__label">Total Students</div>
+                                <div class="aa-kpi__value">
+                                    <%= studentCount.toLocaleString() %>
+                                    <% if (typeof graduatedStudentCount !== 'undefined' && graduatedStudentCount > 0) { %>
+                                        <small><%= graduatedStudentCount.toLocaleString() %> alumni</small>
                                     <% } %>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="aa-kpi">
+                            <span class="aa-kpi__icon aa-kpi__icon--green"><i class="mdi mdi-teach"></i></span>
+                            <div>
+                                <div class="aa-kpi__label">Teaching Staff</div>
+                                <div class="aa-kpi__value"><%= teacherCount.toLocaleString() %></div>
+                            </div>
+                        </div>
+
+                        <div class="aa-kpi">
+                            <span class="aa-kpi__icon aa-kpi__icon--amber"><i class="mdi mdi-google-classroom"></i></span>
+                            <div>
+                                <div class="aa-kpi__label">Active Classes</div>
+                                <div class="aa-kpi__value"><%= classCount.toLocaleString() %></div>
+                            </div>
+                        </div>
+
+                        <div class="aa-kpi">
+                            <span class="aa-kpi__icon aa-kpi__icon--brand"><i class="mdi mdi-cash-multiple"></i></span>
+                            <div>
+                                <div class="aa-kpi__label">Fee Collection</div>
+                                <div class="aa-kpi__value">₦<%= revenue.toLocaleString() %><small><%= currentTerm %></small></div>
+                            </div>
+                        </div>
                     </div>
-                
-                    <!-- Quick Actions Grid -->
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="card edu-card-modern">
-                                <div class="card-header bg-white border-0 pt-3 pb-1 px-4">
-                                    <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                        <i class="mdi mdi-lightning-bolt me-2 text-warning"></i> Operational Quick Actions
-                                    </h5>
-                                    <small class="text-muted">Fast shortcuts to everyday school management workflows</small>
+
+                    <!-- ══ Primary row: chart + side panel (reference: Heart rate + Care team) ══ -->
+                    <div class="row g-3 mb-4">
+                        <!-- Chart panel -->
+                        <div class="col-xl-8">
+                            <div class="card h-100">
+                                <div class="aa-panel-head">
+                                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                                        <h5 class="card-title mb-0">
+                                            <i class="mdi mdi-chart-box-outline text-primary me-1"></i> Academic Operations
+                                        </h5>
+                                        <div class="aa-seg" role="group" aria-label="Chart range">
+                                            <button type="button" class="is-active">This term</button>
+                                            <button type="button">Weekly</button>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="aa-kpi__value" style="font-size:1.3rem;"><%= termProgress %>%</div>
+                                        <div class="aa-kpi__label mb-0">Term Elapsed</div>
+                                    </div>
                                 </div>
-                                <div class="card-body px-4 pt-2 pb-4">
+
+                                <div class="card-body pt-2">
+                                    <!-- Replacement for the reference's bar chart:
+                                         the term/week engine, rendered with the Heritage ring + strip. -->
+                                    <div class="week-engine border-0" style="box-shadow:none;">
+                                        <div class="week-engine__body pb-0">
+                                            <div class="week-ring">
+                                                <svg viewBox="0 0 120 120" role="img" aria-label="Term progress ring">
+                                                    <circle class="week-ring__track" cx="60" cy="60" r="52"></circle>
+                                                    <circle class="week-ring__bar" cx="60" cy="60" r="52"
+                                                        stroke-dasharray="326.7"
+                                                        stroke-dashoffset="<%= 326.7 - (326.7 * (typeof termProgress !== 'undefined' ? termProgress : 0) / 100) %>"></circle>
+                                                </svg>
+                                                <div class="week-ring__center">
+                                                    <strong><%= typeof currentWeek !== 'undefined' ? currentWeek : 1 %></strong>
+                                                    <span>of <%= typeof totalWeeks !== 'undefined' ? totalWeeks : 12 %> weeks</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="week-engine__main">
+                                                <div class="week-engine__headline">
+                                                    <h3>
+                                                        <%= typeof shortWeekLabel !== 'undefined' && shortWeekLabel ? shortWeekLabel : ('Week ' + (typeof currentWeek !== 'undefined' ? currentWeek : 1)) %>
+                                                        <span><%= currentTerm %> · <%= currentAcademicYear %></span>
+                                                    </h3>
+                                                    <p><i class="mdi mdi-calendar-check me-1"></i>
+                                                        <%= typeof weekStartDate !== 'undefined' ? weekStartDate : '' %> – <%= typeof weekEndDate !== 'undefined' ? weekEndDate : '' %>
+                                                    </p>
+                                                </div>
+
+                                                <div class="week-track">
+                                                    <% for (var w = 1; w <= (typeof totalWeeks !== 'undefined' ? totalWeeks : 12); w++) {
+                                                        var cls = w < (typeof currentWeek !== 'undefined' ? currentWeek : 1) ? 'is-done'
+                                                                : w === (typeof currentWeek !== 'undefined' ? currentWeek : 1) ? 'is-current' : ''; %>
+                                                        <div class="week-track__tick <%= cls %>"></div>
+                                                    <% } %>
+                                                </div>
+
+                                                <div class="week-engine__stats">
+                                                    <div class="week-stat"><strong><%= typeof daysPassed !== 'undefined' ? daysPassed : 0 %></strong><span>Days passed</span></div>
+                                                    <div class="week-stat"><strong><%= typeof daysRemaining !== 'undefined' ? daysRemaining : 0 %></strong><span>Days remaining</span></div>
+                                                    <div class="week-stat"><strong><%= typeof totalWeeks !== 'undefined' ? totalWeeks : 12 %></strong><span>Term weeks</span></div>
+                                                    <div class="week-stat"><strong><%= typeof totalDays !== 'undefined' ? totalDays : 0 %></strong><span>Term days</span></div>
+                                                </div>
+
+                                                <div class="week-engine__dates">
+                                                    <span><i class="mdi mdi-calendar-start me-1"></i> Start <strong><%= typeof termStartDate !== 'undefined' && termStartDate ? moment(termStartDate).format('MMM D, YYYY') : '—' %></strong></span>
+                                                    <span><i class="mdi mdi-calendar-end me-1"></i> End <strong><%= typeof termEndDate !== 'undefined' && termEndDate ? moment(termEndDate).format('MMM D, YYYY') : '—' %></strong></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-3">
                                     <div class="row g-3">
-                                        <div class="col-lg-3 col-md-6">
-                                            <a href="/enter-scores" class="modern-action-tile">
-                                                <div class="modern-action-icon" style="background: rgba(74, 90, 52, 0.12); color: var(--aa-brand-ink, #455433);">
-                                                    <i class="mdi mdi-pencil-box-outline"></i>
+                                        <div class="col-sm-6">
+                                            <div class="p-3 rounded-3" style="background: var(--aa-success-soft);">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <i class="mdi mdi-clipboard-check-outline fs-3 text-success"></i>
+                                                    <div>
+                                                        <div class="aa-kpi__value" style="font-size:1.35rem;"><%= examsConducted %></div>
+                                                        <div class="aa-kpi__label mb-0">Exam subjects evaluated</div>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div class="fw-bold">Enter Scores</div>
-                                                    <small class="text-muted">Assessment & Exams</small>
-                                                </div>
-                                            </a>
+                                            </div>
                                         </div>
-
-                                        <div class="col-lg-3 col-md-6">
-                                            <a href="/add-student" class="modern-action-tile">
-                                                <div class="modern-action-icon" style="background: rgba(63, 122, 90, 0.12); color: var(--aa-success, #3f7a5a);">
-                                                    <i class="mdi mdi-account-plus-outline"></i>
+                                        <div class="col-sm-6">
+                                            <div class="p-3 rounded-3" style="background: var(--aa-brand-soft);">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <i class="mdi mdi-bookmark-check-outline fs-3 text-primary"></i>
+                                                    <div>
+                                                        <div class="aa-kpi__value" style="font-size:1.35rem;"><%= assignmentsSubmitted %></div>
+                                                        <div class="aa-kpi__label mb-0">Submissions logged</div>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div class="fw-bold">Admit Student</div>
-                                                    <small class="text-muted">Register New Student</small>
-                                                </div>
-                                            </a>
-                                        </div>
-
-                                        <div class="col-lg-3 col-md-6">
-                                            <a href="/fees-collection" class="modern-action-tile">
-                                                <div class="modern-action-icon" style="background: rgba(162, 73, 61, 0.12); color: var(--aa-danger, #a6463b);">
-                                                    <i class="mdi mdi-cash-multiple"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold">Fee Collection</div>
-                                                    <small class="text-muted">Collect & Issue Receipts</small>
-                                                </div>
-                                            </a>
-                                        </div>
-
-                                        <div class="col-lg-3 col-md-6">
-                                            <a href="/broadsheet-selection" class="modern-action-tile">
-                                                <div class="modern-action-icon" style="background: rgba(180, 128, 58, 0.12); color: var(--aa-warning, #c08a3e);">
-                                                    <i class="mdi mdi-table-large"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold">Class Broadsheet</div>
-                                                    <small class="text-muted">Term Result Summaries</small>
-                                                </div>
-                                            </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Side panel: Operational pulse + Upcoming events (reference: Care team) -->
+                        <div class="col-xl-4">
+                            <div class="card h-100">
+                                <div class="d-flex align-items-center justify-content-between px-4 pt-3 pb-2">
+                                    <h5 class="card-title mb-0"><i class="mdi mdi-speedometer text-warning me-1"></i> Operational Pulse</h5>
+                                    <a href="/school-calendar" class="small text-primary fw-semibold text-decoration-none">View all</a>
+                                </div>
+
+                                <div class="card-body pt-1 px-4">
+                                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                        <span class="text-muted small"><i class="mdi mdi-calendar-check text-success me-2"></i> Scheduled Sessions</span>
+                                        <span class="fw-bold small"><%= classesScheduled %></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                        <span class="text-muted small"><i class="mdi mdi-clipboard-list text-warning me-2"></i> Assignments Due</span>
+                                        <span class="fw-bold small"><%= assignmentsDue %></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                        <span class="text-muted small"><i class="mdi mdi-percent text-info me-2"></i> Attendance Rate</span>
+                                        <span class="fw-bold small"><%= averageAttendance %>%</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center py-2">
+                                        <span class="text-muted small"><i class="mdi mdi-cash text-danger me-2"></i> Term Fee Inflow</span>
+                                        <span class="fw-bold small">₦<%= feesCollected.toLocaleString() %></span>
+                                    </div>
+
+                                    <hr class="my-3">
+                                    <div class="aa-kpi__label mb-2">Upcoming events</div>
+
+                                    <% if (upcomingEvents && upcomingEvents.length > 0) {
+                                        for (var i = 0; i < upcomingEvents.length; i++) {
+                                            var event = upcomingEvents[i]; %>
+                                            <div class="d-flex align-items-center gap-3 py-2 <%= i < upcomingEvents.length - 1 ? 'border-bottom' : '' %>">
+                                                <div class="text-center rounded-3 px-2 py-1" style="min-width: 46px; background: var(--aa-surface-2); border: 1px solid var(--aa-border);">
+                                                    <div class="fw-bold" style="font-family: var(--aa-font-display); line-height:1;"><%= moment(event.eventDate).format('DD') %></div>
+                                                    <div class="aa-kpi__label mb-0" style="font-size:.58rem;"><%= moment(event.eventDate).format('MMM') %></div>
+                                                </div>
+                                                <div class="flex-grow-1 min-width-0">
+                                                    <div class="fw-semibold small text-truncate"><%= event.title %></div>
+                                                    <small class="text-muted">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>
+                                                        <%= event.startTime ? moment(event.startTime, 'HH:mm:ss').format('h:mm A') : 'All day' %>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        <% }
+                                    } else { %>
+                                        <div class="text-center text-muted py-3">
+                                            <i class="mdi mdi-calendar-blank-outline fs-3 d-block mb-1 opacity-50"></i>
+                                            <p class="mb-0 small">No events scheduled for this term</p>
+                                        </div>
+                                    <% } %>
+
+                                    <a href="/school-calendar" class="btn btn-outline-primary btn-sm w-100 mt-3">
+                                        <i class="mdi mdi-plus me-1"></i> Schedule event
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- ══ Full-width table (reference: Medication tracker) ══ -->
+                    <div class="card">
+                        <div class="aa-panel-head">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <h5 class="card-title mb-0"><i class="mdi mdi-history text-info me-1"></i> Recent System Activity</h5>
+                                <span class="badge bg-light text-muted border rounded-pill px-2 py-1" style="font-size:.68rem;">Live feed</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="aa-search d-none d-md-block" style="min-width:190px;">
+                                    <i class="mdi mdi-magnify"></i>
+                                    <input type="search" class="form-control form-control-sm" placeholder="Search activity…" aria-label="Search activity">
+                                </div>
+                                <div class="aa-seg" role="group" aria-label="Activity range">
+                                    <button type="button" class="is-active">This term</button>
+                                    <button type="button">All</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive mt-2">
+                            <table class="table table-hover aa-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-4">Activity</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                        <th class="text-end pe-4">Date &amp; time</th>
+                                        <th class="text-end pe-4" aria-label="Row actions"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (recentActivities && recentActivities.length > 0) {
+                                        for (var i = 0; i < recentActivities.length; i++) {
+                                            var activity = recentActivities[i]; %>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <div class="aa-primary"><%= activity.description %></div>
+                                                </td>
+                                                <td><span class="aa-secondary">System</span></td>
+                                                <td><span class="aa-status aa-status--ok">Logged</span></td>
+                                                <td class="text-end pe-4">
+                                                    <span class="aa-secondary"><%= moment(activity.created_at).format('MMM D, YYYY · h:mm A') %></span>
+                                                </td>
+                                                <td class="text-end pe-4">
+                                                    <div class="aa-row-menu dropdown">
+                                                        <button type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Row actions">
+                                                            <i class="mdi mdi-dots-horizontal"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item" href="#"><i class="mdi mdi-eye-outline me-2"></i>View details</a></li>
+                                                            <li><a class="dropdown-item" href="#"><i class="mdi mdi-content-copy me-2"></i>Copy reference</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <% }
+                                    } else { %>
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-5">
+                                                <i class="mdi mdi-text-box-outline d-block fs-1 mb-2 opacity-50"></i>
+                                                <p class="mb-0 fw-medium">No system activities recorded yet</p>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ══ Quick actions (kept from your original; restyled to the new language) ══ -->
+                    <div class="card mt-4">
+                        <div class="d-flex align-items-center justify-content-between px-4 pt-3 pb-1">
+                            <div>
+                                <h5 class="card-title mb-0"><i class="mdi mdi-lightning-bolt text-warning me-1"></i> Quick Actions</h5>
+                                <small class="text-muted">Fast shortcuts to everyday workflows</small>
+                            </div>
+                        </div>
+                        <div class="card-body px-4 pt-2 pb-4">
+                            <div class="row g-3">
+                                <div class="col-lg-3 col-md-6">
+                                    <a href="/enter-scores" class="modern-action-tile">
+                                        <div class="modern-action-icon" style="background: var(--aa-brand-soft); color: var(--aa-brand-ink);"><i class="mdi mdi-pencil-box-outline"></i></div>
+                                        <div><div class="fw-bold">Enter Scores</div><small class="text-muted">Assessment &amp; exams</small></div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <a href="/add-student" class="modern-action-tile">
+                                        <div class="modern-action-icon" style="background: var(--aa-success-soft); color: var(--aa-success);"><i class="mdi mdi-account-plus-outline"></i></div>
+                                        <div><div class="fw-bold">Admit Student</div><small class="text-muted">Register new student</small></div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <a href="/fees-collection" class="modern-action-tile">
+                                        <div class="modern-action-icon" style="background: var(--aa-danger-soft); color: var(--aa-danger);"><i class="mdi mdi-cash-multiple"></i></div>
+                                        <div><div class="fw-bold">Fee Collection</div><small class="text-muted">Collect &amp; issue receipts</small></div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-3 col-md-6">
+                                    <a href="/broadsheet-selection" class="modern-action-tile">
+                                        <div class="modern-action-icon" style="background: var(--aa-warning-soft); color: var(--aa-warning);"><i class="mdi mdi-table-large"></i></div>
+                                        <div><div class="fw-bold">Class Broadsheet</div><small class="text-muted">Term result summaries</small></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                
+
                 <footer class="footer">
                     <div class="container-fluid">
                         <div class="row">
