@@ -7,11 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/assets/images/favicon.png">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-
     <!-- Core Styles & Icons -->
     <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
@@ -22,6 +17,90 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
     <link href="/assets/css/theme-2027.css" rel="stylesheet" type="text/css">
     <script src="/assets/js/theme-2027.js"></script>
+
+    <!-- Page-scoped additions for the Heritage 2027 dashboard layout -->
+    <style>
+        /* --- KPI strip (reference: the three pastel cards across the top) --- */
+        .aa-kpi-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+        @media (max-width: 1199.98px) { .aa-kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 575.98px)  { .aa-kpi-strip { grid-template-columns: 1fr; } }
+
+        .aa-kpi {
+            display: flex; align-items: center; gap: 0.9rem;
+            padding: 1.15rem 1.25rem;
+            background: var(--aa-surface);
+            border: 1px solid var(--aa-border);
+            border-radius: var(--aa-radius-lg);
+            box-shadow: var(--aa-shadow-sm);
+            transition: border-color var(--aa-dur) var(--aa-ease);
+        }
+        .aa-kpi:hover { border-color: var(--aa-border-strong); }
+        .aa-kpi__icon {
+            flex: 0 0 auto; width: 46px; height: 46px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 14px; font-size: 1.35rem;
+        }
+        .aa-kpi__icon--brand  { background: var(--aa-brand-soft);   color: var(--aa-brand-ink); }
+        .aa-kpi__icon--green  { background: var(--aa-success-soft); color: var(--aa-success); }
+        .aa-kpi__icon--amber  { background: var(--aa-warning-soft); color: var(--aa-warning); }
+        .aa-kpi__icon--rose   { background: var(--aa-danger-soft);  color: var(--aa-danger); }
+        .aa-kpi__label {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.09em;
+            text-transform: uppercase; color: var(--aa-text-soft); margin-bottom: 0.2rem;
+        }
+        .aa-kpi__value {
+            font-family: var(--aa-font-display);
+            font-size: 1.55rem; font-weight: 600; line-height: 1.1;
+            letter-spacing: -0.02em; color: var(--aa-text);
+        }
+        .aa-kpi__value small { font-family: var(--aa-font-body); font-size: 0.72rem; font-weight: 600; color: var(--aa-text-muted); letter-spacing: 0; margin-left: 0.15rem; }
+
+        /* --- Row-action menu (reference: the "…" at the end of each table row) --- */
+        .aa-row-menu { position: relative; display: inline-block; }
+        .aa-row-menu > button {
+            border: 0; background: transparent; color: var(--aa-text-soft);
+            padding: 0.2rem 0.4rem; border-radius: 6px; line-height: 1;
+        }
+        .aa-row-menu > button:hover { background: var(--aa-surface-2); color: var(--aa-text); }
+        .aa-row-menu .dropdown-menu { min-width: 9.5rem; }
+
+        /* --- Table polish to match the reference's airy rows --- */
+        .aa-table th {
+            font-size: 0.7rem !important; font-weight: 700 !important;
+            letter-spacing: 0.08em !important; text-transform: uppercase !important;
+        }
+        .aa-table td { padding-top: 1.05rem !important; padding-bottom: 1.05rem !important; }
+        .aa-table .aa-primary { font-weight: 650; color: var(--aa-text); }
+        .aa-table .aa-secondary { font-size: 0.8rem; color: var(--aa-text-muted); }
+
+        /* Status pill — reference "Taken" / "Missed" */
+        .aa-status {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.35em 0.8em; border-radius: var(--aa-radius-pill);
+            font-size: 0.74rem; font-weight: 650; white-space: nowrap;
+        }
+        .aa-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .aa-status--ok   { background: var(--aa-success-soft); color: var(--aa-success); }
+        .aa-status--warn { background: var(--aa-warning-soft); color: var(--aa-warning); }
+        .aa-status--bad  { background: var(--aa-danger-soft);  color: var(--aa-danger); }
+        .aa-status--info { background: var(--aa-info-soft);    color: var(--aa-info); }
+
+        /* Chart panel head: title + segmented control (reference "Heart rate | Weekdays") */
+        .aa-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.1rem 1.35rem 0.4rem; }
+        .aa-seg { display: inline-flex; background: var(--aa-surface-2); border: 1px solid var(--aa-border); border-radius: var(--aa-radius-pill); padding: 3px; }
+        .aa-seg button {
+            border: 0; background: transparent; color: var(--aa-text-muted);
+            font-size: 0.74rem; font-weight: 650; padding: 0.3rem 0.8rem;
+            border-radius: var(--aa-radius-pill); line-height: 1.3;
+        }
+        .aa-seg button.is-active { background: var(--aa-surface); color: var(--aa-text); box-shadow: var(--aa-shadow-sm); }
+
+        /* Greeting row */
+        .aa-greeting-title { font-family: var(--aa-font-display); font-size: 1.6rem; font-weight: 600; letter-spacing: -0.025em; margin: 0; color: var(--aa-text); }
+        .aa-search { position: relative; min-width: 230px; }
+        .aa-search .mdi { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--aa-text-soft); font-size: 1rem; }
+        .aa-search input { padding-left: 2.35rem !important; min-height: 38px !important; border-radius: var(--aa-radius-pill) !important; background: var(--aa-surface-2) !important; }
+    </style>
 </head>
 
 <body class="loading"
@@ -39,449 +118,315 @@
 
                 <!-- Start Content-->
                 <div class="container-fluid edu-dashboard pt-3 pb-4">
-                    <!-- Page Header Breadcrumb -->
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="page-title-box d-flex align-items-center justify-content-between">
-                                <h4 class="page-title mb-0" style="font-family: 'Outfit', sans-serif; font-weight: 700;">
-                                    <i class="mdi mdi-teach me-2 text-primary"></i> Instructor Dashboard
-                                </h4>
-                                <div class="page-title-right d-none d-md-block">
-                                    <span class="text-muted small">
-                                        <i class="mdi mdi-calendar-today me-1"></i>
-                                        <%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
-                                    </span>
-                                </div>
+
+                    <!-- ══ Greeting row (reference: "Welcome, Diana!" + search + actions) ══ -->
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                        <div>
+                            <h1 class="aa-greeting-title">
+                                Welcome back, <%= teacherData ? teacherData.firstName : 'Teacher' %>!
+                            </h1>
+                            <p class="text-muted mb-0 small">
+                                <i class="mdi mdi-clock-outline me-1"></i>
+                                <%= new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+                                <span class="mx-1">·</span>
+                                <%= typeof currentAcademicYear !== 'undefined' ? currentAcademicYear : '2026/2027' %>
+                                &middot; <%= typeof currentTerm !== 'undefined' ? currentTerm : 'First Term' %>
+                                <% if (teacherData && teacherData.designation) { %>
+                                    <span class="mx-1">·</span><%= teacherData.designation %>
+                                <% } %>
+                            </p>
+                        </div>
+
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <div class="aa-search d-none d-lg-block">
+                                <i class="mdi mdi-magnify"></i>
+                                <input type="search" class="form-control form-control-sm" placeholder="Search students, classes, records…" aria-label="Search">
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2 fw-semibold">
+                                <span class="pulse-indicator d-inline-block me-1" style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>
+                                <strong><%= typeof weekLabel !== 'undefined' && weekLabel ? weekLabel : 'Week 1' %></strong>
+                                &middot; <%= typeof termWeekStatusBadge !== 'undefined' ? termWeekStatusBadge : 'In Session' %>
+                            </span>
+                            <a href="/mark-attendance" class="btn btn-primary btn-sm">
+                                <i class="mdi mdi-check-circle-outline me-1"></i> Mark Attendance
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ══ KPI strip (reference: pastel top cards) ══ -->
+                    <div class="aa-kpi-strip mb-4">
+                        <div class="aa-kpi">
+                            <span class="aa-kpi__icon aa-kpi__icon--brand"><i class="mdi mdi-account-group-outline"></i></span>
+                            <div>
+                                <div class="aa-kpi__label">Assigned Students</div>
+                                <div class="aa-kpi__value"><%= typeof totalStudents !== 'undefined' ? totalStudents.toLocaleString() : 0 %><small>enrolled</small></div>
+                            </div>
+                        </div>
+                        <div class="aa-kpi">
+                            <span class="aa-kpi__icon aa-kpi__icon--green"><i class="mdi mdi-book-open-variant"></i></span>
+                            <div>
+                                <div class="aa-kpi__label">Teaching Subjects</div>
+                                <div class="aa-kpi__value"><%= typeof totalSubjects !== 'undefined' ? totalSubjects : 0 %><small>curriculum</small></div>
+                            </div>
+                        </div>
+                        <div class="aa-kpi">
+                            <span class="aa-kpi__icon aa-kpi__icon--amber"><i class="mdi mdi-clipboard-check"></i></span>
+                            <div>
+                                <div class="aa-kpi__label">Scores Logged</div>
+                                <div class="aa-kpi__value"><%= typeof scoresEntered !== 'undefined' ? scoresEntered.toLocaleString() : 0 %><small>records</small></div>
+                            </div>
+                        </div>
+                        <div class="aa-kpi">
+                            <span class="aa-kpi__icon aa-kpi__icon--rose"><i class="mdi mdi-calendar-clock"></i></span>
+                            <div>
+                                <div class="aa-kpi__label">Today's Attendance</div>
+                                <div class="aa-kpi__value"><%= typeof todayAttendance !== 'undefined' ? todayAttendance.toLocaleString() : 0 %><small>present</small></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Hero Welcome Banner -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="edu-dash-hero-inner p-4 rounded-4 text-white shadow-sm"
-                                style="background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 45%, #455433 100%);">
-                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-                                    <div>
-                                        <div class="d-flex align-items-center gap-2 mb-1">
-                                            <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1" style="font-size: 0.75rem; letter-spacing: 0.05em;">
-                                                <i class="mdi mdi-certificate-outline me-1"></i> FACULTY & TEACHING WORKSPACE
-                                            </span>
-                                        </div>
-                                        <h2 class="text-white mb-2 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                            Welcome back, <%= teacherData ? teacherData.firstName : 'Teacher' %>!
-                                        </h2>
-                                        <p class="mb-0 text-white-50" style="max-width: 620px; font-size: 0.95rem;">
-                                            <%= teacherData && teacherData.designation ? teacherData.designation : 'Instructor' %> · Manage classroom attendance, input term scores, and track school week timelines.
-                                        </p>
-                                    </div>
-
-                                    <!-- Hero Header Badges with Current School Week -->
-                                    <div class="d-flex flex-wrap gap-2 align-items-center">
-                                        <!-- School Week Live Badge -->
-                                        <div class="school-week-hero-pill shadow-sm">
-                                            <span class="pulse-indicator"></span>
-                                            <i class="mdi mdi-calendar-clock text-warning"></i>
-                                            <span class="fw-bold"><%= typeof weekLabel !== 'undefined' && weekLabel ? weekLabel : 'Week 1' %></span>
-                                            <span class="badge bg-white bg-opacity-20 text-white rounded-pill ms-1" style="font-size: 0.725rem;">
-                                                <%= typeof termWeekStatusBadge !== 'undefined' ? termWeekStatusBadge : 'In Session' %>
-                                            </span>
-                                        </div>
-
-                                        <span class="badge bg-white bg-opacity-15 text-white px-3 py-2 rounded-pill border border-white border-opacity-20 shadow-sm" style="font-size: 0.8125rem;">
-                                            <i class="mdi mdi-calendar-range me-1 text-info"></i>
-                                            <%= typeof currentAcademicYear !== 'undefined' ? currentAcademicYear : '2026/2027' %>
-                                        </span>
-
-                                        <span class="badge bg-white bg-opacity-15 text-white px-3 py-2 rounded-pill border border-white border-opacity-20 shadow-sm" style="font-size: 0.8125rem;">
-                                            <i class="mdi mdi-book-open-page-variant me-1 text-success"></i>
-                                            <%= typeof currentTerm !== 'undefined' ? currentTerm : 'First Term' %>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Current School Week & Term Tracker Widget -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="school-week-card">
-                                <div class="school-week-header">
-                                    <h5 class="school-week-header-title">
-                                        <i class="mdi mdi-calendar-clock-outline"></i>
-                                        Academic Term & Current School Week Tracker
-                                    </h5>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <% if (typeof weekStartDate !== 'undefined' && weekStartDate) { %>
-                                            <span class="badge bg-light text-dark px-3 py-2 rounded-pill border">
-                                                <i class="mdi mdi-calendar-today text-primary me-1"></i>
-                                                Active Week: <strong><%= weekStartDate %> – <%= typeof weekEndDate !== 'undefined' ? weekEndDate : '' %></strong>
-                                            </span>
-                                        <% } %>
-                                        <span class="week-status-badge">
-                                            <i class="mdi mdi-check-circle"></i> <%= typeof termWeekStatusBadge !== 'undefined' ? termWeekStatusBadge : 'In Session' %>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="school-week-body">
-                                    <div class="row align-items-center g-4">
-                                        <!-- Week Main Highlight -->
-                                        <div class="col-lg-5">
-                                            <div class="week-display-banner m-0">
-                                                <div class="d-flex justify-content-between align-items-start">
-                                                    <div>
-                                                        <div class="week-display-label text-uppercase">Academic Calendar Pulse</div>
-                                                        <div class="week-display-number">
-                                                            <%= typeof shortWeekLabel !== 'undefined' && shortWeekLabel ? shortWeekLabel : ('Week ' + (typeof currentWeek !== 'undefined' ? currentWeek : 1)) %>
-                                                        </div>
-                                                        <div class="text-white-50 small">
-                                                            Week <%= typeof currentWeek !== 'undefined' ? currentWeek : 1 %> of <%= typeof totalWeeks !== 'undefined' ? totalWeeks : 12 %> · <%= typeof currentTerm !== 'undefined' ? currentTerm : 'Term' %>
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-end">
-                                                        <span class="fs-1 fw-bold text-white"><%= typeof termProgress !== 'undefined' ? termProgress : 0 %>%</span>
-                                                        <div class="text-white-50 small">Completed</div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="school-week-progress-wrap mt-3 mb-0">
-                                                    <div class="school-week-progress-bar">
-                                                        <div class="school-week-progress-fill" style="width: <%= typeof termProgress !== 'undefined' ? termProgress : 0 %>%;"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- 4 Quick Metric Tiles -->
-                                        <div class="col-lg-7">
-                                            <div class="school-week-metrics-grid">
-                                                <div class="school-week-metric-tile">
-                                                    <div class="school-week-metric-val text-primary">
-                                                        <%= typeof daysPassed !== 'undefined' ? daysPassed : 0 %>
-                                                    </div>
-                                                    <div class="school-week-metric-lbl">Days Elapsed</div>
-                                                </div>
-
-                                                <div class="school-week-metric-tile">
-                                                    <div class="school-week-metric-val text-success">
-                                                        <%= typeof daysRemaining !== 'undefined' ? daysRemaining : 0 %>
-                                                    </div>
-                                                    <div class="school-week-metric-lbl">Days Remaining</div>
-                                                </div>
-
-                                                <div class="school-week-metric-tile">
-                                                    <div class="school-week-metric-val text-info">
-                                                        <%= typeof totalWeeks !== 'undefined' ? totalWeeks : 12 %>
-                                                    </div>
-                                                    <div class="school-week-metric-lbl">Total Weeks</div>
-                                                </div>
-
-                                                <div class="school-week-metric-tile">
-                                                    <div class="school-week-metric-val text-warning">
-                                                        <%= typeof totalDays !== 'undefined' ? totalDays : 0 %>
-                                                    </div>
-                                                    <div class="school-week-metric-lbl">Term Span (Days)</div>
-                                                </div>
-                                            </div>
-
-                                            <div class="mt-3 px-2 d-flex justify-content-between align-items-center text-muted small">
-                                                <span>
-                                                    <i class="mdi mdi-calendar-check me-1"></i> Term Start: 
-                                                    <strong><%= typeof termStartDate !== 'undefined' && termStartDate ? moment(termStartDate).format('MMM D, YYYY') : 'In Session' %></strong>
-                                                </span>
-                                                <span>
-                                                    <i class="mdi mdi-flag-checkered me-1"></i> Term Concludes: 
-                                                    <strong><%= typeof termEndDate !== 'undefined' && termEndDate ? moment(termEndDate).format('MMM D, YYYY') : 'Scheduled' %></strong>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Teacher KPI Metrics Grid -->
+                    <!-- ══ Primary row: week engine + deadlines (reference: chart + side panel) ══ -->
                     <div class="row g-3 mb-4">
-                        <div class="col-xl-3 col-md-6">
-                            <div class="stat-kpi-modern kpi-blue h-100">
-                                <div class="kpi-indicator-bar"></div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="text-muted mb-1 text-uppercase small fw-semibold">Assigned Students</p>
-                                        <h2 class="mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-                                            <%= typeof totalStudents !== 'undefined' ? totalStudents.toLocaleString() : 0 %>
-                                        </h2>
-                                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 py-1 small">
-                                            <i class="mdi mdi-account-multiple me-1"></i> Across All Classes
-                                        </span>
-                                    </div>
-                                    <div class="kpi-icon-chip">
-                                        <i class="mdi mdi-account-group-outline"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-md-6">
-                            <div class="stat-kpi-modern kpi-green h-100">
-                                <div class="kpi-indicator-bar"></div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="text-muted mb-1 text-uppercase small fw-semibold">Teaching Subjects</p>
-                                        <h2 class="mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-                                            <%= typeof totalSubjects !== 'undefined' ? totalSubjects : 0 %>
-                                        </h2>
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 small">
-                                            <i class="mdi mdi-book-open-page-variant me-1"></i> Assigned Curriculum
-                                        </span>
-                                    </div>
-                                    <div class="kpi-icon-chip">
-                                        <i class="mdi mdi-book-open-variant"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-md-6">
-                            <div class="stat-kpi-modern kpi-amber h-100">
-                                <div class="kpi-indicator-bar"></div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="text-muted mb-1 text-uppercase small fw-semibold">Scores Logged</p>
-                                        <h2 class="mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-                                            <%= typeof scoresEntered !== 'undefined' ? scoresEntered.toLocaleString() : 0 %>
-                                        </h2>
-                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1 small">
-                                            <i class="mdi mdi-pencil-box-outline me-1"></i> Assessment Records
-                                        </span>
-                                    </div>
-                                    <div class="kpi-icon-chip">
-                                        <i class="mdi mdi-clipboard-check"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-md-6">
-                            <div class="stat-kpi-modern kpi-rose h-100">
-                                <div class="kpi-indicator-bar"></div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <p class="text-muted mb-1 text-uppercase small fw-semibold">Today's Attendance</p>
-                                        <h2 class="mb-1 fw-bold text-dark" style="font-family: 'Outfit', sans-serif;">
-                                            <%= typeof todayAttendance !== 'undefined' ? todayAttendance.toLocaleString() : 0 %>
-                                        </h2>
-                                        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1 small">
-                                            <i class="mdi mdi-account-check-outline me-1"></i> Students Present
-                                        </span>
-                                    </div>
-                                    <div class="kpi-icon-chip">
-                                        <i class="mdi mdi-calendar-clock"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Main Content Area: Class Schedule & Activities -->
-                    <div class="row g-3">
-                        <div class="col-xl-8 col-lg-7">
-                            <!-- Today's Schedule -->
-                            <div class="card edu-card-modern mb-3">
-                                <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                        <i class="mdi mdi-calendar-clock me-2 text-primary"></i> Today's Class Schedule
-                                    </h5>
-                                    <a href="/teacher/class-schedule" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                        Full Schedule <i class="mdi mdi-arrow-right ms-1"></i>
-                                    </a>
-                                </div>
-                                <div class="card-body p-0">
-                                    <% if (typeof todaysSchedule !== 'undefined' && todaysSchedule && todaysSchedule.length > 0) { %>
-                                        <div class="table-responsive">
-                                            <table class="table table-hover mb-0">
-                                                <thead class="bg-light">
-                                                    <tr>
-                                                        <th class="ps-4 py-3"><i class="mdi mdi-clock-outline me-1"></i> Session Time</th>
-                                                        <th class="py-3"><i class="mdi mdi-google-classroom me-1"></i> Class</th>
-                                                        <th class="py-3"><i class="mdi mdi-book-open-outline me-1"></i> Subject</th>
-                                                        <th class="pe-4 py-3 text-end">Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% todaysSchedule.forEach(function(schedule) { %>
-                                                        <tr>
-                                                            <td class="ps-4 py-3">
-                                                                <span class="badge bg-primary bg-opacity-10 text-primary px-2 py-1 rounded-pill">
-                                                                    <%= schedule.startTime ? new Date(schedule.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'N/A' %>
-                                                                    –
-                                                                    <%= schedule.endTime ? new Date(schedule.endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'N/A' %>
-                                                                </span>
-                                                            </td>
-                                                            <td class="py-3 fw-bold text-dark">
-                                                                <%= schedule.className || 'N/A' %>
-                                                            </td>
-                                                            <td class="py-3">
-                                                                <span class="badge bg-light text-dark border px-2 py-1">
-                                                                    <%= schedule.subjectName || 'N/A' %>
-                                                                </span>
-                                                            </td>
-                                                            <td class="pe-4 py-3 text-end">
-                                                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1">Upcoming</span>
-                                                            </td>
-                                                        </tr>
-                                                    <% }); %>
-                                                </tbody>
-                                            </table>
+                        <div class="col-xl-8">
+                            <div class="card h-100">
+                                <div class="aa-panel-head">
+                                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                                        <h5 class="card-title mb-0">
+                                            <i class="mdi mdi-calendar-clock-outline text-primary me-1"></i> Term &amp; Week Engine
+                                        </h5>
+                                        <div class="aa-seg" role="group" aria-label="Range">
+                                            <button type="button" class="is-active">This term</button>
+                                            <button type="button">Weekly</button>
                                         </div>
-                                    <% } else { %>
-                                        <div class="text-center text-muted py-5">
-                                            <i class="mdi mdi-calendar-blank-outline fs-1 d-block mb-2 opacity-50"></i>
-                                            <p class="mb-1 fw-medium">No class sessions scheduled for today</p>
-                                            <small class="text-muted">Review upcoming deadlines or prepare lesson notes.</small>
-                                        </div>
-                                    <% } %>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="aa-kpi__value" style="font-size:1.3rem;"><%= typeof termProgress !== 'undefined' ? termProgress : 0 %>%</div>
+                                        <div class="aa-kpi__label mb-0">Term elapsed</div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Recent Teacher Activities -->
-                            <div class="card edu-card-modern">
-                                <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                        <i class="mdi mdi-history me-2 text-info"></i> Recent Instructional Logs
-                                    </h5>
-                                    <span class="badge bg-light text-muted border px-2 py-1 small">Activity History</span>
-                                </div>
-                                <div class="card-body px-4 pt-2">
-                                    <% if (typeof recentActivities !== 'undefined' && recentActivities && recentActivities.length > 0) { %>
-                                        <div class="timeline-alt">
-                                            <% recentActivities.forEach(function(activity) { %>
-                                                <div class="timeline-item mb-3 pb-2 border-bottom">
-                                                    <div class="d-flex align-items-start gap-3">
-                                                        <div class="rounded-circle p-2 bg-primary bg-opacity-10 text-primary">
-                                                            <i class="mdi mdi-pencil-outline fs-4"></i>
-                                                        </div>
-                                                        <div class="flex-grow-1">
-                                                            <h6 class="mb-1 fw-bold text-dark">
-                                                                <%= activity.activity_type || 'Instructional Update' %>
-                                                            </h6>
-                                                            <p class="text-muted small mb-0">
-                                                                <i class="mdi mdi-clock-outline me-1"></i>
-                                                                <%= activity.activity_date ? new Date(activity.activity_date).toLocaleDateString() : 'Recent' %>
-                                                                <span class="badge bg-light text-primary border ms-2">
-                                                                    <%= activity.count || 1 %> entries recorded
-                                                                </span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
+                                <div class="card-body pt-2">
+                                    <div class="week-engine border-0" style="box-shadow:none;">
+                                        <div class="week-engine__body pb-0">
+                                            <div class="week-ring">
+                                                <svg viewBox="0 0 120 120" role="img" aria-label="Term progress ring">
+                                                    <circle class="week-ring__track" cx="60" cy="60" r="52"></circle>
+                                                    <circle class="week-ring__bar" cx="60" cy="60" r="52"
+                                                        stroke-dasharray="326.7"
+                                                        stroke-dashoffset="<%= 326.7 - (326.7 * (typeof termProgress !== 'undefined' ? termProgress : 0) / 100) %>"></circle>
+                                                </svg>
+                                                <div class="week-ring__center">
+                                                    <strong><%= typeof currentWeek !== 'undefined' ? currentWeek : 1 %></strong>
+                                                    <span>of <%= typeof totalWeeks !== 'undefined' ? totalWeeks : 12 %> weeks</span>
                                                 </div>
-                                            <% }); %>
-                                        </div>
-                                    <% } else { %>
-                                        <div class="text-center text-muted py-4">
-                                            <i class="mdi mdi-inbox-outline fs-1 d-block mb-2 opacity-50"></i>
-                                            <p class="mb-0 small fw-medium">No recent instructional activities logged yet</p>
-                                        </div>
-                                    <% } %>
-                                </div>
-                            </div>
-                        </div>
+                                            </div>
 
-                        <!-- Right Column: Shortcuts & Deadlines -->
-                        <div class="col-xl-4 col-lg-5">
-                            <!-- Quick Instructor Actions -->
-                            <div class="card edu-card-modern mb-3">
-                                <div class="card-header bg-white border-0 pt-3 pb-1 px-4">
-                                    <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                        <i class="mdi mdi-lightning-bolt me-2 text-warning"></i> Faculty Quick Actions
-                                    </h5>
-                                    <small class="text-muted">Instant tools for daily academic duties</small>
-                                </div>
-                                <div class="card-body px-4 pt-2 pb-4">
-                                    <div class="d-grid gap-2">
-                                        <a href="/enter-scores" class="modern-action-tile">
-                                            <div class="modern-action-icon" style="background: rgba(74, 90, 52, 0.12); color: var(--aa-brand-ink, #455433);">
-                                                <i class="mdi mdi-pencil-box-outline"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold">Enter Student Scores</div>
-                                                <small class="text-muted">Assessments, Tests & Exams</small>
-                                            </div>
-                                        </a>
+                                            <div class="week-engine__main">
+                                                <div class="week-engine__headline">
+                                                    <h3>
+                                                        <%= typeof shortWeekLabel !== 'undefined' && shortWeekLabel ? shortWeekLabel : ('Week ' + (typeof currentWeek !== 'undefined' ? currentWeek : 1)) %>
+                                                        <span><%= typeof currentTerm !== 'undefined' ? currentTerm : 'Term' %> · <%= typeof currentAcademicYear !== 'undefined' ? currentAcademicYear : '2026/2027' %></span>
+                                                    </h3>
+                                                    <p><i class="mdi mdi-calendar-today me-1"></i>
+                                                        <%= typeof weekStartDate !== 'undefined' ? weekStartDate : '' %> – <%= typeof weekEndDate !== 'undefined' ? weekEndDate : '' %>
+                                                    </p>
+                                                </div>
 
-                                        <a href="/mark-attendance" class="modern-action-tile">
-                                            <div class="modern-action-icon" style="background: rgba(63, 122, 90, 0.12); color: var(--aa-success, #3f7a5a);">
-                                                <i class="mdi mdi-check-circle-outline"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold">Mark Daily Attendance</div>
-                                                <small class="text-muted">Morning / Afternoon roll call</small>
-                                            </div>
-                                        </a>
-
-                                        <a href="/teacher/lesson-notes" class="modern-action-tile">
-                                            <div class="modern-action-icon" style="background: rgba(75, 110, 114, 0.12); color: var(--aa-text-muted, #06b6d4);">
-                                                <i class="mdi mdi-notebook-edit-outline"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold">Lesson Notes & Plans</div>
-                                                <small class="text-muted">Prepare & submit curriculums</small>
-                                            </div>
-                                        </a>
-
-                                        <a href="/teacher/my-classes" class="modern-action-tile">
-                                            <div class="modern-action-icon" style="background: rgba(180, 128, 58, 0.12); color: var(--aa-warning, #c08a3e);">
-                                                <i class="mdi mdi-account-group-outline"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold">My Assigned Classes</div>
-                                                <small class="text-muted">Student list & grade books</small>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Upcoming Academic Deadlines -->
-                            <div class="card edu-card-modern">
-                                <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 fw-bold" style="font-family: 'Outfit', sans-serif;">
-                                        <i class="mdi mdi-alert-circle-outline me-2 text-danger"></i> Term Deadlines
-                                    </h5>
-                                    <span class="badge bg-light text-muted border px-2 py-1 small"><%= typeof shortWeekLabel !== 'undefined' ? shortWeekLabel : 'Week 1' %></span>
-                                </div>
-                                <div class="card-body px-4 pt-2">
-                                    <% if (typeof upcomingDeadlines !== 'undefined' && upcomingDeadlines && upcomingDeadlines.length > 0) { %>
-                                        <div class="list-group list-group-flush">
-                                            <% upcomingDeadlines.forEach(function(deadline) { %>
-                                                <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2 border-bottom">
-                                                    <div>
-                                                        <i class="mdi mdi-clock-alert text-danger me-2"></i>
-                                                        <span class="fw-semibold text-dark"><%= deadline.title || 'Task' %></span>
-                                                    </div>
-                                                    <% if (deadline.deadline) { %>
-                                                        <span class="badge bg-warning bg-opacity-20 text-dark rounded-pill px-3 py-1">
-                                                            <%= new Date(deadline.deadline).toLocaleDateString() %>
-                                                        </span>
-                                                    <% } else { %>
-                                                        <span class="badge bg-secondary bg-opacity-20 text-muted rounded-pill">Open</span>
+                                                <div class="week-track">
+                                                    <% for (var w = 1; w <= (typeof totalWeeks !== 'undefined' ? totalWeeks : 12); w++) {
+                                                        var cls = w < (typeof currentWeek !== 'undefined' ? currentWeek : 1) ? 'is-done'
+                                                                : w === (typeof currentWeek !== 'undefined' ? currentWeek : 1) ? 'is-current' : ''; %>
+                                                        <div class="week-track__tick <%= cls %>"></div>
                                                     <% } %>
                                                 </div>
-                                            <% }); %>
+
+                                                <div class="week-engine__stats">
+                                                    <div class="week-stat"><strong><%= typeof daysPassed !== 'undefined' ? daysPassed : 0 %></strong><span>Days elapsed</span></div>
+                                                    <div class="week-stat"><strong><%= typeof daysRemaining !== 'undefined' ? daysRemaining : 0 %></strong><span>Days remaining</span></div>
+                                                    <div class="week-stat"><strong><%= typeof totalWeeks !== 'undefined' ? totalWeeks : 12 %></strong><span>Total weeks</span></div>
+                                                    <div class="week-stat"><strong><%= typeof totalDays !== 'undefined' ? totalDays : 0 %></strong><span>Term span</span></div>
+                                                </div>
+
+                                                <div class="week-engine__dates">
+                                                    <span><i class="mdi mdi-calendar-check me-1"></i> Start <strong><%= typeof termStartDate !== 'undefined' && termStartDate ? moment(termStartDate).format('MMM D, YYYY') : 'In Session' %></strong></span>
+                                                    <span><i class="mdi mdi-flag-checkered me-1"></i> Ends <strong><%= typeof termEndDate !== 'undefined' && termEndDate ? moment(termEndDate).format('MMM D, YYYY') : 'Scheduled' %></strong></span>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
+
+                                    <hr class="my-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="week-status-badge">
+                                            <i class="mdi mdi-check-circle"></i>
+                                            <%= typeof termWeekStatusBadge !== 'undefined' ? termWeekStatusBadge : 'In Session' %>
+                                        </span>
+                                        <a href="/teacher/class-schedule" class="btn btn-outline-primary btn-sm ms-auto">
+                                            Full schedule <i class="mdi mdi-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Side panel: Quick actions + Deadlines (reference: Care team) -->
+                        <div class="col-xl-4">
+                            <div class="card h-100">
+                                <div class="d-flex align-items-center justify-content-between px-4 pt-3 pb-2">
+                                    <h5 class="card-title mb-0"><i class="mdi mdi-lightning-bolt text-warning me-1"></i> Quick Actions</h5>
+                                </div>
+                                <div class="card-body pt-1 px-4 pb-3">
+                                    <div class="d-grid gap-2">
+                                        <a href="/enter-scores" class="modern-action-tile">
+                                            <div class="modern-action-icon" style="background: var(--aa-brand-soft); color: var(--aa-brand-ink);"><i class="mdi mdi-pencil-box-outline"></i></div>
+                                            <div><div class="fw-bold">Enter Scores</div><small class="text-muted">Assessments &amp; exams</small></div>
+                                        </a>
+                                        <a href="/mark-attendance" class="modern-action-tile">
+                                            <div class="modern-action-icon" style="background: var(--aa-success-soft); color: var(--aa-success);"><i class="mdi mdi-check-circle-outline"></i></div>
+                                            <div><div class="fw-bold">Mark Attendance</div><small class="text-muted">Daily roll call</small></div>
+                                        </a>
+                                        <a href="/teacher/lesson-notes" class="modern-action-tile">
+                                            <div class="modern-action-icon" style="background: var(--aa-info-soft); color: var(--aa-info);"><i class="mdi mdi-notebook-edit-outline"></i></div>
+                                            <div><div class="fw-bold">Lesson Notes</div><small class="text-muted">Curriculum plans</small></div>
+                                        </a>
+                                        <a href="/teacher/my-classes" class="modern-action-tile">
+                                            <div class="modern-action-icon" style="background: var(--aa-warning-soft); color: var(--aa-warning);"><i class="mdi mdi-account-group-outline"></i></div>
+                                            <div><div class="fw-bold">My Classes</div><small class="text-muted">Student &amp; grade books</small></div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <hr class="my-0">
+                                <div class="d-flex align-items-center justify-content-between px-4 pt-3 pb-2">
+                                    <h5 class="card-title mb-0"><i class="mdi mdi-alert-circle-outline text-danger me-1"></i> Term Deadlines</h5>
+                                    <span class="badge bg-light text-muted border rounded-pill px-2 py-1" style="font-size:.68rem;"><%= typeof shortWeekLabel !== 'undefined' ? shortWeekLabel : 'Week 1' %></span>
+                                </div>
+                                <div class="card-body pt-1 px-4">
+                                    <% if (typeof upcomingDeadlines !== 'undefined' && upcomingDeadlines && upcomingDeadlines.length > 0) { %>
+                                        <% upcomingDeadlines.forEach(function(deadline) { %>
+                                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                                <div class="small">
+                                                    <i class="mdi mdi-clock-alert text-danger me-2"></i>
+                                                    <span class="fw-semibold"><%= deadline.title || 'Task' %></span>
+                                                </div>
+                                                <% if (deadline.deadline) { %>
+                                                    <span class="aa-status aa-status--warn"><%= new Date(deadline.deadline).toLocaleDateString() %></span>
+                                                <% } else { %>
+                                                    <span class="aa-status aa-status--info">Open</span>
+                                                <% } %>
+                                            </div>
+                                        <% }); %>
                                     <% } else { %>
-                                        <div class="text-center text-muted py-4">
-                                            <i class="mdi mdi-check-circle-outline fs-1 d-block mb-2 text-success opacity-75"></i>
-                                            <p class="mb-0 small fw-medium">All grading and report submissions up to date!</p>
+                                        <div class="text-center text-muted py-3">
+                                            <i class="mdi mdi-check-circle-outline fs-3 d-block mb-1 text-success opacity-75"></i>
+                                            <p class="mb-0 small">All grading and reports up to date.</p>
                                         </div>
                                     <% } %>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- ══ Full-width table: Today's schedule (reference: Medication tracker) ══ -->
+                    <div class="card mb-4">
+                        <div class="aa-panel-head">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <h5 class="card-title mb-0"><i class="mdi mdi-calendar-clock text-primary me-1"></i> Today's Class Schedule</h5>
+                                <span class="badge bg-light text-muted border rounded-pill px-2 py-1" style="font-size:.68rem;">
+                                    <%= new Date().toLocaleDateString('en-US', { weekday: 'long' }) %>
+                                </span>
+                            </div>
+                            <a href="/teacher/class-schedule" class="btn btn-outline-primary btn-sm">
+                                Full schedule <i class="mdi mdi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+
+                        <div class="table-responsive mt-2">
+                            <table class="table table-hover aa-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-4">Session time</th>
+                                        <th>Class</th>
+                                        <th>Subject</th>
+                                        <th>Status</th>
+                                        <th class="text-end pe-4" aria-label="Row actions"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (typeof todaysSchedule !== 'undefined' && todaysSchedule && todaysSchedule.length > 0) {
+                                        todaysSchedule.forEach(function(schedule) { %>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <span class="aa-primary">
+                                                        <%= schedule.startTime ? new Date(schedule.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'N/A' %>
+                                                        –
+                                                        <%= schedule.endTime ? new Date(schedule.endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : 'N/A' %>
+                                                    </span>
+                                                </td>
+                                                <td><span class="aa-primary"><%= schedule.className || 'N/A' %></span></td>
+                                                <td><span class="aa-secondary"><%= schedule.subjectName || 'N/A' %></span></td>
+                                                <td><span class="aa-status aa-status--ok">Upcoming</span></td>
+                                                <td class="text-end pe-4">
+                                                    <div class="aa-row-menu dropdown">
+                                                        <button type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Row actions">
+                                                            <i class="mdi mdi-dots-horizontal"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item" href="/enter-scores"><i class="mdi mdi-pencil-box-outline me-2"></i>Enter scores</a></li>
+                                                            <li><a class="dropdown-item" href="/mark-attendance"><i class="mdi mdi-check-circle-outline me-2"></i>Mark attendance</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <% });
+                                    } else { %>
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-5">
+                                                <i class="mdi mdi-calendar-blank-outline d-block fs-1 mb-2 opacity-50"></i>
+                                                <p class="mb-1 fw-medium">No class sessions scheduled for today</p>
+                                                <small>Review upcoming deadlines or prepare lesson notes.</small>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ══ Instructional logs (reference: bottom-of-page feed) ══ -->
+                    <div class="card">
+                        <div class="aa-panel-head">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <h5 class="card-title mb-0"><i class="mdi mdi-history text-info me-1"></i> Recent Instructional Logs</h5>
+                                <span class="badge bg-light text-muted border rounded-pill px-2 py-1" style="font-size:.68rem;">Activity history</span>
+                            </div>
+                        </div>
+                        <div class="card-body pt-2">
+                            <% if (typeof recentActivities !== 'undefined' && recentActivities && recentActivities.length > 0) {
+                                recentActivities.forEach(function(activity) { %>
+                                    <div class="d-flex align-items-start gap-3 py-3 border-bottom">
+                                        <div class="rounded-circle p-2" style="background: var(--aa-brand-soft); color: var(--aa-brand-ink);">
+                                            <i class="mdi mdi-pencil-outline fs-4"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1 fw-bold"><%= activity.activity_type || 'Instructional Update' %></h6>
+                                            <p class="text-muted small mb-0">
+                                                <i class="mdi mdi-clock-outline me-1"></i>
+                                                <%= activity.activity_date ? new Date(activity.activity_date).toLocaleDateString() : 'Recent' %>
+                                                <span class="aa-status aa-status--info ms-2"><%= activity.count || 1 %> entries</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                <% });
+                            } else { %>
+                                <div class="text-center text-muted py-4">
+                                    <i class="mdi mdi-inbox-outline d-block fs-2 mb-2 opacity-50"></i>
+                                    <p class="mb-0 small fw-medium">No recent instructional activities logged yet</p>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
                 </div>
                 <!-- end Content-->
 
