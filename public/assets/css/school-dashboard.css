@@ -3,25 +3,25 @@
  * (works with app.min.css / app-dark.min.css, themed by theme-2027.css)
  */
 .edu-dashboard {
-  --edu-primary: #4a5a34;
-  --edu-primary-soft: rgba(74, 90, 52, 0.12);
-  --edu-success: #3f7a5a;
-  --edu-success-soft: rgba(63, 122, 90, 0.12);
-  --edu-info: #4b6e72;
-  --edu-info-soft: rgba(75, 110, 114, 0.12);
-  --edu-warning: #b4803a;
-  --edu-warning-soft: rgba(180, 128, 58, 0.14);
-  --edu-surface: #fdfbf4;
-  --edu-border: rgba(58, 70, 42, 0.13);
-  --edu-text-muted: #6b715c;
-  --edu-radius: 14px;
-  --edu-radius-sm: 10px;
-  --edu-shadow: 0 1px 2px rgba(35, 42, 27, 0.05), 0 14px 34px -22px rgba(35, 42, 27, 0.35);
+  --edu-primary: var(--aa-brand);
+  --edu-primary-soft: var(--aa-brand-soft);
+  --edu-success: var(--aa-success);
+  --edu-success-soft: var(--aa-success-soft);
+  --edu-info: var(--aa-info);
+  --edu-info-soft: var(--aa-info-soft);
+  --edu-warning: var(--aa-warning);
+  --edu-warning-soft: var(--aa-warning-soft);
+  --edu-surface: var(--aa-surface);
+  --edu-border: var(--aa-border);
+  --edu-text-muted: var(--aa-text-muted);
+  --edu-radius: var(--aa-radius);
+  --edu-radius-sm: var(--aa-radius-sm);
+  --edu-shadow: var(--aa-shadow-sm);
 }
 
 .edu-dashboard .edu-dash-hero-inner {
-  background: color(#4f46e5);
-  color: #fff;
+  background: var(--aa-hero);
+  color: #fdfaf0;
   border-radius: var(--edu-radius);
   padding: 1.75rem 1.75rem 1.5rem;
   box-shadow: var(--edu-shadow);
@@ -36,7 +36,7 @@
   top: -40%;
   width: 55%;
   height: 180%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 250, 236, 0.16) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -59,11 +59,11 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0;
-  color: #fff;
+  color: #fdfaf0;
 }
 
 .edu-dashboard .edu-dash-sub {
-  color: rgba(255, 255, 255, 0.88) !important;
+  color: rgba(247, 243, 228, 0.88) !important;
   font-size: 0.95rem;
   max-width: 36rem;
 }
@@ -76,9 +76,9 @@
   border-radius: 999px;
   font-size: 0.8125rem;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  color: #fff;
+  background: rgba(255, 250, 236, 0.2);
+  border: 1px solid rgba(255, 250, 236, 0.28);
+  color: #fdfaf0;
   backdrop-filter: blur(8px);
 }
 
@@ -97,7 +97,7 @@
 
 .edu-dashboard .edu-kpi:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08), 0 16px 40px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--aa-shadow);
 }
 
 .edu-dashboard .edu-kpi .card-body {
@@ -118,7 +118,7 @@
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.2;
-  color: #0f172a;
+  color: var(--aa-text);
   margin: 0 0 0.35rem;
 }
 
@@ -168,14 +168,14 @@
 .edu-dashboard .edu-panel-header {
   padding: 1.15rem 1.25rem;
   border-bottom: 1px solid var(--edu-border);
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, var(--edu-surface) 100%);
+  background: var(--aa-surface-2);
 }
 
 .edu-dashboard .edu-panel-title {
   font-size: 1.05rem;
   font-weight: 700;
   margin: 0;
-  color: #0f172a;
+  color: var(--aa-text);
   letter-spacing: -0.02em;
 }
 
@@ -187,14 +187,14 @@
   padding: 1rem 1.1rem;
   border-radius: var(--edu-radius-sm);
   border: 1px solid var(--edu-border);
-  background: #f8fafc;
+  background: var(--aa-surface-2);
   height: 100%;
 }
 
 .edu-dashboard .edu-metric-tile .metric-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--aa-text);
   margin: 0;
 }
 
@@ -211,7 +211,7 @@
   letter-spacing: 0.05em;
   color: var(--edu-text-muted);
   border-bottom-width: 1px;
-  background: #f8fafc;
+  background: var(--aa-surface-2);
   padding: 0.75rem 1rem;
 }
 
@@ -222,18 +222,18 @@
 }
 
 .edu-dashboard .edu-table-activities tbody tr:hover {
-  background: #fafafa;
+  background: var(--aa-brand-softer);
 }
 
 .edu-dashboard .edu-progress-wrap .progress {
   border-radius: 999px;
-  background: #e2e8f0;
+  background: var(--aa-surface-3);
   overflow: hidden;
 }
 
 .edu-dashboard .edu-progress-wrap .progress-bar {
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--edu-primary), #818cf8);
+  background: var(--aa-brand);
 }
 
 .edu-dashboard .edu-stat-row {
@@ -274,7 +274,7 @@
   min-width: 3.25rem;
   border-radius: var(--edu-radius-sm);
   border: 1px solid var(--edu-border);
-  background: linear-gradient(180deg, #f8fafc, #fff);
+  background: var(--aa-surface-2);
   padding: 0.5rem 0.4rem;
 }
 
@@ -314,7 +314,7 @@
   border-radius: var(--edu-radius-sm);
   border: 1px solid var(--edu-border);
   background: var(--edu-surface);
-  color: #0f172a;
+  color: var(--aa-text);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
@@ -322,8 +322,8 @@
 }
 
 .edu-dashboard .edu-quick-tile:hover {
-  background: #f8fafc;
-  border-color: rgba(79, 70, 229, 0.35);
+  background: var(--aa-surface-2);
+  border-color: var(--aa-brand);
   color: var(--edu-primary);
   transform: translateY(-1px);
 }
@@ -370,10 +370,10 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   gap: 0.5rem;
   padding: 0.45rem 0.95rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 250, 236, 0.18);
+  border: 1px solid rgba(255, 250, 236, 0.3);
   backdrop-filter: blur(10px);
-  color: #ffffff;
+  color: #fdfaf0;
   font-size: 0.825rem;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -385,8 +385,8 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #34d399;
-  box-shadow: 0 0 10px #34d399;
+  background-color: var(--aa-brass-strong);
+  box-shadow: 0 0 10px var(--aa-brass-strong);
   display: inline-block;
   animation: weekStatusPulse 2s infinite ease-in-out;
 }
@@ -398,17 +398,17 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 
 /* Dedicated School Week Tracker Card */
 .school-week-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-  border: 1px solid rgba(79, 70, 229, 0.14) !important;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 0 0 1px rgba(79, 70, 229, 0.05);
+  background: var(--aa-surface);
+  border: 1px solid var(--aa-border) !important;
+  border-radius: var(--aa-radius-lg);
+  box-shadow: var(--aa-shadow-sm);
   overflow: hidden;
   position: relative;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .school-week-card:hover {
-  box-shadow: 0 14px 35px -5px rgba(79, 70, 229, 0.12);
+  box-shadow: var(--aa-shadow);
 }
 
 .school-week-card::before {
@@ -418,12 +418,12 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 50%, #10b981 100%);
+  background: var(--aa-brand);
 }
 
 .school-week-header {
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  border-bottom: 1px solid var(--aa-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -434,7 +434,7 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 .school-week-header-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--aa-text);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -442,7 +442,7 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 }
 
 .school-week-header-title i {
-  color: #4f46e5;
+  color: var(--aa-brand-ink);
   font-size: 1.25rem;
 }
 
@@ -452,14 +452,14 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 
 /* Week Big Display Banner */
 .week-display-banner {
-  background: linear-gradient(135deg, #312e81 0%, #4338ca 60%, #4f46e5 100%);
-  border-radius: 16px;
+  background: var(--aa-hero-deep);
+  border-radius: var(--aa-radius-lg);
   padding: 1.35rem 1.5rem;
-  color: #ffffff;
+  color: #fdfaf0;
   position: relative;
   overflow: hidden;
   margin-bottom: 1.25rem;
-  box-shadow: 0 8px 24px -4px rgba(79, 70, 229, 0.35);
+  box-shadow: var(--aa-shadow-sm);
 }
 
 .week-display-banner::after {
@@ -470,7 +470,7 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 250, 236, 0.16) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -479,13 +479,13 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  color: #ffffff;
+  color: #fdfaf0;
   margin-bottom: 0.2rem;
 }
 
 .week-display-label {
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(247, 243, 228, 0.8);
   font-weight: 500;
 }
 
@@ -495,26 +495,26 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   gap: 0.4rem;
   padding: 0.35rem 0.8rem;
   border-radius: 999px;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #047857;   /* ✅ dark emerald — readable on white */
+  background: var(--aa-success-soft);
+  border: 1px solid rgba(63, 122, 90, 0.35);
+  color: var(--aa-success);
   font-size: 0.775rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 .week-status-badge i {
-  color: #059669;
+  color: var(--aa-success);
 }
 
 /* Hero (dark background) variant */
 .week-status-badge.week-status-badge--on-dark {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: rgba(16, 185, 129, 0.4);
-  color: #a7f3d0;
+  background: rgba(255, 250, 236, 0.18);
+  border-color: rgba(255, 250, 236, 0.4);
+  color: #fdfaf0;
 }
 .week-status-badge.week-status-badge--on-dark i {
-  color: #a7f3d0;
+  color: var(--aa-brass-strong);
 }
 
 /* Progress bar inside week widget */
@@ -525,7 +525,7 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 .school-week-progress-bar {
   height: 10px;
   border-radius: 999px;
-  background: #e2e8f0;
+  background: var(--aa-surface-3);
   overflow: hidden;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
 }
@@ -533,7 +533,7 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 .school-week-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%);
+  background: var(--aa-brand);
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -551,30 +551,30 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 }
 
 .school-week-metric-tile {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  background: var(--aa-surface-2);
+  border: 1px solid var(--aa-border);
+  border-radius: var(--aa-radius);
   padding: 0.85rem 1rem;
   text-align: center;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .school-week-metric-tile:hover {
-  border-color: #cbd5e1;
+  border-color: var(--aa-border-strong);
   transform: translateY(-2px);
 }
 
 .school-week-metric-val {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--aa-text);
   line-height: 1.2;
 }
 
 .school-week-metric-lbl {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #64748b;
+  color: var(--aa-text-soft);
   text-transform: uppercase;
   letter-spacing: 0.03em;
   margin-top: 0.25rem;
@@ -582,32 +582,32 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 
 /* Modern Dashboard Card Overrides */
 .edu-card-modern {
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.08) !important;
-  border-radius: 18px;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+  background: var(--aa-surface);
+  border: 1px solid var(--aa-border) !important;
+  border-radius: var(--aa-radius-lg);
+  box-shadow: var(--aa-shadow-sm);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .edu-card-modern:hover {
-  box-shadow: 0 8px 26px rgba(15, 23, 42, 0.07);
+  box-shadow: var(--aa-shadow);
 }
 
 /* Modern Stat KPI Card */
 .stat-kpi-modern {
-  border-radius: 18px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: #ffffff;
+  border-radius: var(--aa-radius-lg);
+  border: 1px solid var(--aa-border);
+  background: var(--aa-surface);
   padding: 1.35rem 1.25rem;
   position: relative;
   overflow: hidden;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  box-shadow: var(--aa-shadow-sm);
 }
 
 .stat-kpi-modern:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--aa-shadow);
 }
 
 .stat-kpi-modern .kpi-indicator-bar {
@@ -618,15 +618,15 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   height: 100%;
 }
 
-.stat-kpi-modern.kpi-blue .kpi-indicator-bar { background: #4f46e5; }
-.stat-kpi-modern.kpi-green .kpi-indicator-bar { background: #10b981; }
-.stat-kpi-modern.kpi-amber .kpi-indicator-bar { background: #f59e0b; }
-.stat-kpi-modern.kpi-rose .kpi-indicator-bar { background: #ef4444; }
+.stat-kpi-modern.kpi-blue .kpi-indicator-bar { background: var(--aa-brand); }
+.stat-kpi-modern.kpi-green .kpi-indicator-bar { background: var(--aa-success); }
+.stat-kpi-modern.kpi-amber .kpi-indicator-bar { background: var(--aa-warning); }
+.stat-kpi-modern.kpi-rose .kpi-indicator-bar { background: var(--aa-danger); }
 
 .stat-kpi-modern .kpi-icon-chip {
   width: 52px;
   height: 52px;
-  border-radius: 14px;
+  border-radius: var(--aa-radius);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -634,10 +634,10 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   flex-shrink: 0;
 }
 
-.stat-kpi-modern.kpi-blue .kpi-icon-chip { background: rgba(79, 70, 229, 0.1); color: #4f46e5; }
-.stat-kpi-modern.kpi-green .kpi-icon-chip { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-.stat-kpi-modern.kpi-amber .kpi-icon-chip { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-.stat-kpi-modern.kpi-rose .kpi-icon-chip { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.stat-kpi-modern.kpi-blue .kpi-icon-chip { background: var(--aa-brand-soft); color: var(--aa-brand-ink); }
+.stat-kpi-modern.kpi-green .kpi-icon-chip { background: var(--aa-success-soft); color: var(--aa-success); }
+.stat-kpi-modern.kpi-amber .kpi-icon-chip { background: var(--aa-warning-soft); color: var(--aa-warning); }
+.stat-kpi-modern.kpi-rose .kpi-icon-chip { background: var(--aa-danger-soft); color: var(--aa-danger); }
 
 /* Quick Action Tiles */
 .modern-action-tile {
@@ -645,20 +645,20 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
   align-items: center;
   gap: 0.95rem;
   padding: 1.1rem 1.25rem;
-  border-radius: 14px;
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: var(--aa-radius);
+  background: var(--aa-surface);
+  border: 1px solid var(--aa-border);
   text-decoration: none !important;
-  color: #0f172a;
+  color: var(--aa-text);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  box-shadow: var(--aa-shadow-sm);
 }
 
 .modern-action-tile:hover {
   transform: translateY(-2px);
-  border-color: rgba(79, 70, 229, 0.35);
-  box-shadow: 0 8px 22px rgba(79, 70, 229, 0.09);
-  color: #4f46e5;
+  border-color: var(--aa-brand);
+  box-shadow: var(--aa-shadow);
+  color: var(--aa-brand-ink);
 }
 
 .modern-action-icon {
@@ -674,36 +674,34 @@ body.layout-mode-dark .edu-dashboard .edu-kpi-value {
 
 /* ==========================================================================
    Bootstrap bg-opacity-* / border-opacity-* FALLBACK SHIM
-   Hyper's app.min.css doesn't ship these utilities, which causes badges to
-   render solid white and their white text to disappear.
    ========================================================================== */
 
 /* --- White overlay pills used inside the dark hero --- */
-.bg-white.bg-opacity-15 { background-color: rgba(255, 255, 255, 0.15) !important; }
-.bg-white.bg-opacity-20 { background-color: rgba(255, 255, 255, 0.20) !important; }
-.bg-white.bg-opacity-25 { background-color: rgba(255, 255, 255, 0.25) !important; }
+.bg-white.bg-opacity-15 { background-color: rgba(255, 250, 236, 0.15) !important; }
+.bg-white.bg-opacity-20 { background-color: rgba(255, 250, 236, 0.20) !important; }
+.bg-white.bg-opacity-25 { background-color: rgba(255, 250, 236, 0.25) !important; }
 
 /* --- Colored badge tints used in KPI cards & status pills --- */
-.bg-primary.bg-opacity-10  { background-color: rgba(79, 70, 229, 0.10) !important; }
-.bg-primary.bg-opacity-15  { background-color: rgba(79, 70, 229, 0.15) !important; }
-.bg-primary.bg-opacity-20  { background-color: rgba(79, 70, 229, 0.20) !important; }
+.bg-primary.bg-opacity-10  { background-color: var(--aa-brand-soft) !important; }
+.bg-primary.bg-opacity-15  { background-color: rgba(74, 90, 52, 0.15) !important; }
+.bg-primary.bg-opacity-20  { background-color: rgba(74, 90, 52, 0.20) !important; }
 
-.bg-success.bg-opacity-10  { background-color: rgba(16, 185, 129, 0.10) !important; }
-.bg-success.bg-opacity-25  { background-color: rgba(16, 185, 129, 0.25) !important; }
+.bg-success.bg-opacity-10  { background-color: var(--aa-success-soft) !important; }
+.bg-success.bg-opacity-25  { background-color: rgba(63, 122, 90, 0.25) !important; }
 
-.bg-info.bg-opacity-10     { background-color: rgba(8, 145, 178, 0.10) !important; }
-.bg-warning.bg-opacity-10  { background-color: rgba(245, 158, 11, 0.10) !important; }
-.bg-danger.bg-opacity-10   { background-color: rgba(239, 68, 68, 0.10) !important; }
+.bg-info.bg-opacity-10     { background-color: var(--aa-info-soft) !important; }
+.bg-warning.bg-opacity-10  { background-color: var(--aa-warning-soft) !important; }
+.bg-danger.bg-opacity-10   { background-color: var(--aa-danger-soft) !important; }
 .bg-secondary.bg-opacity-10{ background-color: rgba(108, 117, 125, 0.10) !important; }
-.bg-dark.bg-opacity-10     { background-color: rgba(15, 23, 42, 0.10) !important; }
-.bg-dark.bg-opacity-25     { background-color: rgba(15, 23, 42, 0.25) !important; }
+.bg-dark.bg-opacity-10     { background-color: rgba(35, 42, 27, 0.10) !important; }
+.bg-dark.bg-opacity-25     { background-color: rgba(35, 42, 27, 0.25) !important; }
 
 /* --- Border opacity used on hero pills --- */
-.border-white.border-opacity-20 { border-color: rgba(255, 255, 255, 0.20) !important; }
-.border-white.border-opacity-25 { border-color: rgba(255, 255, 255, 0.25) !important; }
+.border-white.border-opacity-20 { border-color: rgba(255, 250, 236, 0.20) !important; }
+.border-white.border-opacity-25 { border-color: rgba(255, 250, 236, 0.25) !important; }
 
 /* --- Belt-and-braces: force white text to stay readable on those pills --- */
 .edu-dash-hero-inner .badge.text-white,
 .school-week-hero-pill .badge.text-white {
-  color: #ffffff !important;
+  color: #fdfaf0 !important;
 }
