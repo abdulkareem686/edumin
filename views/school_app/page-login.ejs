@@ -18,6 +18,14 @@
             cursor: pointer;
             user-select: none;
         }
+        
+        /* Ensure the image fits perfectly inside the auth brand mark */
+        .aa-auth-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
     </style>
     <!-- Alhamdulillahi Academy - Heritage 2027 UI -->
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
@@ -37,13 +45,17 @@
                     <div class="auth-brand text-center text-lg-start">
                         <a href="/" class="logo-dark">
                             <span class="aa-auth-brand">
-                                <span class="aa-auth-mark"><i class="mdi mdi-school"></i></span>
+                                <span class="aa-auth-mark">
+                                    <img src="/assets/images/favicon.png" alt="Alhamdulillahi Academy Logo">
+                                </span>
                                 <span class="aa-auth-wordmark">Alhamdulillahi<small>Academy</small></span>
                             </span>
                         </a>
                         <a href="/" class="logo-light">
                             <span class="aa-auth-brand">
-                                <span class="aa-auth-mark"><i class="mdi mdi-school"></i></span>
+                                <span class="aa-auth-mark">
+                                    <img src="/assets/images/favicon.png" alt="Alhamdulillahi Academy Logo">
+                                </span>
                                 <span class="aa-auth-wordmark">Alhamdulillahi<small>Academy</small></span>
                             </span>
                         </a>
@@ -126,10 +138,6 @@
                             Alhamdulillahi Academy
                             <span class="aa-credit">Powered by <strong>QuDex Technologies</strong></span>
                         </p>
-                        <!-- <p class="text-muted">
-                            Don't have a registered school account?
-                            <a href="/register" class="text-muted ms-1"><b>Register School Here</b></a>
-                        </p> -->
                     </footer>
 
                 </div> <!-- end .card-body -->
