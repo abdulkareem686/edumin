@@ -1,6 +1,7 @@
 
 require('dotenv').config();
 
+const fs = require('fs');
 const express = require('express');
 const path = require('path');
 const compression = require('compression');
@@ -420,6 +421,32 @@ app.use(
         path.join(__dirname, 'public')
     )
 );
+
+const faviconCandidates = [
+    path.join(__dirname, 'public', 'assets', 'images', 'favicon.png'),
+    path.join(__dirname, 'public', 'assets', 'images', 'favicon.ico'),
+    path.join(__dirname, 'public', 'images', 'favicon.png'),
+    path.join(__dirname, 'public', 'images', 'favicon.ico')
+];
+
+function serveFavicon(req, res) {
+    const file = faviconCandidates.find(candidate => fs.existsSync(candidate));
+
+    if (!file) {
+        return res.status(404).send('Favicon not found');
+    }
+
+    return res.sendFile(file);
+}
+
+app.get([
+    '/favicon.ico',
+    '/favicon.png',
+    '/assets/images/favicon.ico',
+    '/assets/images/favicon.png',
+    '/images/favicon.ico',
+    '/images/favicon.png'
+], serveFavicon);
 
 // ---------------------------------------------------------------------
 // HEALTH CHECK
